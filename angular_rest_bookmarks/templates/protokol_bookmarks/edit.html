@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load floppyforms %}
+{{ form.media }}
+{% block main_content %}
+<div class="row">
+	<div class="col-md-8">
+		<h1>Редактирование статичной страницы</h1>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<form action="{% url 'protocol:flat_pages:edit' url_pk=url.pk %}" method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+            {{ form.media }}
+			{% form form using 'floppyforms/layouts/bootstrap3.html' %}
+			<div class="well">
+				<input type="submit" class="btn btn-primary" value="Сохранить" />
+				<a href="{% url 'protocol:flat_pages:list' %}" class="btn btn-default">Отмена</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock main_content %}

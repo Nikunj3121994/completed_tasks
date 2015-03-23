@@ -1,0 +1,143 @@
+{#{% extends 'base.html' %}#}
+
+{#{% block ng_app %}example.app.editor{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#{% verbatim %}#}
+{#<div ng-controller="EditController">#}
+{#    <h5>Create a New Post</h5>#}
+{#    <form class="form-inline">#}
+{#        <div class="form-group block-level">#}
+{#            <input type="text" class="form-control" ng-model="newPost.title" placeholder="Title">#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#            <input type="text" class="form-control" ng-model="newPost.body" placeholder="Body">#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#            <button class="btn btn-default" ng-click="save()">Add Post</button>#}
+{#        </div>#}
+{#        <p ng-repeat="(name, errs) in errors" class="alert alert-danger"><strong>{{ name }}</strong>: {{ errs.join(', ') }}</p>#}
+{#    </form>#}
+{#</div>#}
+{#<div ng-app="treeApp">#}
+{#    #}
+{#</div>#}
+{#{% endverbatim %}#}
+{#{{ block.super }}#}
+{#{% endblock %}#}
+{##}
+{#{% block js %}#}
+{#{{ block.super }}#}
+{#<script>#}
+{#// Add the CSRF Token#}
+{#var app = angular.module('example.app.editor'); // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration#}
+{#app.config(['$httpProvider', function($httpProvider) {#}
+{#    $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';#}
+{#}]);#}
+{#</script>#}
+{##}
+{#<!-- Stylesheets -->#}
+{#<link rel="stylesheet" type="text/css" href="/static/angular-ui-tree/demo/bower_components/bootstrap/dist/css/bootstrap.min.css">#}
+{#<link rel="stylesheet" href="/static/angular-ui-tree/demo/dist/angular-ui-tree.min.css">#}
+{#<link rel="stylesheet" href="/static/angular-ui-tree/demo/css/demo.css">#}
+{##}
+{#<script src="/static/angular-ui-tree/demo/bower_components/angular/angular.min.js"></script>#}
+{#<script type="text/javascript" src="/static/angular-ui-tree/demo/dist/angular-ui-tree.js"></script>#}
+{#<script type="text/javascript" src="/static/angular-ui-tree/demo/js/filter.js"></script>#}
+{#<script type="text/javascript" src="/static/angular-ui-tree/demo/js/trees_render.js"></script>#}
+{##}
+{#{% endblock %}#}
+
+{% verbatim %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AngularJS UI Tree demo</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" type="text/css" href="/static/angular-ui-tree/demo/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/angular-ui-tree/demo/dist/angular-ui-tree.min.css">
+  <link rel="stylesheet" href="/static/angular-ui-tree/demo/css/demo.css">
+</head>
+<body ng-app="treeApp">
+
+  <div class="container" ng-controller="treeCtrl">
+    <h1 class="page-header">Tree - demo</h1>
+    <a href="/static/angular-ui-tree/demo/angular-ui-tree/index.html"><i class="glyphicon glyphicon-chevron-left"></i> Back to overview page</a>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <h3>Tree view
+        </h3>
+        <p>
+          Search: <input ng-model="query" ng-change="findNodes()"/>
+        </p>
+        <!-- Nested node template -->
+        <script type="text/ng-template" id="nodes_renderer.html">
+          <div ui-tree-handle class="tree-node tree-node-content">
+            <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
+            name:{{node.name}},&nbsp user:{{node.user}},&nbsp source: {{node.source}}
+            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
+          </div>
+          <ol ui-tree-nodes="" ng-model="node.children" ng-class="{hidden: collapsed}">
+            <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'" ng-show="visible(node)">
+            </li>
+          </ol>
+        </script>
+
+
+  <script type="text/ng-template" id="nodes_renderer3.html">
+    <div class="tree-node">
+      <div class="pull-left tree-handle" ui-tree-handle>
+        <span class="glyphicon glyphicon-list"></span>
+      </div>
+      <div class="tree-node-content">
+        <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
+        name:{{node.data.name}},&nbsp user:{{node.data.user}},&nbsp source: {{node.data.source}}
+        <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
+      </div>
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.children" ng-class="{hidden: collapsed}">
+      <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer3.html'">
+      </li>
+    </ol>
+  </script>
+
+
+        <div ui-tree id="tree-root">
+          <ol ui-tree-nodes="" ng-model="data">
+            <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'" ng-show="visible(node)"></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <h3>Data binding</h3>
+        <div class="info">
+            {{info}}
+        </div>
+        <pre class="code">{{ data[0] | json }}</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <!--[if IE 8]>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+     <script src="/static/angular-ui-tree/demo/bower_components/angular/angular.min.js"></script>
+     	<script src="/static/angular-ui-tree/demo/bower_components/angular-1.2.26/angular-sanitize.min.js"></script>
+  <![endif]-->
+
+		<script src="/static/angular-ui-tree/demo/bower_components/angular-1.2.26/angular.js"></script>
+    <script src="/static/angular-ui-tree/demo/bower_components/lodash.min.js"></script>
+  <script type="text/javascript" src="/static/angular-ui-tree/demo/bower_components/restangular/src/restangular.js"></script>
+  <script type="text/javascript" src="/static/angular-ui-tree/demo/dist/angular-ui-tree.js"></script>
+  <script type="text/javascript" src="/static/angular-ui-tree/demo/js/filter.js"></script>
+
+</body>
+</html>
+{% endverbatim %}

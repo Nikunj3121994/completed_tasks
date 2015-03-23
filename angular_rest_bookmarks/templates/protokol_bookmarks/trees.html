@@ -1,0 +1,192 @@
+{% verbatim %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Заготовка к закладкам</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="/static/angular-ui-tree/demo/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/angular-ui-tree/demo/dist/angular-ui-tree.min.css">
+    <link rel="stylesheet" href="/static/angular-ui-tree/demo/css/tree.css">
+</head>
+
+<body ng-app="treesApp">
+
+<script type="text/ng-template" id="nodes_renderer.html">
+
+
+
+    <div class="tree-node-content">
+        <div class="group-title angular-ui-tree-handle" data-nodrag ng-show="node.editing">
+
+        <h5>Редактировать имя</h5>
+
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label for="nodeName">Имя папки</label>
+                <input type="text" class="form-control" placeholder="Имя" ng-model="node.name">
+            </div>
+            <button type="submit" class="btn btn-default" ng-click="changeNode(this)">Сохранить</button>
+            <button type="submit" class="btn btn-default" ng-click="cancelEditingNode(this)">Отменить</button>
+        </form>
+
+         </div>
+
+        <input ng-show="!node.source" type="checkbox" ng-model="node.check" ng-style="checked" ng-change="checked=(node.check ? {color:'red'} : {color:'black'})">
+
+        <a ng-show="!node.source" class="btn btn-success btn-xs" data-nodrag ng-click="nodeToggle(this)">
+            <span class="glyphicon"
+                  ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>
+        </a>
+        <span ng-style="checked">id:{{node.id}}, &nbsp name:{{node.name}},&nbsp user:{{node.user}},&nbsp source: {{node.source}}</span>
+        <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="editeNode(this)">
+            <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+
+        <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeNodes(this)"
+            style="margin-right: 8px;">
+            <span class="glyphicon glyphicon-remove"></span>
+        </a>
+
+        <a ng-show="!node.source" class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newNode(type='sub_folder', this)"
+            style="margin-right: 8px;">
+                <span class="glyphicon glyphicon-plus"></span>
+        </a>
+
+    </div>
+
+    <ol ui-tree-nodes="" ng-model="node.children"   ng-class="{hidden: collapsed}">
+        <li ng-repeat="node in node.children" ui-tree-node data-collapsed="true" ng-include="'nodes_renderer.html'">
+        </li>
+    </ol>
+
+</script>
+
+<div class="container" ng-controller="treesCtrl">
+
+    <div class="col-sm-9">
+
+        <h1 class="page-header">Заготовка закладок</h1>
+
+
+        <h3>
+          <!--  Дерево закладок -->
+
+        </h3>
+
+        <div class="group-title angular-ui-tree-handle" data-nodrag ng-show="new_bookmark_source.id">
+
+            <h4>Редактировать имя
+            <a href="" class="btn btn-default pull-right" ng-click="collapseAll()">Свернуть</a>
+            <a href="" class="btn btn-default pull-right" ng-click="expandAll()">Развернуть</a>
+            </h4>
+
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <label for="sourceName">Имя</label>
+                    <input type="text" class="form-control" placeholder="Имя" ng-model="new_bookmark_source.name">
+                </div>
+                <button type="submit" class="btn btn-default" ng-click="newNode(type='source')">Сохранить</button>
+            </form>
+
+        </div>
+
+
+        <div class="group-title angular-ui-tree-handle">
+
+            <h5>Элементы</h5>
+
+            <div ui-tree="treeOptions" data-drag-enabled="true" data-max-depth="10" data-drag-delay="500" id="tree-root">
+                <ol ui-tree-nodes="" ng-model="nodes" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="node in nodes" ui-tree-node data-collapsed="true" ng-include="'nodes_renderer.html'"></li>
+                </ol>
+            </div>
+
+            <div>
+
+                <h4>Добавить папку</h5>
+
+                <form class="form-inline">
+                    <div class="form-group block-level">
+                        <label for="sourceName">Имя папки</label>
+                        <input type="text" class="form-control" ng-model="new_folder_name_source.name" placeholder="папка">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default" ng-click="newNode(type='folder')">Добавить папку</button>
+                    </div>
+
+                    <p ng-repeat="(name, errs) in errors" class="alert alert-danger">
+                        <strong>{{ name }}</strong>: {{errs.join(', ') }}</p>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+        <!--        <button class="btn btn-primary" ng-click="ok()">OK</button> -->
+                <button class="btn btn-warning" ng-click="close()">Закрыть</button>
+            </div>
+
+            <h3>Data binding</h3>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <pre class="code">{{ nodes | json }}</pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div ng-controller="ModalDemoCtrl">
+        <script type="text/ng-template" id="myModalContent.html">
+            <div class="modal-header">
+                <h3 class="modal-title">I'm a modal!</h3>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li ng-repeat="item in items">
+                        <a ng-click="selected.item = item">{{ item }}</a>
+                    </li>
+                </ul>
+                Selected: <b>{{ selected.item }}</b>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+
+        <button class="btn btn-default" ng-click="open()">Open me!</button>
+        <button class="btn btn-default" ng-click="open('lg')">Large modal</button>
+        <button class="btn btn-default" ng-click="open('sm')">Small modal</button>
+        <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+    </div>
+
+
+    {% endverbatim %}
+    <!--[if IE 8]>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+  <![endif]-->
+
+    <script src="/static/angular-ui-tree/demo/bower_components/angular-1.2.26/angular.js"></script>
+    <script src="/static/angular-ui-tree/demo/bower_components/lodash.min.js"></script>
+    <script type="text/javascript"
+            src="/static/angular-ui-tree/demo/bower_components/restangular/src/restangular.js"></script>
+    <script type="text/javascript" src="/static/angular-ui-tree/demo/dist/angular-ui-tree.js"></script>
+    <script type="text/javascript" src="/static/angular-ui-tree/demo/js/trees.js"></script>
+    <script src="/static/angular-dialog-service-master/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script>
+        // Add the CSRF Token
+        angular
+                .module('treesApp') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+                .config(['$httpProvider', function ($httpProvider) {
+                    $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+                }]);
+    </script>
+</body>
+</html>
+
