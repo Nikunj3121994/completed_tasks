@@ -30,7 +30,8 @@
                 scope: {
                     user: "@",
                     source: "@",
-                    token: "@"
+                    token: "@",
+                    debug: "@"
                 },
                 // контроллер для директивы
                 controller: 'ModalBookmarksCtrl',
@@ -71,7 +72,8 @@
             $scope.close = close;
             $scope.chose_parent = chose_parent;
             $scope.items = items;
-            $scope.debug = true;
+            $scope.debug = JSON.parse(items.debug)||false;
+
             try{
                 $scope.user = user_id;
                 $log.debug($scope.user);
@@ -384,7 +386,8 @@
                            // 'items':$scope.items,
                             'user':$scope.user,
                             'source':$scope.source,
-                            'token':$scope.token
+                            'token':$scope.token,
+                            'debug':$scope.debug||false
                     };
                     /*    items: {
                         source: function () {

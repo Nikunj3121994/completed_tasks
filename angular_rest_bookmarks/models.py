@@ -15,10 +15,9 @@ USER_MODEL = get_user_model()
 
 class Folder_AL(treebeard.al_tree.AL_Node):
     name = models.CharField(max_length=100, verbose_name=_('Название'))
-    user = models.ForeignKey(USER_MODEL, verbose_name='пользователь', blank=True, null=True, related_name='folders_al')
-    source = models.ForeignKey('source.Source', blank=True, null=True)
-    # source = models.ForeignKey(verbose_name=_('Ид_ресурса'), max_length=200, blank=True, null=True)
-    #source = models.ForeignKey('source.Source', verbose_name=_('Название раздела'), related_name='folders', blank=True, null=True)
+    user = models.ForeignKey(USER_MODEL, verbose_name='Пользователь', blank=True, null=True, related_name='folders_al')
+    # source = models.ForeignKey('source.Source', blank=True, null=True)
+    source = models.CharField(verbose_name=_('Закладка'), max_length=200, blank=True, null=True)
     parent = models.ForeignKey('self', related_name='children_set', blank=True, null=True, db_index=True)
 
     node_order_by = ['name']

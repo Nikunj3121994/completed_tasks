@@ -67,9 +67,9 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'rest_bookmark.urls'
+ROOT_URLCONF = 'demo.urls'
 
-WSGI_APPLICATION = 'rest_bookmark.wsgi.application'
+WSGI_APPLICATION = 'demo.wsgi.application'
 
 
 # Database
@@ -157,3 +157,19 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SITE_ID = 1
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    #'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+
+)

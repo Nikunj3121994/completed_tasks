@@ -14,7 +14,8 @@
 
 <body ng-app="treesApp">
 <!-- живой блок -->
-<div bookmarks token="{{ csrf_token|escapejs }}" user="{{ request.user.id }}" source="4001">loading</div>
+{#<h3>user={{ request.user.id }};&nbspsource=4001;&nbsptoken={{ csrf_token|escapejs }};</h3>#}
+<div bookmarks debug="true" token="{{ csrf_token|escapejs }}" user="{{ request.user.id }}" source="http://localhost:8000/bookmarks/bookmark_example">loading</div>
 <!-- живой блок -->
 
 

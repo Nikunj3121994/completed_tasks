@@ -35,7 +35,7 @@
 
         <span ng-show="debug" ng-style="checked">id:{{ node.id }}, &nbsp name:{{ node.name }},&nbsp user:{{ node.user }},&nbsp source: {{ node.source }}</span>
 
-        <span ng-show="!debug">{{ node.name }}</span>
+        <span ng-show="!debug"><a href="{{ node.source }}">{{ node.name }}</a></span>
 
         <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="editeNode(this)">
             <span class="glyphicon glyphicon-pencil"></span>
