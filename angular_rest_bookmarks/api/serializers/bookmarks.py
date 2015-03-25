@@ -32,13 +32,3 @@ class BookMarkTreeALSerializer(serializers.ModelSerializer):
     def get_data(self, obj):
         data = dict((i.name, obj.__dict__[i.column]) for i in obj._meta.local_fields)
         return data
-
-
-        # class BookMarkTreeMPSerializer(serializers.ModelSerializer):
-        # source = serializers.Field(source='source')
-        #
-        #     class Meta:
-        #         model = Folder_MP
-        #         fields = [
-        #             'id', 'name', 'user', 'source',
-        #         ]

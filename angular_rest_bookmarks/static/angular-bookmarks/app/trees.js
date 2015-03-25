@@ -120,20 +120,18 @@
                     new_node.data.name = $scope.new_folder_name_source.name;
                 }
                 else if(type=='source') {
-                   // console.log($scope)
-                   // console.log(search_checked_nodes($scope.nodes))
-//                    child.data.user = child.data.user || $scope.nodes[0].data.user;
                     //todo: выбор папки добавить, придумать как сделать.
                     new_node.parent = search_checked_nodes($scope.nodes)[0];
                     new_node.data.name = $scope.new_bookmark_source.name;
                     new_node.data.source =  $scope.items.source;
-                    console.log(new_node);
                 };
-                console.log(new_node);
+                if ($scope.debug){
+                    console.log(new_node);//todo: надо заменить на $log, как-только отлавливать строчку
+                };
                 CbgenRestangular.all('nodes').getList().then(function(data){
                     data.post(new_node).then(function (result) {
                         if (type=='folder') {
-                            return $scope.loadData(); // todo: кривовато, дерево схлопывается.
+                            return $scope.loadData(); //todo: кривовато, дерево схлопывается.
                         }
                         else if (type=='sub_folder') {
                             if(node.collapsed) {
@@ -144,17 +142,20 @@
                             }
                         }
                         else if (type=='source') {
+
                             //if(node.collapsed) {
                             //    return nodeToggle(node);
                             //}
-                            return $scope.loadData();
+                            return $scope.loadData(); //todo: кривовато, дерево схлопывается.
                         };
                     });
                 });
             };
 
             function removeNodes(node) {
-                console.log(node);
+                if ($scope.debug) {
+                    console.log(node);//todo: надо заменить на $log, как-только отлавливать строчку
+                };
                 if (window.confirm('Вы точно хотите удалить этот элемент?')) {
                         CbgenRestangular.one('nodes', node.$modelValue.id).get().then(function(data){
                             data.remove().then(function(data){
@@ -165,9 +166,10 @@
             };
 
             function changeNode(node) {
-
                 if (window.confirm('Вы точно хотите изменить этот элемент?')) {
-                    console.log(node)
+                    if ($scope.debug) {
+                        console.log(node);//todo: надо заменить на $log, как-только отлавливать строчку
+                    };
                     CbgenRestangular.one('nodes', node.$modelValue.id).get().then(function(data){
                         for (var i in node.$modelValue) {
                             data[i] = node.$modelValue[i] //todo: наверное все же лечше сделать блочок с data
@@ -175,9 +177,7 @@
                         return data.put().then(function (data) {
                                 delete node.$modelValue.oldname;
                                 delete node.$modelValue.editing;
-                                return UpdateChildren(node)
-                                //return $scope.loadData();
-//                        node.remove();
+                                return UpdateChildren(node);
                             }
                         );
                     });
@@ -186,11 +186,10 @@
 
 
             function nodeToggle(node) {
+                if ($scope.debug) {
+                    console.log(node);//todo: надо заменить на $log, как-только отлавливать строчку
+                };
                 UpdateChildren(node).then(function (node) {
-                    //console.log(data)
-                    //console.log(data.depth())
-                    //console.log(data.childNodes())
-                    //console.log(data.$modelValue.children)
                     if(node.$modelValue.children.length) {
                         node.toggle();
                     };
@@ -199,30 +198,28 @@
 
 
             function chose_parent(node){
-                console.log(node.$modelValue.checked)
-                //console.log(node);
+                if ($scope.debug) {
+                    console.log(node);//todo: надо заменить на $log, как-только отлавливать строчку
+                };
                 var checked_status = node.$modelValue.checked;
+                //search_checked_nodes($scope.nodes);
+                //node.$modelValue.checked = checked_status;
                 search_checked_nodes($scope.nodes);
                 node.$modelValue.checked = checked_status;
-                search_checked_nodes($scope.nodes);
-                node.$modelValue.checked = checked_status;
-                //search_checked_nodes($scope.nodes)
+                //todo: странная конструкция сверху используется для того, чтобы убрать галки с других элементов и оставить только на выделенном, надо переделать
             };
 
             function search_checked_nodes(nodes){
-//                console.log(nodes.children)
-                console.log(nodes)
                 var checked_nodes = [];
-                //console.log(checked_nodes);
-
+                if ($scope.debug) {
+                    console.log(nodes);//todo: надо заменить на $log, как-только отлавливать строчку
+                };
                 for (var node in nodes){
-//                    console.log(nodes[node])
+                    if ($scope.debug) {
+                        console.log(nodes[node]);//todo: надо заменить на $log, как-только отлавливать строчку
+                    };
+
                     if (nodes[node] && typeof nodes[node] == 'object'){
-//                        console.log(nodes[node])
-//                        if (node == 'check'){
-//                            console.log('has checked');
-//                            checked_nodes.push(nodes[node].id);
-//                        };
                         try{
                             if(nodes[node].hasOwnProperty('checked')){
 //                                console.log(nodes[node]);
@@ -237,8 +234,10 @@
                                 }
                         }
                         catch(err){
-                            //console.log(nodes[node])
-                            //console.log(err);
+                            if ($scope.debug) {
+                                console.log(nodes[node])
+                            };
+                            console.log(err);
                         }
                         try{
                             if (nodes[node].hasOwnProperty('children')){
@@ -262,7 +261,9 @@
                         };
                     };
                 };
-                console.log(checked_nodes);
+                if ($scope.debug) {
+                    console.log(checked_nodes);//todo: надо заменить на $log, как-только отлавливать строчку
+                };
                 return checked_nodes;
             };
             function collapseAll() {

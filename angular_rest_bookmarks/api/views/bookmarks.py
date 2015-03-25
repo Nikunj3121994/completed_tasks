@@ -4,8 +4,8 @@ from django.shortcuts import Http404
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
-from angular_rest_bookmarks.models import Folder_AL #,BookMark, Folder_MP
-from ..serializers.bookmarks import BookMarkTreeALSerializer #, BookMark, Folder_MP,
+from angular_rest_bookmarks.models import Folder_AL
+from ..serializers.bookmarks import BookMarkTreeALSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
 
