@@ -1,4 +1,4 @@
-приложение в режиме тестирования
+приложение в режиме тестирования, запустить можно через demo.
 для работы добавить в local.py
 #bookmarks
 INSTALLED_APPS += ('angular_rest_bookmarks', 'treebeard')
