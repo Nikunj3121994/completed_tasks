@@ -4,7 +4,8 @@ from django.shortcuts import Http404
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
-from users_files.models import User_file, File
+from django.contrib.auth.models import User
+from users_files.models import  File
 from ..serializers import FileSerializer, UserSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
@@ -12,8 +13,8 @@ from .permissions import AuthorCanEditPermission
 
 
 
-class UsersDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User_file.objects.all()
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     # permission_classes = [
     #     AuthorCanEditPermission
@@ -24,8 +25,8 @@ class UsersDetail(generics.RetrieveUpdateDestroyAPIView):
     #     obj.author = self.request.user
     #     return super(BookMarkTreeALDetail, self).pre_save(obj)
 
-class UsersAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = User_file.objects.all()
+class UserListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     # permission_classes = [
     #     AuthorCanEditPermission

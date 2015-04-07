@@ -4,7 +4,8 @@ from django.shortcuts import Http404
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
-from users_files.models import User_file, File
+from django.contrib.auth.models import User
+from users_files.models import File
 from ..serializers import FileSerializer, UserSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
@@ -23,7 +24,7 @@ class FilesDetail(generics.RetrieveUpdateDestroyAPIView):
     #     obj.author = self.request.user
     #     return super(FilesDetail, self).pre_save(obj)
 
-class FilesAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
+class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
     queryset = File.objects.all()
     serializer_class = FileSerializer
     # permission_classes = [
@@ -55,9 +56,9 @@ class FilesAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableRespons
     #     return queryset.filter(parent = None)
 
 class FileUserstList(generics.ListAPIView):
-    queryset = User_file.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get_queryset(self):
         queryset = super(FileUserstList, self).get_queryset()
-        return queryset.filter(file__hash=self.kwargs.get('hash'))
+        return queryset.filter(files__pk=self.kwargs.get('pk'))

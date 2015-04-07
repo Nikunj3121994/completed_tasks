@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from rest_framework import serializers, pagination
-
-from users_files.models import User_file # ,BookMark, Folder_MP
-
+from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     # tree = serializers.SerializerMethodField('get_tree')
@@ -13,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = User_file
+        model = User
         # fields = [
         # 'id', 'name', 'user_id',  'parent_id', 'source_id', 'children', 'data',
         # ]

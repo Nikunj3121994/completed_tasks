@@ -21,6 +21,11 @@ if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
         url(r'^bookmarks/', include('angular_rest_bookmarks.urls', namespace='rest_bookmarks')),
     )
 
+if 'users_files' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^users_files/', include('users_files.urls', namespace='users_files')),
+    )
+
 if settings.DEBUG:
     from django.views.static import serve
     urlpatterns += patterns('',

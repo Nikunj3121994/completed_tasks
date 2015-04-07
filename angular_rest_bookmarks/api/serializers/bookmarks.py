@@ -5,7 +5,7 @@ from rest_framework import serializers, pagination
 from angular_rest_bookmarks.models import Folder_AL  # ,BookMark, Folder_MP
 
 
-class BookMarkTreeALSerializer(serializers.ModelSerializer):
+class BookMarkTreeSerializer(serializers.ModelSerializer):
     # tree = serializers.SerializerMethodField('get_tree')
     # self__tree = serializers.SerializerMethodField('get_self_tree')
     children = serializers.SerializerMethodField('get_childrens')

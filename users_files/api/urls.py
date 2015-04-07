@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
-from .views import UsersDetail, UsersAPIView, UserFilestList, FilesAPIView, FilesDetail, FileUserstList
+from .views import UserListAPIView, UserDetail, UserFilestList, FilesListAPIView, FilesDetail, FileUserstList
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
 users_urls = patterns(
     '',
-    url(r'^$', UsersAPIView.as_view(), name='list'),
-    url(r'^/(?P<pk>\d+)$', UsersDetail.as_view(), name='detail'),
+    url(r'^$', UserListAPIView.as_view(), name='list'),
+    url(r'^/(?P<pk>\d+)$', UserDetail.as_view(), name='detail'),
     url(r'^/(?P<pk>\d+)/files$', UserFilestList.as_view(), name='userfile-list'),
-    url(r'^/(?P<username>[0-9a-zA-Z_-]+)/files$', UserFilestList.as_view(), name='userfile-list'),
+
 )
 
 files_urls = patterns(
     '',
-    url(r'^$', FilesAPIView.as_view(), name='list'),
-    url(r'^/(?P<pk>\d+)$', FilesDetail.as_view(), name='detail'),
-    url(r'^/(?P<hash>[0-9a-zA-Z_-]+)/users$', FileUserstList.as_view(), name='fileuser-list'),
+    url(r'^$', FilesListAPIView.as_view(), name='list'),
+    url(r'^/(?P<pk>[0-9a-zA-Z_-]+)$', FilesDetail.as_view(), name='detail'),
+    url(r'^/(?P<pk>[0-9a-zA-Z_-]+)/users$', FileUserstList.as_view(), name='fileuser-list'),
 )
 
 urlpatterns = patterns(

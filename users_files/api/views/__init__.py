@@ -1,2 +1,2 @@
-from files import FilesAPIView, FilesDetail, FileUserstList
-from users import UsersAPIView, UsersDetail, UserFilestList
+from files import FilesListAPIView, FilesDetail, FileUserstList
+from users import UserListAPIView, UserDetail, UserFilestList

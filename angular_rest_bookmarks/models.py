@@ -1,16 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
+from django.core.exceptions import AppRegistryNotReady
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.contrib.auth.models import User
 from django.conf import settings
 import treebeard.mp_tree
 import treebeard.al_tree
 
 
+logger = logging.getLogger(__name__)
+
 APP_LABEL = 'angular_rest_bookmarks'
 
-USER_MODEL = get_user_model()
+
+try:
+    USER_MODEL = get_user_model()
+except AppRegistryNotReady,err:
+    logger.debug(err)
+    USER_MODEL = User
+except Exception,err:
+    logger.error(err)
+    USER_MODEL = User
 
 
 class Folder_AL(treebeard.al_tree.AL_Node):

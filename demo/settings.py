@@ -47,15 +47,20 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
-    'rest_framework',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    #loaded modules
+    'django_extensions',
+    'rest_framework',
+    #locals app
 
     'angular_rest_bookmarks',
+    'users_files'
 )
+
+#AUTH_USER_MODEL = 'users_files.files'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -76,14 +81,19 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.contrib.gis.db.backends.postgis',
+    #     'NAME': 'test',
+    #     'USER': 'chaotism',  # 'postgres',
+    #     'PASSWORD': 'herotizm',  # 'postgres',
+    #     'HOST': 'localhost',
+    #     'PORT': '',
+    # },
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'test',
-        'USER': 'chaotism',  # 'postgres',
-        'PASSWORD': 'herotizm',  # 'postgres',
-        'HOST': 'localhost',
-        'PORT': '',
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_ROOT, 'db.sqlite3'),
+    }
+
 }
 
 POSTGIS_VERSION = (2, 0, 3)
@@ -131,6 +141,14 @@ TEMPLATE_LOADERS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s in "%(name)s" logger in %(lineno)d line in "%(funcName)s" function at %(asctime)s says: %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -139,19 +157,39 @@ LOGGING = {
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'simple_console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', ],
             'level': 'ERROR',
             'propagate': True,
         },
+        # 'django.db.backends': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['simple_console',],
+        # },
+        'angular_rest_bookmarks': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'users_files': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
     }
 }
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
