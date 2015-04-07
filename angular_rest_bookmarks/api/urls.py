@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
-from .views import BookMarkTreeALDetail, BookMarkTreeALAPIView
+from .views import BookMarkTreeDetail, BookMarkTreeListAPIView
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
 nodes_urls = patterns(
     '',
-    url(r'^$', BookMarkTreeALAPIView.as_view(), name='list'),
-    url(r'^/(?P<pk>\d+)$',BookMarkTreeALDetail.as_view(), name='detail'),
+    url(r'^$', BookMarkTreeListAPIView.as_view(), name='list'),
+    url(r'^/(?P<pk>\d+)$',BookMarkTreeDetail.as_view(), name='detail'),
 
 )
 

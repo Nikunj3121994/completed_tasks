@@ -62,4 +62,4 @@ class UserFilestList(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = super(UserFilestList, self).get_queryset()
-        return queryset.filter(users__id=self.kwargs.get('pk'))
+        return queryset.filter(user__id=self.kwargs.get('pk'))

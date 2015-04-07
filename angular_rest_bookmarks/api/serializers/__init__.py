@@ -1,1 +1,1 @@
-from .bookmarks import BookMarkTreeALSerializer
+from .bookmarks import BookMarkTreeSerializer
