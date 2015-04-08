@@ -19,6 +19,13 @@
 
             $log($scope.user)
 
+
+            function loadData() {
+                return CbgenRestangular.all('users').getList().then(function (results) {
+                    return $scope.nodes = results;
+                });
+            };
+
         })
 
 
