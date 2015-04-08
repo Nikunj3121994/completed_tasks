@@ -112,9 +112,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-MEDIA_ROOT = (os.path.join(PROJECT_ROOT, './data/tmp', 'media_files'))
+MEDIA_ROOT = (os.path.join(PROJECT_ROOT, '../data/tmp', 'media_files'))
 MEDIA_URL = '/media/'
-STATIC_ROOT = (os.path.join(PROJECT_ROOT, './data/tmp', 'static'))
+STATIC_ROOT = (os.path.join(PROJECT_ROOT, '../data/tmp', 'static'))
 STATIC_URL = '/static/'
 
 # Additional locations of static files
