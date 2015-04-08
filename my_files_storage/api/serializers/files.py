@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 from rest_framework import serializers, pagination
 
-from users_files.models import File
+from my_files_storage.models import File, UserFile
 
+logger = logging.getLogger(__name__)
 
 class FileSerializer(serializers.ModelSerializer):
-    # tree = serializers.SerializerMethodField('get_tree')
-    # self__tree = serializers.SerializerMethodField('get_self_tree')
-    # children = serializers.SerializerMethodField('get_childrens')
-    # data = serializers.SerializerMethodField('get_data')
+    url = serializers.SerializerMethodField('get_url')
 
 
     class Meta:
         model = File
-        # fields = [
-        # 'id', 'name', 'user_id',  'parent_id', 'source_id', 'children', 'data',
-        # ]
+
+    def get_url(self, obj):
+        try:
+            return  obj.path.url
+        except AttributeError:
+            return
 
     # def get_childrens(self, obj):
     #     childerens = Folder_AL.objects.filter(parent__id=obj.id)

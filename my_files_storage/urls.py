@@ -6,6 +6,6 @@ from django.conf import settings
 
 
 urlpatterns = patterns('',
-    url(r'^api/', include('users_files.api.urls', namespace='api')),
+    url(r'^api/', include('my_files_storage.api.urls', namespace='api')),
 )
 

@@ -21,9 +21,9 @@ if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
         url(r'^bookmarks/', include('angular_rest_bookmarks.urls', namespace='rest_bookmarks')),
     )
 
-if 'users_files' in settings.INSTALLED_APPS:
+if 'my_files_storage' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-        url(r'^users_files/', include('users_files.urls', namespace='users_files')),
+        url(r'^my_files_storage/', include('my_files_storage.urls', namespace='my_files_storage')),
     )
 
 if settings.DEBUG:

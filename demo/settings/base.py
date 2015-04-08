@@ -57,10 +57,10 @@ INSTALLED_APPS = (
     #locals app
 
     'angular_rest_bookmarks',
-    'users_files'
+    'my_files_storage'
 )
 
-#AUTH_USER_MODEL = 'users_files.files'
+#AUTH_USER_MODEL = 'my_files_storage.files'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -184,7 +184,7 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['console'],
         },
-        'users_files': {
+        'my_files_storage': {
             'level': 'DEBUG',
             'handlers': ['console'],
         },

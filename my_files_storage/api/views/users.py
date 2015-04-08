@@ -5,7 +5,7 @@ from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
 from django.contrib.auth.models import User
-from users_files.models import  File
+from my_files_storage.models import  File
 from ..serializers import FileSerializer, UserSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
@@ -25,7 +25,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     #     obj.author = self.request.user
     #     return super(BookMarkTreeALDetail, self).pre_save(obj)
 
-class UserListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
+class UsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
     queryset = User.objects.all()
     serializer_class = UserSerializer
     # permission_classes = [

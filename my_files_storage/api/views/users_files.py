@@ -5,16 +5,16 @@ from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
 from django.contrib.auth.models import User
-from users_files.models import File
-from ..serializers import FileSerializer, UserSerializer
+from my_files_storage.models import UserFile
+from ..serializers import FileSerializer, UserSerializer, UserFileSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
 
 
 
-class FilesDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+class UserFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserFile.objects.all()
+    serializer_class = UserFileSerializer
     # permission_classes = [
     #     AuthorCanEditPermission
     # ]
@@ -22,11 +22,11 @@ class FilesDetail(generics.RetrieveUpdateDestroyAPIView):
     # def pre_save(self, obj):
     #     """Force author to the current user on save"""
     #     obj.author = self.request.user
-    #     return super(FilesDetail, self).pre_save(obj)
+    #     return super(FileDetail, self).pre_save(obj)
 
-class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+class UsersFilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
+    queryset = UserFile.objects.all()
+    serializer_class = UserFileSerializer
     # permission_classes = [
     #     AuthorCanEditPermission
     # ]
@@ -55,10 +55,18 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableRes
     #         queryset = queryset.None()
     #     return queryset.filter(parent = None)
 
-class FileUserstList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get_queryset(self):
-        queryset = super(FileUserstList, self).get_queryset()
-        return queryset.filter(files__pk=self.kwargs.get('pk'))
+# class FileUserstList(generics.ListAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#
+#     def get_queryset(self):
+#         queryset = super(FileUserstList, self).get_queryset()
+#         return queryset.filter(files__pk=self.kwargs.get('pk'))
+#
+# class UserFilestList(generics.ListAPIView):
+#     queryset = File.objects.all()
+#     serializer_class = FileSerializer
+#
+#     def get_queryset(self):
+#         queryset = super(UserFilestList, self).get_queryset()
+#         return queryset.filter(user__id=self.kwargs.get('pk'))
