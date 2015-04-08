@@ -54,7 +54,7 @@ class LoginView(LoginBaseView):
     """
     Страница входа пользователя.
     """
-    default_redirect_url = '/'
+    default_redirect_url = '/my_files_storage/users_files'
     form_class = AuthenticationForm
     template_name = 'auth/login.html'
 
@@ -63,7 +63,7 @@ class LogoutView(LogoutBaseView):
     """
     Страница выхода пользователя.
     """
-    default_redirect_url = '/auth/logout/'   # TODO: reverse
+    default_redirect_url = '/auth/logout'   # TODO: reverse
 
     def get_template_names(self):
         u = self.request.user

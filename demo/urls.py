@@ -3,18 +3,23 @@ from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib.auth.views import login
-
+from django.shortcuts import redirect
 # Uncomment the next two lines to enable the admin:
+
 from django.contrib import admin
 admin.autodiscover()
 
-
-
-
+def root_url_redirect(request):
+    return redirect('/auth/login')
 
 urlpatterns = patterns('',
+    url(r'^$', root_url_redirect),
+)
+
+urlpatterns += patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
+
 
 # urlpatterns = patterns('',
 #     url(r'^login/$', login),
@@ -25,9 +30,9 @@ if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
         url(r'^bookmarks/', include('angular_rest_bookmarks.urls', namespace='rest_bookmarks')),
     )
 
-if 'auth' in settings.INSTALLED_APPS:
+if 'my_auth' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-        url(r'^auth/', include('auth.urls', namespace='auth')),
+        url(r'^auth/', include('my_auth.urls', namespace='auth')),
     )
     # from auth.urls import login_urls
     # urlpatterns += login_urls

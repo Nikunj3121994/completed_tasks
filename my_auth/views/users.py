@@ -29,18 +29,18 @@ class UserDetailView(AccessMixin, DetailView):
     template_name = 'users/detail.html'
     pk_url_kwarg = USER_URL_PK
     model = USER_MODEL
-    allow_administrator = True
+    #allow_administrator = True
     context_object_name = 'user'
 
 
-class UserCreateView(AccessMixin, CreateView):
+class UserCreateView(CreateView):
     """
     View добавления нового пользователя.
     """
     template_name = 'users/add.html'
     model = USER_MODEL
     form_class = UserCreateForm
-    allow_administrator = True
+    #allow_administrator = True
 
     def get_success_url(self):
         return reverse('auth:login')

@@ -48,16 +48,13 @@ class UserCreateForm(forms.ModelForm):
             )
         return password2
 
-    # def save(self, commit=True):
-    #     user = super(UserCreateForm, self).save(commit=True)
-    #     # user.set_password(self.cleaned_data["password1"])
-    #     # groups = self.cleaned_data.get("groups")
-    #     # if commit:
-    #     #     user.save()
-    #     #     user.groups = groups
-    #     #     self.save_m2m()
-    #     #     return user
-    #     return user
+    def save(self, commit=True):
+        user = super(UserCreateForm, self).save(commit=False)
+        user.is_active = True
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+            return user
 
 
 class UserUpdateForm(forms.ModelForm):

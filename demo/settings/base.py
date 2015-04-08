@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     'rest_framework',
     #locals app
 
-    'auth',
+    'my_auth',
     'angular_rest_bookmarks',
     'my_files_storage'
 )
@@ -138,6 +138,9 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     # 'django.template.loaders.eggs.Loader',
 )
+
+#login settings
+LOGIN_URL = '/auth/login'
 
 LOGGING = {
     'version': 1,
