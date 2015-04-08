@@ -28,8 +28,9 @@
                 restrict: 'A',
                 // создавать/не создавать замыкание области видимости
                 scope: {
-                    user: "@",
+                    name: "@",
                     source: "@",
+                    user: "@",
                     token: "@",
                     debug: "@"
                 },
@@ -51,6 +52,51 @@
             }
 
         })
+        //кусок относящийся к модальности модального окна
+        .controller('ModalBookmarksCtrl', function ($scope, $modal, $log) {
+
+            //$scope.source = 123123;
+            //$scope.user = 3;
+            //$scope.items = 3;
+            $scope.open = function (size) {
+
+                var modalInstance = $modal.open({
+                 //   require: ['^uiTreeNodes', '^uiTree'],
+                    templateUrl: '/static/angular-bookmarks/templates/TreeContentRender.html',
+                    //templateUrl: 'TreeContentRender.html',
+                    controller: 'treesCtrl',
+                    size: size,
+                    resolve: {
+                    items: function () {
+                        return {
+                           // 'items':$scope.items,
+                            'user':$scope.user,
+                            'name': $scope.name,
+                            'source':$scope.source,
+                            'token':$scope.token,
+                            'debug':JSON.parse($scope.debug||false)
+                    };
+                    /*    items: {
+                        source: function () {
+                          return $scope.source;
+                        },
+                        user: function () {
+                          return $scope.user;
+                        }
+                    } */
+                    }
+                    }
+                });
+        //$log.info($scope);
+            //modalInstance.result.then(function (selectedItem) {
+            //  $scope.selected = selectedItem;
+            //},
+            //function () {
+            //  $log.info('Modal dismissed at: ' + new Date());
+            //});
+          };
+        })
+        //главный контроллер отвечающий за рендер дерева
         .controller('treesCtrl', function ($scope, $log, $http, CbgenRestangular, $modalInstance, items) {
             $scope.new_node = {};
             $scope.data = [];
@@ -67,12 +113,12 @@
             $scope.editeNode = editeNode;
             $scope.cancelEditingNode = cancelEditingNode;
             $scope.changeNode = changeNode;
-            $scope.new_bookmark_source = {'name':'Новый файл', 'id':1};
+            $scope.new_bookmark_name = items.name||'Новая закладка';
             $scope.new_folder_name_source = {'basename':'Новая папка', 'name':'Новая папка'};
             $scope.close = close;
             $scope.chose_parent = chose_parent;
             $scope.items = items;
-            $scope.debug = JSON.parse(items.debug)||false;
+            $scope.debug = items.debug;
 
             try{
                 $scope.user = user_id;
@@ -124,7 +170,7 @@
                 else if(type=='source') {
                     //todo: выбор папки добавить, придумать как сделать.
                     new_node.parent = search_checked_nodes($scope.nodes)[0];
-                    new_node.data.name = $scope.new_bookmark_source.name;
+                    new_node.data.name = $scope.new_bookmark_name;
                     new_node.data.source =  $scope.items.source;
                 };
                 if ($scope.debug){
@@ -224,22 +270,23 @@
                     if (nodes[node] && typeof nodes[node] == 'object'){
                         try{
                             if(nodes[node].hasOwnProperty('checked')){
-//                                console.log(nodes[node]);
-//                                console.log(nodes[node].check);
-                                console.log(nodes[node].id);
                                 if(nodes[node].checked){
-                                    console.log(nodes[node].checked);
                                     nodes[node].checked = false;
                                     checked_nodes.push(nodes[node].id);
                                 };
-                                console.log(checked_nodes)
-                                }
+                                if ($scope.debug) {
+                                    console.log(nodes[node]);
+                                    console.log(nodes[node].checked);
+                                    console.log(nodes[node].id);
+                                    console.log(checked_nodes)
+                                };
+                            }
                         }
                         catch(err){
                             if ($scope.debug) {
                                 console.log(nodes[node])
                             };
-                            console.log(err);
+                            console.warn(err);
                         }
                         try{
                             if (nodes[node].hasOwnProperty('children')){
@@ -251,15 +298,17 @@
                                     checked_nodes += children_checked_nodes
                                 }else if(typeof children_checked_nodes == 'object'){
                                     for(var i in children_checked_nodes){
-                                        console.log(children_checked_nodes[i]);
                                         checked_nodes.push(children_checked_nodes[i]);
-                                        console.log(checked_nodes);
-                                        }
-                                }
+                                        if ($scope.debug) {
+                                            console.log(children_checked_nodes[i]);
+                                            console.log(checked_nodes);
+                                        };
+                                    };
+                                };
                             };
                         }
                         catch(err){
-                            console.log(err);
+                            console.log(warn);
                         };
                     };
                 };
@@ -366,49 +415,7 @@
             return $scope.loadData();
 
             });
-        //кусок относящийся к модальности модального окна
-        angular.module('treesApp').controller('ModalBookmarksCtrl', function ($scope, $modal, $log) {
 
-            //$scope.source = 123123;
-            //$scope.user = 3;
-            //$scope.items = 3;
-            $scope.open = function (size) {
-
-                var modalInstance = $modal.open({
-                 //   require: ['^uiTreeNodes', '^uiTree'],
-                    templateUrl: '/static/angular-bookmarks/templates/TreeContentRender.html',
-                    //templateUrl: 'TreeContentRender.html',
-                    controller: 'treesCtrl',
-                    size: size,
-                    resolve: {
-                    items: function () {
-                        return {
-                           // 'items':$scope.items,
-                            'user':$scope.user,
-                            'source':$scope.source,
-                            'token':$scope.token,
-                            'debug':$scope.debug||false
-                    };
-                    /*    items: {
-                        source: function () {
-                          return $scope.source;
-                        },
-                        user: function () {
-                          return $scope.user;
-                        }
-                    } */
-                    }
-                    }
-                });
-        //$log.info($scope);
-            //modalInstance.result.then(function (selectedItem) {
-            //  $scope.selected = selectedItem;
-            //},
-            //function () {
-            //  $log.info('Modal dismissed at: ' + new Date());
-            //});
-          };
-        });
 
 
 

@@ -12,10 +12,10 @@
 </head>
 
 
-<body ng-app="treesApp">
+<body ng-app="example">
 <!-- живой блок -->
 {#<h3>user={{ request.user.id }};&nbspsource=4001;&nbsptoken={{ csrf_token|escapejs }};</h3>#}
-<div bookmarks debug="true" token="{{ csrf_token|escapejs }}" user="{{ request.user.id }}" source="http://localhost:8000/bookmarks/bookmark_example">loading</div>
+<div bookmarks debug="true" token="{{ csrf_token|escapejs }}" name = 'закладуля' user="{{ request.user.id }}" source="http://localhost:8000/bookmarks/bookmark_example">loading</div>
 <!-- живой блок -->
 
 
@@ -30,11 +30,12 @@
 <script src="/static/angular-bookmarks/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/static/angular-bookmarks/lib/angular-1.2.26/angular.js"></script>
 <script src="/static/angular-bookmarks/lib/lodash/lodash.min.js"></script>
-<script type="text/javascript"
-        src="/static/angular-bookmarks/lib/restangular/src/restangular.js"></script>
-<script type="text/javascript" src="/static/angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
-<script type="text/javascript" src="/static/angular-bookmarks/app/trees.js"></script>
+<script src="/static/angular-bookmarks/lib/restangular/src/restangular.js"></script>
+<script src="/static/angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
+<script src="/static/angular-bookmarks/app/trees.js"></script>
+<script src="/static/angular-bookmarks/app/example.js"></script>
 <script src="/static/angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="/static/angular-bookmarks/lib/gremlins/gremlins.min.js"></script>
 <script>
     // Add the CSRF Token
     angular

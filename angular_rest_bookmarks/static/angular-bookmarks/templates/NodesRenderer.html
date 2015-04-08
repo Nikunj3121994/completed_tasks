@@ -30,12 +30,12 @@
         <a ng-show="node.source" class="btn btn-success btn-xm" data-nodrag ng-click="">
             <!-- <a ng-show="node.source" data-nodrag ng-click=""> -->
                 <span class="glyphicon"
-                      ng-class="{'glyphicon-file': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>
+                      ng-class="{'glyphicon-file': collapsed||!collapsed}"></span>
         </a>
 
         <span ng-show="debug" ng-style="checked">id:{{ node.id }}, &nbsp name:{{ node.name }},&nbsp user:{{ node.user }},&nbsp source: {{ node.source }}</span>
 
-        <span ng-show="!debug"><a href="{{ node.source }}">{{ node.name }}</a></span>
+        <span ng-show="!debug">{{ node.name }}</span>
 
         <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="editeNode(this)">
             <span class="glyphicon glyphicon-pencil"></span>
