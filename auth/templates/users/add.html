@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load floppyforms %}
+
+{% block main_content %}
+	<h1>Добавление пользователя</h1>
+	<form action="{% url 'protocol:users:add' %}" method="POST">
+		{% csrf_token %}
+		{% form form using 'floppyforms/layouts/bootstrap3.html' %}
+		<div class="well">
+			<input type="submit" class="btn btn-success" value="Добавить" />
+			<a class="btn btn-default" href="{% url 'protocol:users:list' %}">Отмена</a>
+		</div>
+	</form>
+{% endblock main_content %}

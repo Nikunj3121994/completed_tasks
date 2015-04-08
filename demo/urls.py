@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
 from django.conf import settings
-
+from django.contrib.auth.views import login
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -15,6 +15,10 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
+
+# urlpatterns = patterns('',
+#     url(r'^login/$', login),
+# )
 
 if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',

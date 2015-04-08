@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Заготовка к закладкам</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="/static/angular-bookmarks/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.min.css">
+    <link rel="stylesheet" href="/static/angular-bookmarks/css/tree.css">
+</head>
+
+
+<body ng-app="example">
+<!-- живой блок -->
+{#<h3>user={{ request.user.id }};&nbspsource=4001;&nbsptoken={{ csrf_token|escapejs }};</h3>#}
+<div bookmarks debug="true" token="{{ csrf_token|escapejs }}" user="{{ request.user.id }}"
+     source="http://localhost:8000/bookmarks/bookmark_example">loading
+</div>
+<!-- живой блок -->
+
+
+{#                <div class="row" ng-init="filters = {u'status' : {}, u'layers': [], u'dates': [], u'tasks': [], u'users': [], u'carriers': [], u'fileSizeType': 2, u'processing': [], u'files': [], u'fileName': u'', u'fileSizeMin': 0, u'sources': [], u'source_type': u'raster', u'images': [], u'sensors': [], u'scaleType': 0, u'statusType': [], u'fileSizeMax': 0, u'areas': []}">#}
+{% verbatim %}
+<div ng-controller="SearchCtrl" class="row">
+    <div class="col-sm-12" ng-init="results = {'status': 232 }">
+        <button class="btn btn-default" ng-click="search()">Начать поиск</button>
+
+
+        <div ng-show="search_results" class="row table-block col-md-12">
+            <div class="col-md-12">
+                <h4>Результат поиска</h4>
+                <!---start table info pagination filesiz check files-->
+                <div class="table-info">
+                    <!--input type="text" onkeypress="return (event.keyCode > 48 && event.keyCode < 57)? true : event.keyCode == 44" /-->
+                    <div>найдено:<strong>{{itmCountAll}} <span ng-show="['raster','dem'].indexOf(filterSubType) != -1">( {{filesSizeAllTitle}} )</span></strong>
+                        <div class="img-loading-all" ng-show="loadingAll">
+                            <img src="/static/lib/filters/img/loading/l7.gif">
+                        </div>
+                    </div>
+                    <div class="div-find-check">
+                        <div class="img-find-check">
+                            <input id="all-find-check" type="checkbox" ng-click="fileAllFindCheck()" title="все найденые">
+                        </div>
+                        <div class="img-find-check">
+                            &nbsp;выбрано:
+                        </div>
+                        <div class="img-find-check">
+                            <strong ng-hide="checkFindAll">{{files.length}} <span ng-show="['raster','dem'].indexOf(filterSubType) != -1">( {{filesSizeTitle}} )</span></strong>
+                            <strong ng-show="checkFindAll">все <span ng-show="['raster','dem'].indexOf(filterSubType) != -1">( {{filesSizeAllTitle}} )</span></strong>
+                        </div>
+                        <div class="img-loading-all" ng-show="checkFindAll && loadingAll">
+                            <img src="/static/lib/filters/img/loading/l7.gif">
+                        </div>
+                        <!--div class="img-find-check img-find-check-loading" ng-show="loadingCheck">
+                            <img src="/static/lib/filters/img/loading/l7.gif">
+                        </div-->
+                    </div>
+                </div>
+                <div class="pagination">
+                    <button ng-show="viewListCurr>0" class="btn btn-outline btn-default btn-sm" ng-click="firstPage()">1</button>
+                    <button ng-show="viewListCurr>0" class="btn btn-outline btn-default btn-sm" ng-click="prevList()">...</button>
+                    <button ng-repeat="p in pagination" ng-show="pageCount>1" class="btn btn-outline btn-default btn-sm" ng-class="{true:'btn-inverse',false:''}[pageCurr==p]" ng-click="setCurrentPage('p')">{{p+1}}</button>
+                    <button ng-show="(viewListCurr + 1) < listCount" class="btn btn-outline btn-default btn-sm" ng-click="nextList()">...</button>
+                    <button ng-show="(viewListCurr + 1) < listCount" class="btn btn-outline btn-default btn-sm" ng-click="lastPage()">{{pageCount}}</button>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <select id="select-limit" class="form-control" ng-model="limit" ng-options="l.name for l in limits" ng-change="initPagination()">
+                        </select>
+                    </div>
+                </div>
+            </div>
+                <!---end table info -->
+                <table class="table table-result" >
+                    <thead>
+                        <tr>
+                            <th class="check-files">
+                                <input id="all-check" type="checkbox" ng-click="fileAllCheck()" ng-disabled="checkFindAll" title="все видимые">
+                            </th>
+                            <th class="sort sort-name"><i ng-class="{'0':'fa fa-sort','1':'fa fa-sort-down','-1':'fa fa-sort-up'}[sort.name]"></i>
+                                <span ng-hide="['sxf', 's57'].indexOf(filterSubType) != -1">Имя файла</span>
+                                <span ng-show="['sxf', 's57'].indexOf(filterSubType) != -1">Номенклатурный лист</span>
+                            </th>
+                            <th ng-hide="(['s57','external'].indexOf(filterSubType) != -1)" class="sort sort-type">
+                                <i ng-class="{'0':'fa fa-sort','1':'fa fa-sort-down','-1':'fa fa-sort-up'}[sort.type]"></i>
+                                <span ng-hide="(['dem','sxf', 'osm'].indexOf(filterSubType) != -1)">Тип изображения</span>
+                                <span ng-show="filterSubType=='dem'">Формат</span>
+                                <span ng-show="filterSubType=='sxf'">Масштаб</span>
+                                <span ng-show="filterSubType=='osm'">Дата версии</span>
+                            </th>
+                            <!--th ng-show="filterSubType=='sxf' || filterSubType=='s57'">Номенклатурный лист</th-->
+                            <!--th ng-show="['sxf', 's57'].indexOf(filterSubType) != -1">Номенклатурный лист</th-->
+                            <th>Базовый слой</th>
+                            <!--th ng-show="filterSubType=='osm'">Дата версии</th-->
+                            <th ng-show="filterSubType=='external'">URL</th>
+                            <th ng-show="filterSubType=='external'">Масштабный уровень</th>
+                            <th ng-hide="filterSubType!='raster' || gdb_mode" ng-click="sortColumn('cloud_detection')" class="th-processing">
+                                <div class="cloud_detection order" rel="tooltip" data-html="true" title="Обнаружение облачности">
+                                    <i ng-class="{'0':'fa fa-sort','1':'fa fa-sort-down','-1':'fa fa-sort-up'}[sort.cloud_detection]"></i>
+                                </div>
+                            </th>
+                            <th ng-hide="filterSubType!='raster' || gdb_mode" ng-click="sortColumn('distortion')" class="th-processing">
+                                <div class="distortion order" rel="tooltip" data-html="true" title="Анализ искажений">
+                                    <i ng-class="{'0':'fa fa-sort','1':'fa fa-sort-down','-1':'fa fa-sort-up'}[sort.distortion]"></i>
+                                </div>
+                            </th>
+                            <th ng-hide="filterSubType!='raster' || gdb_mode" ng-click="sortColumn('defence_test')" class="th-processing">
+                                <div class="defence_test order" rel="tooltip" data-html="true" title="Проверка цифрового водяного знака">
+                                    <i ng-class="{'0':'fa fa-sort','1':'fa fa-sort-down','-1':'fa fa-sort-up'}[sort.defence_test]"></i>
+                                </div>
+                            </th>
+                            <th ng-hide="filterSubType!='raster' || gdb_mode" ng-click="sortColumn('content_analize')" class="th-processing">
+                                <div class="content_analize order" rel="tooltip" data-html="true" title="Анализ составных изображений">
+                                    <i ng-class="{'0':'fa fa-sort','1':'fa fa-sort-down','-1':'fa fa-sort-up'}[sort.content_analize]"></i>
+                                </div>
+                            </th>
+                            <!--th ng-show="filterSubType=='sxf'">Масштаб</th-->
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="i in search_results" ng-click="rowCheck('event', 'i.id')" class="tr-item busy-{{i.busy}}" data-id="{{i.id}}" >
+                            <td>
+                                <input dataid="{{i.id}}" data-file-size="{{i.file_size}}" ng-checked="isFileCheck(i.id)" type="checkbox" ng-disabled="checkFindAll" ng-click="fileCheck(i.id)">
+                            </td>
+                            <td class="file-name">{{i.name}}</td>
+                            <td ng-hide="(['s57','external'].indexOf(filterSubType) != -1)">
+                                <span ng-show="filterSubType != 'osm'">{{i.type}}</span>
+                                <span ng-show="filterSubType == 'osm'">{{i.date_version | date: 'dd.MM.yyyy HH:mm:ss'}}</span>
+                            </td>
+                            <!--td ng-show="['sxf', 's57'].indexOf(filterSubType) != -1">{{i.code}}</td-->
+                            <td class="td-layers">
+                                <ul>
+                                    <li ng-repeat="l in i.layers">{{l.name}}</li>
+                                </ul>
+                            </td>
+                           <td  bookmarks user="{{ request.user.id }}" source="{{i.id}}">loading</td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+
+
+
+
+        <div>
+            <pre class="code">{{ search_results|json }}
+             http://mink:8000/api/sources/raster/paginate/100?page=1&code=raster
+            </pre>
+        </div>
+    </div>
+</div>
+{% endverbatim %}
+
+
+<!-- scripts -->
+<!--[if IE 8]>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+<![endif]-->
+
+<script src="/static/angular-bookmarks/lib/jquery/dist/jquery.min.js"></script>
+<script src="/static/angular-bookmarks/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/static/angular-bookmarks/lib/angular-1.2.26/angular.js"></script>
+<script src="/static/angular-bookmarks/lib/lodash/lodash.min.js"></script>
+<script src="/static/angular-bookmarks/lib/restangular/src/restangular.js"></script>
+<script src="/static/angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
+<script src="/static/angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+<script type="text/javascript" src="/static/angular-bookmarks/app/trees.js"></script>
+
+<script type="text/javascript" src="/static/angular-bookmarks/app/search_draft.js"></script>
+<script src="/static/angular-bookmarks/lib/gremlins/gremlins.min.js"></script>
+<script>
+    // Add the CSRF Token
+    angular
+            .module('example') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+            .config(['$httpProvider', function ($httpProvider) {
+                $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+            }]);
+</script>
+</body>
+</html>
+

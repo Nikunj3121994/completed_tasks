@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load floppyforms %}
+
+{% block main_content %}
+<div class="row">
+	<div class="col-md-10">
+		<h1>{{ protocol_user.username }}</h1>
+		<p>Пользователь</p>
+	</div>
+	<div class="col-md-2">
+		<div class="pull-right">
+			<div class="btn-group">
+				{% if not AUTH_WITH_LDAP %}
+				<a class="btn btn-default btn-sm" href="{% url 'protocol:users:edit' user_pk=protocol_user.pk %}" title="Редактировать"><span class="fa fa-edit"></span></a>
+				<a class="btn btn-default btn-sm" href="{% url 'protocol:users:change-password' user_pk=protocol_user.pk %}" title="Изменить пароль"><span class="fa fa-lock"></span></a>
+				{% endif %}
+				{% if protocol_user.can_be_blocked %}
+				<a class="btn btn-default btn-sm" href="{% url 'protocol:users:block' user_pk=protocol_user.pk %}" title="Заблокировать"><span class="fa fa-ban"></span></a>
+				{% endif %}
+				{% if protocol_user.can_be_unblocked %}
+				<a class="btn btn-default btn-sm" href="{% url 'protocol:users:unblock' user_pk=protocol_user.pk %}" title="Разблокировать"><span class="fa fa-check"></span></a>
+				{% endif %}
+				{% if not AUTH_WITH_LDAP %}
+				<a class="btn btn-danger btn-sm" href="{% url 'protocol:users:delete' user_pk=protocol_user.pk %}" title="Удалить"><span class="glyphicon glyphicon-trash"></span></a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-hover">
+			<tr>
+				<td class="col-md-6">Фамилия</td>
+				<td>{{ protocol_user.last_name }}</td>
+			</tr>
+			<tr>
+				<td>Имя</td>
+				<td>{{ protocol_user.first_name }}</td>
+			</tr>
+			<tr>
+				<td>Отчество</td>
+				<td>{{ protocol_user.middle_name }}</td>
+			</tr>
+			<tr>
+				<td>Имя пользователя</td>
+				<td>{{ protocol_user.username }}</td>
+			</tr>
+			<tr>
+				<td>Группы</td>
+				<td>{{ protocol_user.groups.all|join:", " }}</td>
+			</tr>
+			<tr>
+				<td>Роли</td>
+				<td>{{ protocol_user.get_roles|join:", " }}</td>
+			</tr>
+		</table>
+	</div>
+</div>
+{% endblock main_content %}

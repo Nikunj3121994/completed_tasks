@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+<div class="row">
+	<div class="col-md-10">
+		<h1>Пользователи</h1>
+	</div>
+	<div class="col-md-2">
+		<div class="pull-right">
+			{% if not AUTH_WITH_LDAP %}
+			<a class="btn btn-success btn-sm" href="{% url 'protocol:users:add' %}" title="Добавить"><span class="fa fa-plus"></span></a>
+			{% endif %}
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		{% if is_paginated %}
+		{% include 'users/_pagination.html' with page=page_obj %}
+		{% endif %}
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="col-md-3">Имя пользователя</th>
+					<th class="col-md-5">ФИО</th>
+					<th class="col-md-3">Роли</th>
+					<th class="col-md-1">Активен</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for protocol_user in protocol_users %}
+				<tr>
+					<td><a href="{% url 'protocol:users:detail' user_pk=protocol_user.pk %}">{{ protocol_user.username }}</a></td>
+					<td>{{ protocol_user.get_full_name }}</td>
+					<td>{{ protocol_user.get_roles|join:", " }}</td>
+					<td>
+						{% if protocol_user.is_active %}
+						<span class="fa fa-check" style="color:green;"></span>
+						{% else %}
+						<span class="fa fa-ban" style="color:red;"></span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		{% if is_paginated %}
+		{% include 'users/_pagination.html' with page=page_obj %}
+		{% endif %}
+	</div>
+</div>
+{% endblock main_content %}

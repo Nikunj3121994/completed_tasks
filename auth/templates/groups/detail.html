@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load floppyforms %}
+
+{% block main_content %}
+<div class="row">
+	<div class="col-md-10">
+		<h1>{{ group.name }}</h1>
+		<p>Группа пользователей</p>
+	</div>
+	<div class="col-md-2">
+		<div class="pull-right">
+			<div class="btn-group">
+				<a class="btn btn-default btn-sm" href="{% url 'protocol:groups:edit' group_pk=group.pk %}" title="Редактировать"><span class="fa fa-edit"></span></a>
+				{% if not AUTH_WITH_LDAP %}
+				<a class="btn btn-danger btn-sm" href="{% url 'protocol:groups:delete' group_pk=group.pk %}" title="Удалить"><span class="glyphicon glyphicon-trash"></span></a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		{% if group.users.all %}
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="col-md-5">Имя</th>
+					<th class="col-md-6">ФИО</th>
+					<th class="col-md-1"></th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for group_user in group.users.all %}
+				<tr>
+					<td>{{ group_user.username }}</td>
+					<td>{{ group_user.get_full_name }}</td>
+					<td>
+						<div class="btn-group pull-right">
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		<div class="well">Нет пользователей.</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock main_content %}

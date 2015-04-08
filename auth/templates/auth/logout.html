@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block meta_title %}{{ block.super }} - Выход{% endblock meta_title %}
+
+{% block content_title %}Выход{% endblock content_title %}
+
+
+{% block main_content %}
+	<div>
+		<form action="{% url 'protocol:auth:logout' %}" method="POST">
+			{% csrf_token %}
+			<input type="submit" value="Выйти" />
+		</form>
+	</div>
+{% endblock main_content %}]

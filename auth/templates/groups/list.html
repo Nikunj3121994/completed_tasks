@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block main_content %}
+<div class="row">
+	<div class="col-md-10">
+		<h1>Группы</h1>
+	</div>
+	<div class="col-md-2">
+		<div class="pull-right">
+			{% if not AUTH_WITH_LDAP %}
+			<a class="btn btn-success btn-sm" href="{% url 'protocol:groups:add' %}" title="Добавить"><span class="fa fa-plus"></span></a>
+			{% endif %}
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		{% if groups %}
+		{% if is_paginated %}
+		{% include 'groups/_pagination.html' with page=page_obj %}
+		{% endif %}
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="col-md-5">Название</th>
+					<th class="col-md-6">Роли</th>
+					<th class="col-md-1"></th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for group in groups %}
+				<tr>
+					<td><a href="{% url 'protocol:groups:detail' group_pk=group.pk %}">{{ group.name }}</a></td>
+					<td>{{ group.roles.all|join:", " }}</td>
+					<td>
+
+						<div class="btn-group pull-right">
+							<a class="btn btn-default btn-xs" title="Редактировать" href="{% url 'protocol:groups:edit' group_pk=group.pk %}"><span class="fa fa-edit"></span></a>
+							{% if not AUTH_WITH_LDAP %}
+							<a class="btn btn-default btn-xs" title="Удалить" href="{% url 'protocol:groups:delete' group_pk=group.pk %}"><span class="fa fa-trash-o"></span></a>
+							{% endif %}
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		{% if is_paginated %}
+		{% include 'groups/_pagination.html' with page=page_obj %}
+		{% endif %}
+		{% else %}
+		<div class="well">Нет групп.</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock main_content %}
