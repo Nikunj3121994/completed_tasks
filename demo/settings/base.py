@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'rest_framework',
     #locals app
 
+    'auth',
     'angular_rest_bookmarks',
     'my_files_storage'
 )

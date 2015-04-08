@@ -7,7 +7,7 @@ from django.contrib.auth.forms import (
     AuthenticationForm as DjangoAuthForm,
     SetPasswordForm as DjangoSetPasswordForm
 )
-from .models import User, Group, Role
+from django.contrib.auth.models import User
 
 
 class UserCreateForm(forms.ModelForm):
@@ -20,14 +20,12 @@ class UserCreateForm(forms.ModelForm):
                                 help_text=_("Повторите пароль, чтобы не ошибиться"))
                                # help_text="Enter the same password as above, for verification.")
 
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False, label='Группы',
-                                            widget=forms.CheckboxSelectMultiple)
 
 
 
     class Meta:
         model = User
-        fields = ('username', 'last_name', 'first_name', 'middle_name', 'groups')
+        fields = ('username', 'last_name', 'first_name')
 
     def clean_username(self):
         username = self.cleaned_data["username"]
@@ -50,50 +48,48 @@ class UserCreateForm(forms.ModelForm):
             )
         return password2
 
-    def save(self, commit=True):
-        user = super(UserCreateForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        groups = self.cleaned_data.get("groups")
-        if commit:
-            user.save()
-            user.groups = groups
-            self.save_m2m()
-            return user
-        return user
+    # def save(self, commit=True):
+    #     user = super(UserCreateForm, self).save(commit=True)
+    #     # user.set_password(self.cleaned_data["password1"])
+    #     # groups = self.cleaned_data.get("groups")
+    #     # if commit:
+    #     #     user.save()
+    #     #     user.groups = groups
+    #     #     self.save_m2m()
+    #     #     return user
+    #     return user
 
 
 class UserUpdateForm(forms.ModelForm):
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False, label='Группы',
-                                            widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = User
-        fields = ('username', 'last_name', 'first_name', 'middle_name', 'groups')
+        fields = ('username', 'last_name', 'first_name')
 
     def __init__(self, *args, **kwargs):
         super(UserUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['groups'].initial = self.instance.groups.all()
+        # self.fields['groups'].initial = self.instance.groups.all()
 
-    def save(self, commit=True):
-        instance = super(UserUpdateForm, self).save(commit=False)
-        old_save_m2m = self.save_m2m
-
-        def save_m2m():
-            old_save_m2m()
-            groups = self.cleaned_data.get('groups', [])
-            inst_groups = instance.groups.all()
-            add_groups = set(groups).difference(inst_groups)
-            remove_groups = set(inst_groups).difference(groups)
-            for group in add_groups:
-                instance.groups.add(group)
-            for group in remove_groups:
-                instance.groups.remove(group)
-        self.save_m2m = save_m2m
-
-        if commit:
-            instance.save()
-            self.save_m2m()
-        return instance
+    # def save(self, commit=True):
+    #     instance = super(UserUpdateForm, self).save(commit=True)
+    #     # old_save_m2m = self.save_m2m
+    #     #
+    #     # def save_m2m():
+    #     #     old_save_m2m()
+    #     #     groups = self.cleaned_data.get('groups', [])
+    #     #     inst_groups = instance.groups.all()
+    #     #     add_groups = set(groups).difference(inst_groups)
+    #     #     remove_groups = set(inst_groups).difference(groups)
+    #     #     for group in add_groups:
+    #     #         instance.groups.add(group)
+    #     #     for group in remove_groups:
+    #     #         instance.groups.remove(group)
+    #     # self.save_m2m = save_m2m
+    #     #
+    #     # if commit:
+    #     #     instance.save()
+    #     #     self.save_m2m()
+    #     return instance
 
 
 class SetPasswordForm(DjangoSetPasswordForm):
@@ -150,43 +146,3 @@ class AuthenticationForm(DjangoAuthForm):
                     code='inactive',
                 )
         return self.cleaned_data
-
-class GroupBaseForm(forms.ModelForm):
-    roles = forms.ModelMultipleChoiceField(queryset=Role.objects.all(), required=False, label='Роли',
-                                           widget=forms.CheckboxSelectMultiple)
-
-    class Meta:
-        model = Group
-        fields = ('name',)
-
-    def __init__(self, *args, **kwargs):
-        super(GroupBaseForm, self).__init__(*args, **kwargs)
-        if self.instance.pk:
-            self.fields['roles'].initial = self.instance.roles.all()
-
-    def save(self, commit=True):
-        instance = super(GroupBaseForm, self).save(commit=False)
-        old_save_m2m = self.save_m2m
-
-        def save_m2m():
-            old_save_m2m()
-            roles = self.cleaned_data.get('roles', [])
-            inst_roles = self.instance.roles.all()
-            add_roles = set(roles).difference(inst_roles)
-            remove_roles = set(inst_roles).difference(roles)
-            for role in add_roles:
-                instance.roles.add(role)
-            for role in remove_roles:
-                instance.roles.remove(role)
-        self.save_m2m = save_m2m
-
-        if commit:
-            instance.save()
-            self.save_m2m()
-        return instance
-
-
-class GroupLDAPForm(GroupBaseForm):
-    class Meta:
-        model = Group
-        fields = ()

@@ -25,6 +25,14 @@ if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
         url(r'^bookmarks/', include('angular_rest_bookmarks.urls', namespace='rest_bookmarks')),
     )
 
+if 'auth' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^auth/', include('auth.urls', namespace='auth')),
+    )
+    # from auth.urls import login_urls
+    # urlpatterns += login_urls
+
+
 if 'my_files_storage' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
         url(r'^my_files_storage/', include('my_files_storage.urls', namespace='my_files_storage')),

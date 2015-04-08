@@ -1,5 +1,8 @@
 приложение в режиме тестирования, запустить можно через demo.
 для работы добавить в local.py
+из доработок добавить elfinder
+добавить django-rest-framework-jwt(djangorestframework-jwt)
+
 #bookmarks
 INSTALLED_APPS += ('angular_rest_bookmarks', 'treebeard')
 в url.py

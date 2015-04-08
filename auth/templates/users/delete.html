@@ -4,12 +4,12 @@
 <div class="row">
 	<div class="col-md-12">
 		<h1>Удаление пользователя</h1>
-		<p>Вы уверены, что хотите удалить пользователя {{ protocol_user.username }}?</p>
-		<form action="{% url 'protocol:users:delete' user_pk=protocol_user.pk %}" method="POST">
+		<p>Вы уверены, что хотите удалить пользователя {{ user.username }}?</p>
+		<form action="{% url 'auth:users:delete' user_pk=user.pk %}" method="POST">
 			{% csrf_token %}
 			<div class="well">
 				<input type="submit" class="btn btn-danger" value="Удалить" />
-				<a class="btn btn-default" href="{% url 'protocol:users:detail' user_pk=protocol_user.pk %}">Отмена</a>
+				<a class="btn btn-default" href="{% url 'auth:users:detail' user_pk=user.pk %}">Отмена</a>
 			</div>
 		</form>
 	</div>

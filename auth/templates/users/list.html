@@ -8,7 +8,7 @@
 	<div class="col-md-2">
 		<div class="pull-right">
 			{% if not AUTH_WITH_LDAP %}
-			<a class="btn btn-success btn-sm" href="{% url 'protocol:users:add' %}" title="Добавить"><span class="fa fa-plus"></span></a>
+			<a class="btn btn-success btn-sm" href="{% url 'auth:users:add' %}" title="Добавить"><span class="fa fa-plus"></span></a>
 			{% endif %}
 		</div>
 	</div>
@@ -28,13 +28,13 @@
 				</tr>
 			</thead>
 			<tbody>
-			{% for protocol_user in protocol_users %}
+			{% for user in users %}
 				<tr>
-					<td><a href="{% url 'protocol:users:detail' user_pk=protocol_user.pk %}">{{ protocol_user.username }}</a></td>
-					<td>{{ protocol_user.get_full_name }}</td>
-					<td>{{ protocol_user.get_roles|join:", " }}</td>
+					<td><a href="{% url 'auth:users:detail' user_pk=user.pk %}">{{ user.username }}</a></td>
+					<td>{{ user.first_name }}&nbsp;{{ user.last_name }}</td>
+					<td>{{ user.email }}</td>
 					<td>
-						{% if protocol_user.is_active %}
+						{% if user.is_active %}
 						<span class="fa fa-check" style="color:green;"></span>
 						{% else %}
 						<span class="fa fa-ban" style="color:red;"></span>

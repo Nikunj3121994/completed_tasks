@@ -4,8 +4,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
 from django.contrib.auth.decorators import REDIRECT_FIELD_NAME, login_required
-from protokol.protokol_auth.ldap_sync import syncldap
-from ..choices import USER_ROLES
+
+#from ..choices import USER_ROLES
 
 
 def roles_required(roles, raise_exception=False):
@@ -58,35 +58,25 @@ class IsActiveRequired(object):
 #     user_roles = USER_ROLES
 
 
-class RolesRequiredMixin(object):
-    allow_administrator = False
-    allow_operator = False
-    allow_security_admin = False
+# class RolesRequiredMixin(object):
+#     allow_administrator = False
+#     allow_operator = False
+#     allow_security_admin = False
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         return roles_required(self.get_required_roles(), raise_exception=True)(super(RolesRequiredMixin, self).dispatch)(request, *args, **kwargs)
+#
+#     def get_required_roles(self):
+#         roles = []
+#         if self.allow_administrator:
+#             roles.append(USER_ROLES.ADMINISTRATOR)
+#         if self.allow_operator:
+#             roles.append(USER_ROLES.OPERATOR)
+#         if self.allow_security_admin:
+#             roles.append(USER_ROLES.SECURITY_ADMIN)
+#         return roles
 
-    def dispatch(self, request, *args, **kwargs):
-        return roles_required(self.get_required_roles(), raise_exception=True)(super(RolesRequiredMixin, self).dispatch)(request, *args, **kwargs)
 
-    def get_required_roles(self):
-        roles = []
-        if self.allow_administrator:
-            roles.append(USER_ROLES.ADMINISTRATOR)
-        if self.allow_operator:
-            roles.append(USER_ROLES.OPERATOR)
-        if self.allow_security_admin:
-            roles.append(USER_ROLES.SECURITY_ADMIN)
-        return roles
-
-
-class AccessMixin(LoginRequiredMixin, IsActiveRequired, RolesRequiredMixin):
+class AccessMixin(LoginRequiredMixin, IsActiveRequired):#, RolesRequiredMixin):
     pass
 
-
-class SyncLDAPViewMixin(object):
-
-    def get(self, request, *args, **kwargs):
-        if settings.PROTOCOL_AUTH_WITH_LDAP:
-            try:
-                syncldap()
-            except:    # TODO
-                pass
-        return super(SyncLDAPViewMixin, self).get(request, *args, **kwargs)

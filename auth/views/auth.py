@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout
 from django.http import HttpResponseRedirect
 from django.utils.http import is_safe_url
+from django.core.urlresolvers import reverse
 from django.shortcuts import resolve_url
-from protokol.utils import floppyforms as floppy_utils
 from ..forms import AuthenticationForm
 
 
@@ -54,7 +54,8 @@ class LoginView(LoginBaseView):
     """
     Страница входа пользователя.
     """
-    form_class = floppy_utils.floppify_form(AuthenticationForm)
+    default_redirect_url = '/'
+    form_class = AuthenticationForm
     template_name = 'auth/login.html'
 
 
@@ -62,7 +63,7 @@ class LogoutView(LogoutBaseView):
     """
     Страница выхода пользователя.
     """
-    default_redirect_url = '/logout/'   # TODO: reverse
+    default_redirect_url = '/auth/logout/'   # TODO: reverse
 
     def get_template_names(self):
         u = self.request.user
