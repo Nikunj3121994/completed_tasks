@@ -29,11 +29,12 @@
     <tr>
         <td>
             <h4 ng-init="user={'username':'{{ request.user.username }}', 'id':'{{ request.user.id }}'}">
-                Файлы пользователя
+                Файлы пользователя&nbsp;{{ request.user.username }}
             </h4>
         </td>
     </tr>
     </thead>
+    {% verbatim %}
     <tbody>
     <tr>
         <td class="col-md-1">
@@ -47,6 +48,7 @@
     <tfoot>
 
     </tfoot>
+    {% endverbatim %}
 </table>
 </div>
 

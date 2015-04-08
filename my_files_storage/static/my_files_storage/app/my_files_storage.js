@@ -11,9 +11,14 @@
         .module('my_files_storage', ['treesApp', 'ui.tree', 'ui.bootstrap', 'restangular'])
         .factory('UserFilesRestangular', UserFilesRestangular)
         .controller('filesCtrl', function ($scope, $log, $http, UserFilesRestangular) {
-//            $scope.user
-//            $scope.user_files
-            console.log($scope.user)
+            $scope.user
+            $scope.user_files
+            $scope.load_users
+
+            $scope.savefiles
+
+            $log($scope.user)
+
         })
 
 
