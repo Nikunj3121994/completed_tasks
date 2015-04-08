@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
-from django.core.exceptions import AppRegistryNotReady
+try:
+    from django.core.exceptions import AppRegistryNotReady
+except ImportError:
+    AppRegistryNotReady = Exception
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.db import models

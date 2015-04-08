@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 from django.shortcuts import Http404
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
@@ -9,7 +10,7 @@ from ..serializers.bookmarks import BookMarkTreeSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
 
-
+logger = logging.getLogger(__name__)
 
 class BookMarkTreeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Folder_AL.objects.all()
@@ -20,7 +21,8 @@ class BookMarkTreeDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def pre_save(self, obj):
         """Force author to the current user on save"""
-        obj.author = self.request.user
+        if not obj.user:
+            obj.user = self.request.user
         return super(BookMarkTreeDetail, self).pre_save(obj)
 
 class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
@@ -33,10 +35,11 @@ class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, Ajax
 
 
     def post(self, request, *args, **kwargs):
-        print request.DATA
-        print request.POST
+        logger.debug(request.DATA)
         data = [request.DATA,]
         parent_id = request.DATA.get('parent')
+        if not request.DATA['data']['user']: #TODO: убрать этот костыль
+            request.DATA['data']['user'] = self.request.user.id
         try:
             parent = Folder_AL.objects.get(id=parent_id)
         except MultipleObjectsReturned:
