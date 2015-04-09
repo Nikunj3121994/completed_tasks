@@ -16,41 +16,94 @@
 
 
 <body ng-app="my_files_storage">
-<div class="container">
+<div class="container" ng-controller="filesCtrl">
     <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
 <!-- живой блок -->
 {#<h3>user={{ request.user.id }};&nbspsource=4001;&nbsptoken={{ csrf_token|escapejs }};</h3>#}
-<div bookmarks debug="true" token="{{ csrf_token|escapejs }}" name='закладуля' user="{{ request.user.id }}"
-     source="http://localhost:8000/bookmarks/bookmark_example">loading
-</div>
 <!-- живой блок -->
+
 <table ng-cloak ng-controller="filesCtrl" class="table-hover table-bordered col-md-12">
-    <thead>
+    <thead ng-init="load_user_files({{ request.user.id }})">
     <tr>
-        <td>
-            <h4 ng-init="user={'username':'{{ request.user.username }}', 'id':'{{ request.user.id }}'}">
+            <h4>
                 Файлы пользователя&nbsp;{{ request.user.username }}
+            </h4>
+    </tr>
+    <tr>
+        <td class="col-md-2">
+            <h4>
+                Имя
+            </h4>
+        </td>
+        <td class="col-md-4">
+            <h4>
+                Ссылка
+            </h4>
+        </td>
+        <td class="col-md-4">
+            <h4>
+                Действия
             </h4>
         </td>
     </tr>
     </thead>
     {% verbatim %}
     <tbody>
-    <tr>
-        <td class="col-md-1">
+    <tr ng-repeat="file in user_files" ng-model="user_files">
+        <td class="col-md-2">
             <h5>
-                Файлы:
+                {{ file.title }}
             </h5>
+        </td>
+        <td class="col-md-2">
+            <h5>
+                <a href="{{ file.url }}" class="btn btn-lg btn-success btn-block">скачать</a>
+            </h5>
+        </td>
+        <td class="col-md-3">
+                <p ng-click="remove_file(file)" class="btn  btn-danger btn-block">удалить</p>
+                <p  class="btn btn-warning btn-block"
+                    bookmarks name='{{ file.title }}' user="{{ user.id }}" source="{{ file.url }}">loading
+                </p>
         </td>
     </tr>
 
     </tbody>
-    <tfoot>
+ <!--   <tfoot>
+    <td>
+        <tr>
+            создать файл
+        </tr>
+    </td>
+    </tfoot> -->
 
-    </tfoot>
-    {% endverbatim %}
+
 </table>
+    <form name="FileUploadForm">
+        Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>-->
+        <input type="file" fileread="new_file" />
+        <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
+        <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
+
+
+        <tt>new_file = {{ new_file }} </tt><br>
+        <tt>FileUploadForm.$valid = {{ FileUploadForm.$valid  }}</tt>
+        <tt>FileUploadForm.$error = {{ FileUploadForm.$error }}</tt>
+    </form>
+
+
 </div>
+   {% endverbatim %}
+{#<div>#}
+{#    <input type="file" nv-file-select uploader="uploader"><br>#}
+{#    <ul>#}
+{#        <li ng-repeat="item in uploader.queue">#}
+{#            Name: <span #}
+{#        </li>#}
+{#    </ul>#}
+{##}
+{#</div>#}
+
 
 <!-- scripts -->
 <!--[if IE 8]>
@@ -66,12 +119,13 @@
 <script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
 <script src="{% static 'angular-bookmarks/app/trees.js' %}"></script>
+<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>
 <script src="{% static 'my_files_storage/app/my_files_storage.js' %}"></script>
-<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>
+{#<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>#}
 <script>
     // Add the CSRF Token
     angular
-            .module('treesApp') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+            .module('my_files_storage') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
             .config(['$httpProvider', function ($httpProvider) {
                 $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
             }]);

@@ -5,8 +5,8 @@ from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
 from django.contrib.auth.models import User
-from my_files_storage.models import  File
-from ..serializers import FileSerializer, UserSerializer
+from my_files_storage.models import  File, UserFile
+from ..serializers import FileSerializer, UserSerializer, UserFileSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
 
@@ -56,9 +56,9 @@ class UsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableRes
     #         queryset = queryset.None()
     #     return queryset.filter(parent = None)
 
-class UserFilestList(generics.ListAPIView):
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+class UserFilestList(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin):
+    queryset = UserFile.objects.all()
+    serializer_class = UserFileSerializer
 
     def get_queryset(self):
         queryset = super(UserFilestList, self).get_queryset()

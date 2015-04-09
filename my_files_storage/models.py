@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
+from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
@@ -38,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 class File(models.Model):
     hash = models.CharField(max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
-    path = models.FileField(max_length=256, upload_to="%Y/%m/%d", verbose_name=_('путь'))
+    file = models.FileField(max_length=256, upload_to="%Y/%m/%d", verbose_name=_('путь'))
     user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name =_('пользователь'))
 
     class Meta:
@@ -47,7 +48,7 @@ class File(models.Model):
         verbose_name_plural = _('файлы')
 
     def __unicode__(self):
-        return '%s' % self.path
+        return '%s' % self.file.name.split('/')[-1]
 
 
 class UserFile(models.Model):
@@ -70,11 +71,11 @@ bind_delete_update_file([File,])
 
 @receiver(pre_save, sender=File)
 def create_hash(instance, *args, **kwargs):
-    logger.debug(instance)
-    logger.debug(args)
-    logger.debug(kwargs)
-    logger.debug(instance.path.url)
-    file = instance.path.file
+    # logger.debug(instance)
+    # logger.debug(args)
+    # logger.debug(kwargs)
+    # logger.debug(instance.file.url)
+    file = instance.file.file
     import hashlib
     m = hashlib.md5()
     while True:
@@ -85,6 +86,9 @@ def create_hash(instance, *args, **kwargs):
 
     logger.debug(m.hexdigest())
     instance.hash = m.hexdigest()
+    older_file = File.objects.filter(hash = instance.hash)
+    if older_file:
+        raise IntegrityError('object already: _pk_ %s'%older_file.first().pk)
     return instance
 
 

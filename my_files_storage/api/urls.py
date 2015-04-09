@@ -10,14 +10,15 @@ users_urls = patterns(
     '',
     url(r'^$', UsersListAPIView.as_view(), name='list'),
     url(r'^/(?P<pk>\d+)$', UserDetail.as_view(), name='detail'),
-    url(r'^/(?P<pk>\d+)/files$', UserFilestList.as_view(), name='userfile-list'),
+    url(r'^/(?P<pk>\d+)/user_files$', UserFilestList.as_view(), name='userfile-list'),
+    url(r'^/(\d+)/user_files/(?P<id>\d+)$', UserFileDetail.as_view(), name='detail'),
 
 )
 
 users_files_urls = patterns(
     '',
     url(r'^$', UsersFilesListAPIView.as_view(), name='list'),
-    url(r'^/(?P<pk>\d+)$', UserFileDetail.as_view(), name='detail'),
+    url(r'^/(?P<id>\d+)$', UserFileDetail.as_view(), name='detail'),
     #url(r'^/(?P<pk>\d+)/files$', UserFilestList.as_view(), name='userfile-list'),
 
 )

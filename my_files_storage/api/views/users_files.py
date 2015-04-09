@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 from django.shortcuts import Http404
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
-from rest_framework import generics
+from rest_framework import generics, parsers
 from django.contrib.auth.models import User
 from my_files_storage.models import UserFile
 from ..serializers import FileSerializer, UserSerializer, UserFileSerializer
 from .mixin import AjaxableResponseMixin
 from .permissions import AuthorCanEditPermission
 
-
+logger = logging.getLogger(__name__)
 
 class UserFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    pk_url_kwarg = 'id'
     queryset = UserFile.objects.all()
     serializer_class = UserFileSerializer
     # permission_classes = [
@@ -27,14 +29,21 @@ class UserFileDetail(generics.RetrieveUpdateDestroyAPIView):
 class UsersFilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
     queryset = UserFile.objects.all()
     serializer_class = UserFileSerializer
+
+    # parser_classes = (parsers.FileUploadParser, parsers.JSONParser)
     # permission_classes = [
     #     AuthorCanEditPermission
     # ]
     #
 
     # def post(self, request, *args, **kwargs):
-    #     print request.DATA
-    #     print request.POST
+    #     print request
+    #     # logger.debug(request.DATA)
+    #     # logger.debug(request.POST)
+    #     # logger.debug(dir(request))
+    #     logger.debug(request.FILES)
+    #     logger.debug(request.data)
+    #     return request
     #     data = [request.DATA,]
     #     parent_id = request.DATA.get('parent')
     #     try:
