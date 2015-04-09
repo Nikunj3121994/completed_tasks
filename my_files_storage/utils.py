@@ -19,12 +19,9 @@ def convert_filesize(field):
         logger.debug('now size %f'%size)
         for i in xrange(len(_extend)-1):
             size, modulo = divmod(size, 1024)
-            # logger.debug('size %i'%size)
-            # logger.debug('modulo %i'%modulo)
             if size < 1024:
                 size += modulo/1024.0
                 size = ('%.2f' % size).rstrip('0').rstrip('.')
-                # logger.debug('finally size %s'%size)
                 return '%s %s' % (size, _extend[i+1])
     except IndexError:
         return '%s байт' % field

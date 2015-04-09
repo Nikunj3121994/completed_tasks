@@ -9,21 +9,14 @@ from django.shortcuts import redirect
 from django.contrib import admin
 admin.autodiscover()
 
-def root_url_redirect(request):
-    return redirect('/auth/login')
 
 urlpatterns = patterns('',
-    url(r'^$', root_url_redirect),
+    url(r'^$', lambda request: redirect('/auth/login')),
 )
 
 urlpatterns += patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
-
-
-# urlpatterns = patterns('',
-#     url(r'^login/$', login),
-# )
 
 if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
