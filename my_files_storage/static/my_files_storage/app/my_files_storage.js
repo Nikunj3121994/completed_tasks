@@ -8,7 +8,7 @@
     };
 
     angular
-        .module('my_files_storage', ['treesApp', 'angularFileUpload'])
+        .module('my_files_storage', ['treesApp'])
         .factory('UserFilesRestangular', UserFilesRestangular)
         .directive("fileread", [function () {
             return {
