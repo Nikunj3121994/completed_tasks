@@ -32,7 +32,7 @@
             $scope.new_file = {};
             $scope.errors = [];
             $scope.load_user_files = LoadUserData;
-            $scope.load_new_file= LoadNewFile;
+            $scope.load_new_file = LoadNewFile;
             $scope.remove_file = RemoveFile;
             //$scope.uploader = new FileUploader();
 
@@ -52,58 +52,63 @@
 //                $log.debug($scope.user_files);
                 return UserFilesRestangular.all('files').post(file).then(
                     function (response) {
+                        //todo: через дефер сделать все последовательно
                         if (response.hasOwnProperty('error')) {
                             var error = String(response.error)
-                            if($scope.errors.indexOf(error)==-1){
+                            if ($scope.errors.indexOf(error) == -1) {
                                 console.log(error);
                                 console.log(error.indexOf('already'))
-                                if((error.indexOf('already')!=-1)){    //костыль с хардкодингом убрать потом
-                                    var pk = (error)[error.length-1]
+                                if ((error.indexOf('already') != -1)) {    //костыль с хардкодингом убрать потом
+                                    var pk = (error)[error.length - 1]
                                     console.log(pk);
                                     UserFilesRestangular.one('files', pk).getList('users').then(
-                                        function(users){
+                                        function (users) {
                                             console.log(users)
                                             users.forEach(
-                                                function(user){
+                                                function (user) {
                                                     var user_error = "Another user load you file, it's  !!!!!!!" + user.username
-                                                    if($scope.errors.indexOf(user_error)==-1){
+                                                    if ($scope.errors.indexOf(user_error) == -1) {
                                                         $scope.errors.push(user_error)
                                                     }
                                                 }
                                             )
                                         },
-                                        function(errors){
+                                        function (errors) {
                                             console.log(errors)
                                             $scope.errors.push(errors);
                                         }
                                     )
                                 }
-                                else{
+                                else {
                                     $scope.errors.push(error);
                                 }
                             }
                         }
                         //else if(response.hasOwnProperty('detail')) {$scope.errors = response.detail};
-                        else if (response.hasOwnProperty('id')) {
+                        if (response.hasOwnProperty('id')) {
                             var file_id = response.id;
-                            var user_file = {'user':$scope.user.id, 'title':file.name, 'file': file_id};
+                            var user_file = {'user': $scope.user.id, 'title': file.name, 'file': file_id};
                             //var user_file = {'user':$scope.user.id, 'title':file.name, 'file': file_id};
-                            var user_file = {'user':'1', 'title':file.name, 'file': file_id};
+//                            var user_file = {'user':'1', 'title':file.name, 'file': file_id};
                             console.log($scope.user)
                             console.log(user_file)
                             UserFilesRestangular.all('users_files').post(user_file).then(
-                               LoadUserData(1) //todo: куда делся scope.user блять
-
+                                function(){
+                                    $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
+                                    $scope.load_user_files($scope.user.id)
+                                }
                             );
-                        };
+                        }
+                        ;
                     },
                     function (error) {
-                        try{
-                            if(!(error.data.detail in  $scope.errors)){
+                        try {
+                            if (!(error.data.detail in  $scope.errors)) {
                                 $scope.errors.push(error.data.detail)
-                            };
+                            }
+                            ;
                         }
-                        catch(err){
+                        catch (err) {
                             console.log(err);
                         }
 
@@ -117,9 +122,15 @@
 
             function RemoveFile(file) {
                 $log.debug(file);
-                var user_id = file.user
-                $scope.user_files = [];
-                file.remove().then($scope.load_user_files(user_id));
+//                var user_id = file.user
+//                $scope.user_files = [];
+                file.remove().then(
+                    function(){
+                        $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
+                        $scope.load_user_files($scope.user.id)
+                    }
+                )
+
                 //$scope.$apply()
 //                return UserFilesRestangular.one('users_files',  file.id).get().then(function (results) {
 //                    $log.debug(results);
@@ -129,10 +140,12 @@
             };
 
             function LoadUserData(user_id) {
-                return UserFilesRestangular.one('users',  user_id).getList('user_files').then(function (results) {
+                UserFilesRestangular.one('users', user_id).getList('user_files').then(function (results) {
                     $log.debug(results);
                     $scope.user_files = results;
-                    $scope.user = user_id;
+                    $scope.user5 = user_id;
+                    $scope.user.id = user_id;
+
 //                    return $scope.user_files;
                 });
             };
