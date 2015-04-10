@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 import logging
 from django.db import IntegrityError
+from django.contrib.auth.models import User
 from rest_framework import generics, parsers
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
 from my_files_storage.models import File
 from ..serializers import FileSerializer, UserSerializer
 from .mixin import AccessMixin

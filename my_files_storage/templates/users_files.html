@@ -75,9 +75,9 @@
         <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
         <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
         <div>
-            <p ng-repeat="error in errors" ng-model="errors">
-                <strong style="color: red">{{ error }}</strong> <br>
-            </p>
+        <p ng-repeat="error in errors" ng-model="errors">
+             <strong style="color: red">{{ error }}</strong> <br>
+        </p>
         </div>
     </form>
 </div>

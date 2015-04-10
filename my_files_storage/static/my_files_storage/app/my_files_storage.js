@@ -49,12 +49,14 @@
                     function (response) {
                         //todo: через дефер сделать все последовательно
                         //проверка на ошибки
+
                         if (response.hasOwnProperty('error')) {
-                            var error = String(response.error)
-                            if ($scope.errors.indexOf(error) == -1) {
+                            var file_error = String(response.error);
+                            if ($scope.errors.indexOf(file_error) == -1) {
                                 //проверка на наличие файла у других пользователей
-                                if ((error.indexOf('already') != -1)) {    //костыль с хардкодингом убрать потом
-                                    var pk = (error)[error.length - 1]
+                                if ((file_error.indexOf('already') != -1)) {    //костыль с хардкодингом убрать потом
+                                    var pk = file_error.split(' ').splice(-1)
+
                                     console.log(pk);
                                     UserFilesRestangular.one('files', pk).getList('users').then(
                                         function (users) {
@@ -62,6 +64,7 @@
                                             users.forEach(
                                                 function (user) {
                                                     var user_error = "Another user load you file, it's  " + user.username
+                                                    console.log($scope.errors.indexOf(user_error))
                                                     if ($scope.errors.indexOf(user_error) == -1) {
                                                         $scope.errors.push(user_error)
                                                     }
@@ -84,9 +87,27 @@
                             var file_id = response.id;
                             var user_file = {'user': $scope.user.id, 'title': file.name, 'file': file_id};
                             UserFilesRestangular.all('users_files').post(user_file).then(
-                                function(){
+                                function(response){
+                                    if (response.hasOwnProperty('error')) {
+                                        var users_error = String(response.error)
+//                                        console.log(response)
+//                                        console.log(users_error)
+                                        if ($scope.errors.indexOf(users_error) == -1) {
+                                            $scope.errors.push(users_error);
+                                        }
+                                    }
                                     $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
                                     $scope.load_user_files($scope.user.id)
+                                },
+                                function (error) {
+                                    try {
+                                        if (!(error.data.detail in  $scope.errors)) {
+                                            $scope.errors.push(error.data.detail)
+                                        }
+                                    }
+                                    catch (err) {
+                                        console.log(err);
+                                    }
                                 }
                             );
                         }
