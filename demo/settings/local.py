@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import os
 from .base import *
 
+DEBUG = True
 
 DATABASES = {
     'default': {
