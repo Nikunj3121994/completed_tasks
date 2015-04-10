@@ -17,7 +17,7 @@ class UserFileSerializer(serializers.ModelSerializer):
 
     def get_my_file_url(self, obj):
         try:
-            return  obj.file.file.path
+            return  obj.file.file.url
         except (AttributeError, ObjectDoesNotExist):
             return
 
