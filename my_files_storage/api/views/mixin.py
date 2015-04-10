@@ -1,7 +1,13 @@
 #coding: utf8
 import json
-
+from django.conf import settings
 from django.http import HttpResponse,StreamingHttpResponse
+if 'my_auth' in settings.INSTALLED_APPS:
+    try:
+        from my_auth.views.mixins import AccessMixin
+    except ImportError:
+        AccessMixin = object
+
 
 class AjaxableResponseMixin(object):
     """

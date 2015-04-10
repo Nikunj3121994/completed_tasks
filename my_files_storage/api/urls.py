@@ -35,8 +35,5 @@ urlpatterns = patterns(
     url(r'^users', include(users_urls, namespace='users')),
     url(r'^files', include(files_urls, namespace='files')),
     url(r'^users_files', include(users_files_urls, namespace='users_files')),
-    # url(r'^$', BookMarkTreeMPAPIView.as_view(), name='list'),
-    # url(r'^$', BookMarkTreeALAPIView.as_view(), name='list'),
-    # url(r'^/(?P<pk>\d+)$',BookMarkTreeALDetail.as_view(), name='detail'),
 
 )

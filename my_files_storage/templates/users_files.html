@@ -18,10 +18,6 @@
 <body ng-app="my_files_storage">
 <div class="container" ng-controller="filesCtrl">
     <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
-    <!-- живой блок -->
-    {#<h3>user={{ request.user.id }};&nbspsource=4001;&nbsptoken={{ csrf_token|escapejs }};</h3>#}
-    <!-- живой блок -->
-
     <table ng-cloak class="table-hover table-bordered col-md-12">
         <thead ng-init="load_user_files({{ request.user.id }})">
         <tr>
@@ -68,35 +64,9 @@
                 </p>
             </td>
         </tr>
-        <!--
-        <tr ng-repeat="error in errors" ng-model="errors">
-                !!!!!!!!!!!!!
-                 <td ng-repeat="error in errors" ng-model="errors">{{ error }}!!!!!!!!!!!!!</td>
-        </tr>
-
         </tbody>
         <tfoot>
-
-            <tr>
-                <form name="FileUploadForm">
-                    Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>
-                    <input type="file" fileread="new_file" />
-                    <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
-                    <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
-                    <tt>new_file = {{ new_file }} </tt><br>
-                    <tt>FileUploadForm.$valid = {{ FileUploadForm.$valid  }}</tt>
-                    <tt>FileUploadForm.$error = {{ FileUploadForm.$error }}</tt>
-                </form>
-            </tr>
-            <tr ng-repeat="error in errors" ng-model="errors">
-
-                 <td ng-repeat="error in errors" ng-model="errors">{{ error }}!!!!!!!!!!!!!</td>
-            </tr>
-
-
-        </tfoot> -->
-
-
+        </tfoot>
     </table>
     <form name="FileUploadForm">
         Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>-->
@@ -104,12 +74,6 @@
 
         <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
         <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
-
-
-        <!-- <tt>new_file = {{ new_file }} </tt><br>
-         <tt>FileUploadForm.$valid = {{ FileUploadForm.$valid  }}</tt>
-         <tt>FileUploadForm.$error = {{ FileUploadForm.$error }}</tt>
-         <div ng-if="errors">-->
         <div>
             <p ng-repeat="error in errors" ng-model="errors">
                 <strong style="color: red">{{ error }}</strong> <br>
@@ -119,16 +83,6 @@
 </div>
 
 {% endverbatim %}
-{#<div>#}
-{#    <input type="file" nv-file-select uploader="uploader"><br>#}
-{#    <ul>#}
-{#        <li ng-repeat="item in uploader.queue">#}
-{#            Name: <span #}
-{#        </li>#}
-{#    </ul>#}
-{##}
-{#</div>#}
-
 
 <!-- scripts -->
 <!--[if IE 8]>

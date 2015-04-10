@@ -69,9 +69,108 @@ class UserFile(models.Model):
 bind_delete_update_file([File,])
 
 
+# @receiver(pre_save, sender=File)
+# def create_hash(instance, *args, **kwargs):
+#     # logger.debug(instance)
+#     # logger.debug(args)
+#     # logger.debug(kwargs)
+#     # logger.debug(instance.file.url)
+#     file = instance.file.file
+#     import hashlib
+#     m = hashlib.md5()
+#     while True:
+#         data = file.read(8000)
+#         if not data:
+#             break
+#         m.update(data)
+#
+#     logger.debug(m.hexdigest())
+#     instance.hash = m.hexdigest()
+#     older_file = File.objects.filter(hash = instance.hash)
+#     if older_file:
+#         raise IntegrityError('object already: _pk_ %s'%older_file.first().pk)
+#     return instance
+
+
+# @receiver(pre_save, sender=File)
+# def change_count_link(instance, *args, **kwargs):
+#     logger.debug(instance)
+#     logger.debug(args)
+#     logger.debug(kwargs)
+#     # logger.debug(dir(kwargs['signal']))
+#     # logger.debug(kwargs['signal'].__dict__)
+#     # logger.debug(kwargs['signal'].__class__)
+#     if not instance.pk:
+#         return
+#     elif instance.user.count() < 1:
+#        # logger.debug(instance.userfiles.count())
+#         logger.debug(instance.user.count())
+#         logger.debug('need to delete files')
+#         #instance.delete()
+#     else:
+#        # logger.debug(instance.userfiles.count())
+#         logger.debug('%s link on file'%instance.user.count())
+#
+#     return
+
+# @receiver(m2m_changed, sender=File)
+# def change_count_link(instance, *args, **kwargs):
+#     logger.debug(instance)
+#     logger.debug(args)
+#     logger.debug(kwargs)
+#     # logger.debug(dir(kwargs['signal']))
+#     # logger.debug(kwargs['signal'].__dict__)
+#     # logger.debug(kwargs['signal'].__class__)
+#     if not instance.pk:
+#         return
+#     elif instance.user.count() < 1:
+#        # logger.debug(instance.userfiles.count())
+#         logger.debug(instance.user.count())
+#         logger.debug('need to delete files')
+#         #instance.delete()
+#     else:
+#        # logger.debug(instance.userfiles.count())
+#         logger.debug('%s link on file'%instance.user.count())
+#
+#     return
+
+
+
+# @receiver(pre_save, sender=User)
+# @receiver(m2m_changed, sender=File)
+# def user_file_limit(instance, *args, **kwargs):
+#     logger.debug(instance)
+#     logger.debug(args)
+#     logger.debug(kwargs)
+#     if not instance.pk:
+#         return
+#     elif instance.files.count() > 100:
+#         logger.debug('so many users files')
+#         # instance.delete()
+#     else:
+#         logger.debug('%s link on file'%instance.files.count())
+#
+#     return
+#
+# @receiver(post_save, sender=User)
+# @receiver(m2m_changed, sender=File)
+# def user_file_limit(instance, *args, **kwargs):
+#     logger.debug(instance)
+#     logger.debug(args)
+#     logger.debug(kwargs)
+#     if not instance.pk:
+#         return
+#     elif instance.files.count() > 100:
+#         logger.debug('so many users files')
+#         # instance.delete()
+#     else:
+#         logger.debug('%s link on file'%instance.files.count())
+#
+#     return
+
 @receiver(pre_save, sender=File)
 def create_hash(instance, *args, **kwargs):
-    # logger.debug(instance)
+    logger.debug(instance)
     # logger.debug(args)
     # logger.debug(kwargs)
     # logger.debug(instance.file.url)
@@ -91,101 +190,19 @@ def create_hash(instance, *args, **kwargs):
         raise IntegrityError('object already: _pk_ %s'%older_file.first().pk)
     return instance
 
-
-@receiver(pre_save, sender=File)
-def change_count_link(instance, *args, **kwargs):
+@receiver(post_delete, sender=File)
+def remove_files(instance, **kwargs):
     logger.debug(instance)
-    logger.debug(args)
-    logger.debug(kwargs)
-    # logger.debug(dir(kwargs['signal']))
-    # logger.debug(kwargs['signal'].__dict__)
-    # logger.debug(kwargs['signal'].__class__)
-    if not instance.pk:
-        return
-    elif instance.user.count() < 1:
-       # logger.debug(instance.userfiles.count())
-        logger.debug(instance.user.count())
-        logger.debug('need to delete files')
-        #instance.delete()
-    else:
-       # logger.debug(instance.userfiles.count())
-        logger.debug('%s link on file'%instance.user.count())
-
-    return
-
-@receiver(m2m_changed, sender=File)
-def change_count_link(instance, *args, **kwargs):
-    logger.debug(instance)
-    logger.debug(args)
-    logger.debug(kwargs)
-    # logger.debug(dir(kwargs['signal']))
-    # logger.debug(kwargs['signal'].__dict__)
-    # logger.debug(kwargs['signal'].__class__)
-    if not instance.pk:
-        return
-    elif instance.user.count() < 1:
-       # logger.debug(instance.userfiles.count())
-        logger.debug(instance.user.count())
-        logger.debug('need to delete files')
-        #instance.delete()
-    else:
-       # logger.debug(instance.userfiles.count())
-        logger.debug('%s link on file'%instance.user.count())
-
-    return
-
-@receiver(post_save, sender=File)
-def change_count_link(instance, *args, **kwargs):
-    logger.debug(instance)
-    logger.debug(args)
-    logger.debug(kwargs)
-    # logger.debug(dir(kwargs['signal']))
-    # logger.debug(kwargs['signal'].__dict__)
-    # logger.debug(kwargs['signal'].__class__)
-    if not instance.pk:
-        return
-    elif instance.user.count() < 1:
-       # logger.debug(instance.userfiles.count())
-        logger.debug(instance.user.count())
-        logger.debug('need to delete files')
-        #instance.delete()
-    else:
-       # logger.debug(instance.userfiles.count())
-        logger.debug('%s link on file'%instance.user.count())
-
-    return
-
-@receiver(pre_save, sender=User)
-@receiver(m2m_changed, sender=File)
-def user_file_limit(instance, *args, **kwargs):
-    logger.debug(instance)
-    logger.debug(args)
-    logger.debug(kwargs)
-    if not instance.pk:
-        return
-    elif instance.files.count() > 100:
-        logger.debug('so many users files')
-        # instance.delete()
-    else:
-        logger.debug('%s link on file'%instance.files.count())
-
-    return
-
-@receiver(post_save, sender=User)
-@receiver(m2m_changed, sender=File)
-def user_file_limit(instance, *args, **kwargs):
-    logger.debug(instance)
-    logger.debug(args)
-    logger.debug(kwargs)
-    if not instance.pk:
-        return
-    elif instance.files.count() > 100:
-        logger.debug('so many users files')
-        # instance.delete()
-    else:
-        logger.debug('%s link on file'%instance.files.count())
-
-    return
+    for field in instance._meta.fields:
+        if not isinstance(field, models.FileField):
+            continue
+        file_to_delete = getattr(instance, field.name)
+        storage = file_to_delete.storage
+        if file_to_delete and storage and storage.exists(file_to_delete.name):
+            try:
+                storage.delete(file_to_delete.name)
+            except Exception:
+                logger.exception("Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)
 
 @receiver(pre_delete, sender=UserFile)
 @receiver(pre_save, sender=UserFile)
