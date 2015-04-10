@@ -30,6 +30,7 @@
             $scope.user = {};
             $scope.user_files = [];
             $scope.new_file = {};
+            $scope.errors = [];
             $scope.load_user_files = LoadUserData;
             $scope.load_new_file= LoadNewFile;
             $scope.remove_file = RemoveFile;
@@ -51,17 +52,63 @@
 //                $log.debug($scope.user_files);
                 return UserFilesRestangular.all('files').post(file).then(
                     function (response) {
-                        if (response.hasOwnProperty('error')) {$scope.errors = response.error}
-                        else if(response.hasOwnProperty('detail')) {$scope.errors = response.detail};
-                        if (response.hasOwnProperty('id')) {var file_id = response.id};
-                        if (file_id) {
+                        if (response.hasOwnProperty('error')) {
+                            var error = String(response.error)
+                            if($scope.errors.indexOf(error)==-1){
+                                console.log(error);
+                                console.log(error.indexOf('already'))
+                                if((error.indexOf('already')!=-1)){    //костыль с хардкодингом убрать потом
+                                    var pk = (error)[error.length-1]
+                                    console.log(pk);
+                                    UserFilesRestangular.one('files', pk).getList('users').then(
+                                        function(users){
+                                            console.log(users)
+                                            users.forEach(
+                                                function(user){
+                                                    var user_error = "Another user load you file, it's  !!!!!!!" + user.username
+                                                    if($scope.errors.indexOf(user_error)==-1){
+                                                        $scope.errors.push(user_error)
+                                                    }
+                                                }
+                                            )
+                                        },
+                                        function(errors){
+                                            console.log(errors)
+                                            $scope.errors.push(errors);
+                                        }
+                                    )
+                                }
+                                else{
+                                    $scope.errors.push(error);
+                                }
+                            }
+                        }
+                        //else if(response.hasOwnProperty('detail')) {$scope.errors = response.detail};
+                        else if (response.hasOwnProperty('id')) {
+                            var file_id = response.id;
                             var user_file = {'user':$scope.user.id, 'title':file.name, 'file': file_id};
+                            //var user_file = {'user':$scope.user.id, 'title':file.name, 'file': file_id};
+                            var user_file = {'user':'1', 'title':file.name, 'file': file_id};
                             console.log($scope.user)
                             console.log(user_file)
-                            UserFilesRestangular.all('users_files').post(user_file);
+                            UserFilesRestangular.all('users_files').post(user_file).then(
+                               LoadUserData(1) //todo: куда делся scope.user блять
+
+                            );
+                        };
+                    },
+                    function (error) {
+                        try{
+                            if(!(error.data.detail in  $scope.errors)){
+                                $scope.errors.push(error.data.detail)
+                            };
+                        }
+                        catch(err){
+                            console.log(err);
                         }
 
                     }
+
                 );
 //                UserFilesRestangular.all('files').post(file);
 //                UserFilesRestangular.all('users_files').post(file);

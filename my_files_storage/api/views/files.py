@@ -46,6 +46,7 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableRes
         serializer.is_valid(raise_exception=True)
         try:
             self.perform_create(serializer)
+            data = serializer.data
         except IntegrityError, err:
             # logger.debug(err)
             pk = str(err).split('_pk_ ')[-1]

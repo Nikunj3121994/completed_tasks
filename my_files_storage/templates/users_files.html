@@ -67,14 +67,32 @@
                 </p>
         </td>
     </tr>
+    <!--
+    <tr ng-repeat="error in errors" ng-model="errors">
+            !!!!!!!!!!!!!
+             <td ng-repeat="error in errors" ng-model="errors">{{ error }}!!!!!!!!!!!!!</td>
+    </tr>
 
     </tbody>
- <!--   <tfoot>
-    <td>
+    <tfoot>
+
         <tr>
-            создать файл
+            <form name="FileUploadForm">
+                Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>
+                <input type="file" fileread="new_file" />
+                <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
+                <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
+                <tt>new_file = {{ new_file }} </tt><br>
+                <tt>FileUploadForm.$valid = {{ FileUploadForm.$valid  }}</tt>
+                <tt>FileUploadForm.$error = {{ FileUploadForm.$error }}</tt>
+            </form>
         </tr>
-    </td>
+        <tr ng-repeat="error in errors" ng-model="errors">
+
+             <td ng-repeat="error in errors" ng-model="errors">{{ error }}!!!!!!!!!!!!!</td>
+        </tr>
+
+
     </tfoot> -->
 
 
@@ -86,9 +104,15 @@
         <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
 
 
-        <tt>new_file = {{ new_file }} </tt><br>
+       <!-- <tt>new_file = {{ new_file }} </tt><br>
         <tt>FileUploadForm.$valid = {{ FileUploadForm.$valid  }}</tt>
         <tt>FileUploadForm.$error = {{ FileUploadForm.$error }}</tt>
+        <div ng-if="errors">-->
+        <div>
+            <p ng-repeat="error in errors" ng-model="errors">
+                 <strong style="color: red">{{ error }}</strong> <br>
+            </p>
+        </div>
     </form>
 
 
@@ -119,7 +143,7 @@
 <script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
 <script src="{% static 'angular-bookmarks/app/trees.js' %}"></script>
-<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>
+{#<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>#}
 <script src="{% static 'my_files_storage/app/my_files_storage.js' %}"></script>
 {#<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>#}
 <script>

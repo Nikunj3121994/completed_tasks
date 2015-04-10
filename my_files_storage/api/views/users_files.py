@@ -14,7 +14,8 @@ from .permissions import AuthorCanEditPermission
 logger = logging.getLogger(__name__)
 
 class UserFileDetail(generics.RetrieveUpdateDestroyAPIView):
-    pk_url_kwarg = 'id'
+    lookup_field = 'id'
+
     queryset = UserFile.objects.all()
     serializer_class = UserFileSerializer
     # permission_classes = [
