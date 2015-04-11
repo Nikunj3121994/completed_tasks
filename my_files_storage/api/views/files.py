@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import logging
 from django.db import IntegrityError
 from django.contrib.auth.models import User
+from rest_framework.request import Request
 from rest_framework import generics, parsers
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,7 +22,8 @@ class FileDetail(generics.RetrieveUpdateDestroyAPIView, AccessMixin):
 class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
     queryset = File.objects.all()
     serializer_class = FileSerializer
-    parser_classes = (parsers.FileUploadParser, parsers.JSONParser)
+    # parser_classes = (parsers.FileUploadParser, )
+    # parser_classes = (parsers.MultiPartParser, parsers.FileUploadParser, parsers.JSONParser)
 
 
     def create(self, request, *args, **kwargs):
@@ -38,6 +40,22 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
             data['error'] = str(err)
         headers = self.get_success_headers(serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def post(self, request, *args, **kwargs):
+
+        logger.debug(request)
+        logger.debug(request.content_type)
+        # logger.debug(request.stream)
+        logger.debug(request.query_params)
+        logger.debug(request.data)
+        #print dir(request)
+        # raise Exception
+        # print request.FILES
+        # print request.QUERY_PARAMS
+        # print request._CONTENTTYPE_PARAM
+        # print request._METHOD_PARAM
+        # print self.request.data
+        return super(FilesListAPIView, self).post(request, *args, **kwargs)
 
 
 class FileUserstList(generics.ListAPIView, AccessMixin):

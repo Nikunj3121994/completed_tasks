@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
 from .base import *
 
 DEBUG = True
+
+#количество файлов, что может загрузить пользователь
+MAX_USER_FILES_COUNT = 3
 
 DATABASES = {
     'default': {

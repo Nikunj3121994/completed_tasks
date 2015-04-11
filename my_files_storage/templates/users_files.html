@@ -70,7 +70,7 @@
     </table>
     <form name="FileUploadForm">
         Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>-->
-        <input type="file" fileread="new_file"/>
+        <input type="file" file-model="new_file"/>
 
         <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
         <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
@@ -98,6 +98,7 @@
 <script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
 <script src="{% static 'angular-bookmarks/app/trees.js' %}"></script>
+<script src="{% static 'my_files_storage/lib/simple-file-upload.js' %}"></script>
 {#<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>#}
 <script src="{% static 'my_files_storage/app/my_files_storage.js' %}"></script>
 {#<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>#}

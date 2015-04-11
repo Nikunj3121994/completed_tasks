@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
-from django import forms
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from rest_framework import generics, parsers
 from rest_framework.response import Response
@@ -29,7 +29,7 @@ class UsersFilesListAPIView(generics.ListAPIView, generics.CreateAPIView, Access
         try:
             self.perform_create(serializer)
             data = serializer.data
-        except forms.ValidationError, err:
+        except PermissionDenied, err:
             data = serializer.data
             data['error'] = str(err)
         headers = self.get_success_headers(serializer.data)

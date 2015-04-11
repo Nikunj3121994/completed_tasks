@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
+from django.conf import settings
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django import forms
+from django.core.exceptions import PermissionDenied
 try:
     from django.core.exceptions import AppRegistryNotReady
 except ImportError:
@@ -15,6 +17,10 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
 # from utils import bind_delete_update_file
 
+try:
+	MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
+except AttributeError:
+	MAX_USER_FILES_COUNT = 100
 
 logger = logging.getLogger(__name__)
 
@@ -106,9 +112,9 @@ def change_count_link(instance, signal, *args, **kwargs):
     logger.debug(user_files_count)
     logger.debug(files_link_count)
     if signal is pre_save:
-        if user_files_count >= 99:
+        if user_files_count >= MAX_USER_FILES_COUNT:
             logger.debug('so many users files')
-            raise forms.ValidationError('You have so many files %s!!!'%user_files_count)
+            raise PermissionDenied('You have so many files %s!!! You can have %s'%(user_files_count, settings.MAX_USER_FILES_COUNT))
     if signal is post_delete:
         if files_link_count <= 0:
             logger.debug('need to delete files')

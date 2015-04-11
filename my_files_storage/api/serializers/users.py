@@ -12,21 +12,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # fields = [
-        # 'id', 'name', 'user_id',  'parent_id', 'source_id', 'children', 'data',
-        # ]
 
-    # def get_childrens(self, obj):
-    #     childerens = Folder_AL.objects.filter(parent__id=obj.id)
-    #     return (self.get_data(child) for child in childerens)
-    #
-    #
-    # def get_tree(self, obj):
-    #     return Folder_AL.dump_bulk()
-    #
-    # def get_self_tree(self, obj):
-    #     return Folder_AL.dump_bulk(parent=obj)
-    #
-    # def get_data(self, obj):
-    #     data = dict((i.name, obj.__dict__[i.column]) for i in obj._meta.local_fields)
-    #     return data

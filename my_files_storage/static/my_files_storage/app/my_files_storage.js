@@ -8,25 +8,9 @@
     };
 
     angular
-        .module('my_files_storage', ['treesApp'])
+        .module('my_files_storage', ['treesApp', 'simpleUpload'])
         .factory('UserFilesRestangular', UserFilesRestangular)
-        .directive("fileread", [function () {
-            return {
-                scope: {
-                    fileread: "="
-                },
-                link: function (scope, element, attributes) {
-                    element.bind("change", function (changeEvent) {
-                        scope.$apply(function () {
-                            scope.fileread = changeEvent.target.files[0];
-                            // or all selected files:
-                            // scope.fileread = changeEvent.target.files;
-                        });
-                    });
-                }
-            }
-        }])
-        .controller('filesCtrl', function ($scope, $log, UserFilesRestangular) {
+        .controller('filesCtrl', function ($scope, $log, fileUpload, UserFilesRestangular) {
             $scope.user = {};
             $scope.user_files = [];
             $scope.new_file = {};
@@ -35,29 +19,23 @@
             $scope.load_new_file = LoadNewFile;
             $scope.remove_file = RemoveFile;
 
-//
-//            $scope.$watch('user', function () {
-//                console.log($scope.user) //с init не робит =(((
-//            });
-//
-//            $scope.$watch('user_files', function () {
-//                console.log($scope.user_files) //с init не робит =(((
-//            });
 
             function LoadNewFile(file, user) {
-                return UserFilesRestangular.all('files').post(file).then(
+                $scope.errors = [];
+//                console.log(file);
+//                return UserFilesRestangular.all('files').post(file, 'none', 11, {'Content-Type':'multipart/form-data; boundary=----WebKitFormBoundary1MZa0rkV2pj5MLFP'})
+                var uploadUrl = '/my_files_storage/api/files'; //todo: переделать под restangular для единообразия
+                fileUpload.uploadFileToUrl(file, uploadUrl).then(
                     function (response) {
+                        console.log(response)
                         //todo: через дефер сделать все последовательно
                         //проверка на ошибки
-
-                        if (response.hasOwnProperty('error')) {
-                            var file_error = String(response.error);
+                        if (response.data.hasOwnProperty('error')) {
+                            var file_error = String(response.data.error);
                             if ($scope.errors.indexOf(file_error) == -1) {
                                 //проверка на наличие файла у других пользователей
                                 if ((file_error.indexOf('already') != -1)) {    //костыль с хардкодингом убрать потом
                                     var pk = file_error.split(' ').splice(-1)
-
-                                    console.log(pk);
                                     UserFilesRestangular.one('files', pk).getList('users').then(
                                         function (users) {
                                             console.log(users)
@@ -83,33 +61,34 @@
                             }
                         }
                         //создание записи связующей пользователя и файл
-                        if (response.hasOwnProperty('id')) {
-                            var file_id = response.id;
+                        if (response.data.hasOwnProperty('id')) {
+                            var file_id = response.data.id;
                             var user_file = {'user': $scope.user.id, 'title': file.name, 'file': file_id};
-                            UserFilesRestangular.all('users_files').post(user_file).then(
-                                function(response){
-                                    if (response.hasOwnProperty('error')) {
-                                        var users_error = String(response.error)
-//                                        console.log(response)
-//                                        console.log(users_error)
-                                        if ($scope.errors.indexOf(users_error) == -1) {
-                                            $scope.errors.push(users_error);
+                            UserFilesRestangular.all('users_files').post(user_file)
+                                .then(
+                                    function(response){
+                                        if (response.hasOwnProperty('error')) {
+                                            var users_error = String(response.error)
+    //                                        console.log(response)
+    //                                        console.log(users_error)
+                                            if ($scope.errors.indexOf(users_error) == -1) {
+                                                $scope.errors.push(users_error);
+                                            }
+                                        }
+                                        $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
+                                        $scope.load_user_files($scope.user.id)
+                                    },
+                                    function (error) {
+                                        try {
+                                            if (!(error.data.detail in  $scope.errors)) {
+                                                $scope.errors.push(error.data.detail)
+                                            }
+                                        }
+                                        catch (err) {
+                                            console.log(err);
                                         }
                                     }
-                                    $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
-                                    $scope.load_user_files($scope.user.id)
-                                },
-                                function (error) {
-                                    try {
-                                        if (!(error.data.detail in  $scope.errors)) {
-                                            $scope.errors.push(error.data.detail)
-                                        }
-                                    }
-                                    catch (err) {
-                                        console.log(err);
-                                    }
-                                }
-                            );
+                                );
                         }
                         ;
                     },

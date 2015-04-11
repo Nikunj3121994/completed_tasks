@@ -17,21 +17,8 @@ class UserFileSerializer(serializers.ModelSerializer):
 
     def get_my_file_url(self, obj):
         try:
-            return  obj.file.file.path
+            return  obj.file.file.url
         except (AttributeError, ObjectDoesNotExist):
             return
 
-    # def get_childrens(self, obj):
-    #     childerens = Folder_AL.objects.filter(parent__id=obj.id)
-    #     return (self.get_data(child) for child in childerens)
-    #
-    #
-    # def get_tree(self, obj):
-    #     return Folder_AL.dump_bulk()
-    #
-    # def get_self_tree(self, obj):
-    #     return Folder_AL.dump_bulk(parent=obj)
-    #
-    # def get_data(self, obj):
-    #     data = dict((i.name, obj.__dict__[i.column]) for i in obj._meta.local_fields)
-    #     return data
+
