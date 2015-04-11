@@ -209,3 +209,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 
 )
+
+#количество файлов, что может загрузить пользователь
+MAX_USER_FILES_COUNT = 10
