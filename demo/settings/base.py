@@ -212,3 +212,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 #количество файлов, что может загрузить пользователь
 MAX_USER_FILES_COUNT = 100
+MAX_USER_FILES_COUNT = 10
+

@@ -63,7 +63,7 @@ class UserFile(models.Model):
     class Meta:
         app_label = APP_LABEL
         verbose_name = _('пользовательский файл')
-        verbose_name_plural = _('пользовательские файлы')
+        verbose_name_plural = _('пользовательские файлы').pyc
 
     def __unicode__(self):
         return '%s' % self.title
@@ -111,10 +111,12 @@ def change_count_link(instance, signal, *args, **kwargs):
     files_link_count = UserFile.objects.filter(file=instance.file).count()
     logger.debug(user_files_count)
     logger.debug(files_link_count)
+
     if signal is pre_save:
         if user_files_count >= MAX_USER_FILES_COUNT:
             logger.debug('so many users files')
             raise PermissionDenied('You have so many files %s!!! You can have %s'%(user_files_count, settings.MAX_USER_FILES_COUNT))
+
     if signal is post_delete:
         if files_link_count <= 0:
             logger.debug('need to delete files')
