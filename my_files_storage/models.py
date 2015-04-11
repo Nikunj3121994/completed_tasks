@@ -63,7 +63,7 @@ class UserFile(models.Model):
     class Meta:
         app_label = APP_LABEL
         verbose_name = _('пользовательский файл')
-        verbose_name_plural = _('пользовательские файлы').pyc
+        verbose_name_plural = _('пользовательские файлы')
 
     def __unicode__(self):
         return '%s' % self.title
