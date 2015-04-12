@@ -1,12 +1,9 @@
-приложение в режиме тестирования, запустить можно через demo.
-для работы добавить в local.py
-из доработок добавить elfinder
-добавить django-rest-framework-jwt(djangorestframework-jwt)
+Тестовое приложение.
 
-#bookmarks
-INSTALLED_APPS += ('angular_rest_bookmarks', 'treebeard')
-в url.py
-if 'angular_rest_bookmarks' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('',
-        url(r'^bookmarks/', include('angular_rest_bookmarks.urls', namespace='rest_bookmarks')),
-    )
+Приложение для загрузки файлов. Отрабатывает удаление файлов, проверку файла на наличие в базе, ограничение на
+количество файлов у пользователя. И плюшек небольшой плагин для создание закладок.
+Бекенд на django-restframework.
+Фронетн djagno + angular.
+Todo: из доработок, стоит сделать все пути на фронтенде отностильными, почистить код, убрав спагетти, растащить по
+модулям. На бекенде стоит добавить юнит тесты и тесты на python-selenium, благо дело парсер на selenium + qt, было
+интересно делать.
