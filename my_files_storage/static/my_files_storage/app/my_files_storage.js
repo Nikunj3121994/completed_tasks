@@ -105,7 +105,6 @@
                                                     $scope.errors.push(users_error);
                                                 }
                                             }
-                                            $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
                                             $scope.load_user_files($scope.user.id)
                                         },
                                         function (error) {
@@ -140,8 +139,7 @@
                 function RemoveFile(file) {
                     $log.debug(file);
                     file.remove().then(
-                        function () {
-                            $scope.load_user_files($scope.user.id) //разобраться почему не изменяется dom с первого раза, с ng-click scope,apply не нужен
+                        function () {                            
                             $scope.load_user_files($scope.user.id)
                         }
                     )
@@ -150,6 +148,7 @@
                 function LoadUserData(user_id) {
                     UserFilesRestangular.one('users', user_id).getList('user_files').then(function (results) {
                         $log.debug(results);
+						$scope.user_files.lenght = 0;
                         $scope.user_files = results;
                         $scope.user.id = user_id;
                     });
