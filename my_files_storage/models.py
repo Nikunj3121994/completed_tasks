@@ -13,6 +13,7 @@ try:
 except ImportError:
     AppRegistryNotReady = Exception
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
 # from utils import bind_delete_update_file
@@ -44,7 +45,8 @@ logger = logging.getLogger(__name__)
 class File(models.Model):
     hash = models.CharField(max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
     file = models.FileField(max_length=256, upload_to="%Y/%m/%d", verbose_name=_('путь'))
-    user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name =_('пользователь'))
+    # user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name =_('пользователь'))
+    user = models.ManyToManyField(to=USER_MODEL, related_name='files', verbose_name =_('пользователь'))
 
     class Meta:
         app_label = APP_LABEL
@@ -107,20 +109,26 @@ def remove_files(instance, **kwargs):
 @receiver(pre_save, sender=UserFile)
 def change_count_link(instance, signal, *args, **kwargs):
     logger.debug(instance)
-    user_files_count = UserFile.objects.filter(user=instance.user).count()
-    files_link_count = UserFile.objects.filter(file=instance.file).count()
-    logger.debug(user_files_count)
-    logger.debug(files_link_count)
 
     if signal is pre_save:
+        user_files_count = UserFile.objects.filter(user=instance.user).count()
+        logger.debug(user_files_count)
         if user_files_count >= MAX_USER_FILES_COUNT:
             logger.debug('so many users files')
             raise PermissionDenied('You have so many files %s!!! You can have %s'%(user_files_count, settings.MAX_USER_FILES_COUNT))
 
     if signal is post_delete:
-        if files_link_count <= 0:
-            logger.debug('need to delete files')
-            # File.object
-            logger.debug(instance.file)
-            instance.file.delete()
+        try:
+            file = instance.file
+        except ObjectDoesNotExist,err:
+            logger.error(err)
+            file = None
+        if file:
+            files_link_count = UserFile.objects.filter(file=file).count()
+            logger.debug(files_link_count)
+            if files_link_count == 0:
+                logger.debug('need to delete files')
+                # File.object
+                logger.debug(instance.file)
+                instance.file.delete()
     return
