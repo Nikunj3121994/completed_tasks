@@ -58,7 +58,8 @@ INSTALLED_APPS = (
 
     'my_auth',
     'angular_rest_bookmarks',
-    'my_files_storage'
+    'my_files_storage',
+    'my_xml_json_parser',
 )
 
 #AUTH_USER_MODEL = 'my_files_storage.files'
@@ -212,5 +213,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 #количество файлов, что может загрузить пользователь
 MAX_USER_FILES_COUNT = 100
-MAX_USER_FILES_COUNT = 10
+
 
