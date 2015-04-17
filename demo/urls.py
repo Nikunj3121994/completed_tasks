@@ -36,6 +36,11 @@ if 'my_files_storage' in settings.INSTALLED_APPS:
         url(r'^my_files_storage/', include('my_files_storage.urls', namespace='my_files_storage')),
     )
 
+if 'my_xml_json_parser' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^my_xml_json_parser/', include('my_xml_json_parser.urls', namespace='my_xml_json_parser')),
+    )
+
 if settings.DEBUG:
     from django.views.static import serve
     urlpatterns += patterns('',

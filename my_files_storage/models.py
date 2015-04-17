@@ -19,9 +19,9 @@ from django.db.models.signals import pre_save, post_save, pre_delete, post_delet
 # from utils import bind_delete_update_file
 
 try:
-	MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
+    MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
 except AttributeError:
-	MAX_USER_FILES_COUNT = 100
+    MAX_USER_FILES_COUNT = 100
 
 logger = logging.getLogger(__name__)
 

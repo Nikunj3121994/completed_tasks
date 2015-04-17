@@ -3,21 +3,36 @@ from __future__ import unicode_literals
 import logging
 from rest_framework import serializers, pagination
 
-from my_xml_json_parser.models import MyUser, Post, Comments, Likes, Photo
+from my_xml_json_parser.models import MyUser, Post, Comment, Like, Photo
 
 logger = logging.getLogger(__name__)
 
-class FileSerializer(serializers.ModelSerializer):
-    url = serializers.SerializerMethodField('get_my_file_url')
 
+class MyUserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = File
-
-    def get_my_file_url(self, obj):
-        try:
-            return  obj.file.url
-        except AttributeError:
-            return
+        model = MyUser
 
 
+class PostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+
+
+class LikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Like
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Photo
