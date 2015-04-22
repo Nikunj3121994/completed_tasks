@@ -6,7 +6,7 @@ from .base import *
 DEBUG = True
 
 #количество файлов, что может загрузить пользователь
-MAX_USER_FILES_COUNT = 3
+MAX_USER_FILES_COUNT = 30
 
 DATABASES = {
     'default': {

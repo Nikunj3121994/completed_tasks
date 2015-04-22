@@ -45,8 +45,8 @@ logger = logging.getLogger(__name__)
 class File(models.Model):
     hash = models.CharField(max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
     file = models.FileField(max_length=256, upload_to="%Y/%m/%d", verbose_name=_('путь'))
-    # user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name =_('пользователь'))
-    user = models.ManyToManyField(to=USER_MODEL, related_name='files', verbose_name =_('пользователь'))
+    user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name =_('пользователь'))
+    # user = models.ManyToManyField(to=USER_MODEL, related_name='files', verbose_name =_('пользователь'))
 
     class Meta:
         app_label = APP_LABEL

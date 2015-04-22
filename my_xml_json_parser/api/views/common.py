@@ -13,7 +13,7 @@ class MyUsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMix
 
 
 class PostsListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = User.objects.all()
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
 
 
@@ -27,6 +27,6 @@ class LikesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
     serializer_class =  LikeSerializer
 
 
-class  PhotosListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+class PhotosListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
     queryset = Photo.objects.all()
     serializer_class =  PhotoSerializer

@@ -25,7 +25,7 @@ except AttributeError:
 
 logger = logging.getLogger(__name__)
 
-APP_LABEL = 'my_files_storage'
+APP_LABEL = 'my_xml_json_parser'
 
 
 try:
@@ -45,33 +45,55 @@ class Source(models.Model):
     raw_file = models.FileField(upload_to="%Y/%m/%d", verbose_name='resource_file')
     json_file = models.FileField(upload_to="%Y/%m/%d", verbose_name='json_source')
 
+    def __unicode__(self):
+        return '%s' % self.raw_file.name.split('/')[-1]
 
 class MyUser(models.Model):
     user = models.OneToOneField(USER_MODEL, related_name='my_user')
     followers = models.ManyToManyField('self', related_name='followees', symmetrical=False)
-    username = models.CharField(max_length=255)
+    nickname = models.CharField(max_length=25)
 
-
-class Like(models.Model):
-    #post = models.ForeignKey(Post, related_name='likes')
-    author = models.ForeignKey(MyUser, related_name='likes')
-    count = models.SmallIntegerField()
+    def __unicode__(self):
+        return '%s' % self.nickname
 
 
 class Post(models.Model):
-    author = models.ForeignKey(MyUser, related_name='posts')
+    author = models.ForeignKey('MyUser', related_name='posts', blank=True, null=True,)
     title = models.CharField(max_length=255)
     body = models.TextField(blank=True, null=True)
-    like = models.OneToOneField(Like, related_name='posts')
+    #like = models.OneToOneField('Like', related_name='posts')
 
+    def __unicode__(self):
+        return '%s' % self.title
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comments')
-    author = models.ForeignKey(MyUser, related_name='comments')
-    like = models.OneToOneField(Like, related_name='comments')
+    post = models.ForeignKey('Post', related_name='comments', blank=True, null=True,)
+    author = models.ForeignKey('MyUser', related_name='comments')
+    #like = models.OneToOneField('Like', related_name='comments')
+    text = models.CharField(max_length=400)
+
+    def __unicode__(self):
+        return '%s' % self.text
 
 
 class Photo(models.Model):
-    post = models.ForeignKey(Post, related_name='photos')
+    post = models.ForeignKey('Post', related_name='photos', blank=True, null=True,)
     image = models.ImageField(upload_to="%Y/%m/%d")
-    like = models.OneToOneField(Like, related_name='photos')
+    #like = models.OneToOneField('Like', related_name='photos')
+
+    def __unicode__(self):
+        return '%s' % self.image.name.split('/')[-1]
+
+
+class Like(models.Model):
+    post = models.ForeignKey('Post', related_name='likes', blank=True, null=True, )
+    comment = models.ForeignKey('Comment', related_name='likes', blank=True, null=True,)
+    photo = models.ForeignKey('Photo', related_name='likes', blank=True, null=True,)
+    author = models.ForeignKey('MyUser', related_name='likes', blank=True, null=True,)
+    count = models.SmallIntegerField()
+
+    class Meta:
+        pass
+
+    def __unicode__(self):
+        return '%s like %s %s match' % (self.post, self.author, self.count)

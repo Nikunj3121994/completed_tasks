@@ -43,11 +43,11 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
 
     def post(self, request, *args, **kwargs):
 
-        logger.debug(request)
-        logger.debug(request.content_type)
-        # logger.debug(request.stream)
-        logger.debug(request.query_params)
-        logger.debug(request.data)
+        # logger.debug(request)
+        # logger.debug(request.content_type)
+        # # logger.debug(request.stream)
+        # logger.debug(request.query_params)
+        # logger.debug(request.data)
         #print dir(request)
         # raise Exception
         # print request.FILES

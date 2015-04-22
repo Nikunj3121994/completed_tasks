@@ -15,6 +15,10 @@ class MyUserSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    author = MyUserSerializer()
+
+    # def create(self, validated_data):
+    #     pass
 
     class Meta:
         model = Post
