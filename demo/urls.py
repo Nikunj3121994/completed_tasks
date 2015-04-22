@@ -36,9 +36,9 @@ if 'my_files_storage' in settings.INSTALLED_APPS:
         url(r'^my_files_storage/', include('my_files_storage.urls', namespace='my_files_storage')),
     )
 
-if 'my_xml_json_parser' in settings.INSTALLED_APPS:
+if 'my_calculator' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-        url(r'^my_xml_json_parser/', include('my_xml_json_parser.urls', namespace='my_xml_json_parser')),
+        url(r'^my_calculator/', include('my_calculator.urls', namespace='my_calculator')),
     )
 
 if settings.DEBUG:

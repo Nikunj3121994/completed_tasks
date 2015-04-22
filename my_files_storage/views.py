@@ -10,3 +10,6 @@ except ImportError:
 class SimpleStaticView(TemplateView, AccessMixin):
     def get_template_names(self):
         return [self.kwargs.get('template_name') + ".html"]
+
+class AuthTemplateView(TemplateView, AccessMixin):
+    pass

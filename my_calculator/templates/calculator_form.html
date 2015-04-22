@@ -10,16 +10,16 @@
           href="{% static 'angular-bookmarks/lib/bootstrap/dist/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css"
           href="{% static 'angular-bookmarks/lib/bootstrap/dist/css/bootstrap-theme.css' %}">
-    <link rel="stylesheet" href="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.min.css' %}">
-    <link rel="stylesheet" href="{% static 'angular-bookmarks/css/tree.css' %}">
+{#    <link rel="stylesheet" href="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.min.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'angular-bookmarks/css/tree.css' %}">#}
 </head>
 
 
-<body ng-app="my_files_storage">
-<div class="container" ng-controller="filesCtrl">
+<body ng-app="my_calculator">
+<div class="container" ng-controller="calcCtrl">
     <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
     <table ng-cloak class="table-hover table-bordered col-md-12">
-        <thead ng-init="load_user_files({{ request.user.id }})">
+<!--        <thead ng-init="load_user_files({{ request.user.id }})">
         <tr>
             <h4>
                 Файлы пользователя&nbsp;{{ request.user.username }}
@@ -42,10 +42,50 @@
                 </h4>
             </td>
         </tr>
-        </thead>
+        </thead> -->
         {% verbatim %}
         <tbody>
-        <tr ng-repeat="file in user_files" ng-model="user_files">
+        <tr>
+            <td colspan="12" class="col-md-12">
+                 <p ng-click="" class="btn  btn-block">0{{ input }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="12" class="col-md-12">
+                {{ result }}
+            </td>
+        </tr>
+        <tr>
+            <td ng-repeat="number in [0,1,2,3,4,5,6,7,8,9]" class="col-md-1">
+                <h5>
+                    <p ng-click="" class="btn  btn-info btn-block">{{ number }}</p>
+                </h5>
+            </td>
+        </tr>
+        <tr>
+            <td ng-repeat="oper in ['/','*','+','-','=','mr','mc','c']" class="col-md-1">
+                <h5>
+                    <p ng-click="" class="btn  btn-warning btn-block">{{ oper }}</p>
+                </h5>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="12" class="col-md-12">
+                <h5>
+                    <p ng-click="" class="btn  btn-success btn-block">Результат{{ result }}</p>
+                </h5>
+            </td>
+        </tr>
+  <!--           <tr ng-repeat="numbers in [[1,2,3],[4,5,6],[7,8,9]]">
+                {{ numbers }}
+               <td ng-repeat="number in numbers" class="col-md-2">
+                    <h5>
+                        <p ng-click="" class="btn  btn-info btn-block">{{ number }}</p>
+
+                    </h5>
+                </td>
+            </tr>-->
+<!--        <tr ng-repeat="file in user_files" ng-model="user_files">
             <td class="col-md-2">
                 <h5>
                     {{ file.title }}
@@ -64,12 +104,12 @@
                 </p>
             </td>
         </tr>
-        </tbody>
+        </tbody> -->
         <tfoot>
         </tfoot>
     </table>
-    <form name="FileUploadForm">
-        Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>-->
+<!--    <form name="FileUploadForm">
+        Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>
         <input type="file" file-model="new_file"/>
 
         <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
@@ -79,7 +119,7 @@
              <strong style="color: red">{{ error }}</strong> <br>
         </p>
         </div>
-    </form>
+    </form> -->
 </div>
 
 {% endverbatim %}
@@ -95,17 +135,17 @@
 <script src="{% static 'angular-bookmarks/lib/angular-1.2.26/angular.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/lodash/lodash.min.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/restangular/src/restangular.js' %}"></script>
-<script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>
-<script src="{% static 'angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
-<script src="{% static 'angular-bookmarks/app/trees.js' %}"></script>
-<script src="{% static 'my_files_storage/lib/simple-file-upload.js' %}"></script>
+{#<script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>#}
+{#<script src="{% static 'angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>#}
+{#<script src="{% static 'angular-bookmarks/app/trees.js' %}"></script>#}
+{#<script src="{% static 'my_files_storage/lib/simple-file-upload.js' %}"></script>#}
 {#<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>#}
-<script src="{% static 'my_files_storage/app/my_files_storage.js' %}"></script>
+<script src="{% static 'my_calculator/app/my_calculator.js' %}"></script>
 {#<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>#}
 <script>
     // Add the CSRF Token
     angular
-            .module('my_files_storage') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+            .module('my_calculator') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
             .config(['$httpProvider', function ($httpProvider) {
                 $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
             }]);

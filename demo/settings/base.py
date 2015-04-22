@@ -59,7 +59,7 @@ INSTALLED_APPS = (
     'my_auth',
     'angular_rest_bookmarks',
     'my_files_storage',
-    'my_xml_json_parser',
+    'my_calculator',
 )
 
 #AUTH_USER_MODEL = 'my_files_storage.files'
