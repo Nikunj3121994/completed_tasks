@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
-from .views import MyUsersListAPIView, PostsListAPIView, CommentsListAPIView, LikesListAPIView, PhotosListAPIView
-from rest_framework.urlpatterns import format_suffix_patterns
+from .views import MyNumberListAPIView,  MyLexemmeListAPIView, MyResultDetailView
+
 
 
 urlpatterns = patterns(
     '',
-    url(r'^my_users',MyUsersListAPIView.as_view(), name='my_users'),
-    url(r'^posts', PostsListAPIView.as_view(), name='posts'),
-    url(r'^comments', CommentsListAPIView.as_view(), name='comments'),
-    url(r'^likes', LikesListAPIView.as_view(), name='likes'),
-    url(r'^photos', PhotosListAPIView.as_view(), name='photos'),
+    url(r'^((\d+)(\/|\+|\-|\*)(\d+)){1,}', MyResultDetailView.as_view(), name='my_users'),
+    url(r'^numbers$', MyNumberListAPIView.as_view(), name='my_numb'),
+    url(r'^lexemes$', MyLexemmeListAPIView.as_view(), name='my_lex'),
+    # url(r'^\d+', MyNumberListAPIView.as_view(), name='my_numb'),
+    # url(r'^\/|\+|\-|\*', MyLeksemmaListAPIView.as_view(), name='my_lex'),
+    # url(r'^comments', CommentsListAPIView.as_view(), name='comments'),
+    # url(r'^likes', LikesListAPIView.as_view(), name='likes'),
+    # url(r'^photos', PhotosListAPIView.as_view(), name='photos'),
 )

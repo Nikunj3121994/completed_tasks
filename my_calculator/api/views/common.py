@@ -1,32 +1,39 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 from rest_framework import generics
 from django.contrib.auth.models import User
-from my_xml_json_parser.models import MyUser, Post, Comment, Like, Photo
-from ..serializers import MyUserSerializer, PostSerializer, CommentSerializer, LikeSerializer, PhotoSerializer
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+
+from ..serializers import MyLeksemmaSerializer, MyNumberSerializer
 from .mixin import AccessMixin
 
 
-class MyUsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = MyUser.objects.all()
-    serializer_class = MyUserSerializer
+logger = logging.getLogger(__name__)
+
+class MyNumberListAPIView(generics.ListAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+    queryset = [{'number':number[1]} for number in enumerate(xrange(0, 10000))]
+    serializer_class = MyNumberSerializer
+    paginate_by = 100
+
+class MyLexemmeListAPIView(generics.ListAPIView,  AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+    queryset = [{'operation':r'+'}, {'operation':r'/'}, {'operation':r'*'}, {'operation':r'-'}]
+    serializer_class = MyLeksemmaSerializer
+    paginate_by = 100
 
 
-class PostsListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+class MyResultDetailView(generics.RetrieveAPIView):
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
-
-class CommentsListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-
-
-class LikesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = Like.objects.all()
-    serializer_class =  LikeSerializer
-
-
-class PhotosListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
-    queryset = Photo.objects.all()
-    serializer_class =  PhotoSerializer
+    def get(self, request, *args, **kwargs):
+        try:
+            return Response(eval(request.path.split('/api/')[-1]))
+        except (ZeroDivisionError, OverflowError, FloatingPointError),err:
+            return Response(str(err))
+        except Exception,err:
+            logger.error(err)
+            return Response(str(err))

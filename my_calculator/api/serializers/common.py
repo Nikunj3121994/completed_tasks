@@ -3,40 +3,14 @@ from __future__ import unicode_literals
 import logging
 from rest_framework import serializers, pagination
 
-from my_xml_json_parser.models import MyUser, Post, Comment, Like, Photo
 
-logger = logging.getLogger(__name__)
-
-
-class MyUserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = MyUser
+class MyNumberSerializer(serializers.BaseSerializer):
+    number = serializers.FloatField()
 
 
-class PostSerializer(serializers.ModelSerializer):
-    author = MyUserSerializer()
+class MyNumberSerializer(serializers.Serializer):
+    number = serializers.FloatField()
 
-    # def create(self, validated_data):
-    #     pass
+class MyLeksemmaSerializer(serializers.Serializer):
+    operation = serializers.CharField()
 
-    class Meta:
-        model = Post
-
-
-class CommentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Comment
-
-
-class LikeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Like
-
-
-class PhotoSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Photo

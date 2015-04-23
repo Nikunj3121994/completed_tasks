@@ -7,7 +7,7 @@ from .views import SimpleStaticView
 
 
 urlpatterns = patterns('',
-    # url(r'^api/', include('my_calculator.api.urls', namespace='api')),
+    url(r'^api/', include('my_calculator.api.urls', namespace='api')),
     url(r'^calculator_form$', TemplateView.as_view(template_name='calculator_form.html'))
 )
 
