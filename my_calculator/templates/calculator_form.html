@@ -19,35 +19,13 @@
 <div class="container" ng-controller="calcCtrl">
     <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
     <table ng-cloak class="table-hover table-bordered col-md-12">
-<!--        <thead ng-init="load_user_files({{ request.user.id }})">
-        <tr>
-            <h4>
-                Файлы пользователя&nbsp;{{ request.user.username }}
-            </h4>
-        </tr>
-        <tr>
-            <td class="col-md-2">
-                <h4>
-                    Имя
-                </h4>
-            </td>
-            <td class="col-md-4">
-                <h4>
-                    Ссылка
-                </h4>
-            </td>
-            <td class="col-md-4">
-                <h4>
-                    Действия
-                </h4>
-            </td>
-        </tr>
-        </thead> -->
+        <thead ng-init="user={{ request.user.id }}">
+        </thead>
         {% verbatim %}
         <tbody>
         <tr>
             <td colspan="12" class="col-md-12">
-                 <p ng-click="" class="btn  btn-block">0{{ input }}</p>
+                 <p ng-click="" class="btn  btn-block">Команда:&nbsp{{ calculation }}</p>
             </td>
         </tr>
         <tr>
@@ -58,71 +36,42 @@
         <tr>
             <td ng-repeat="number in [0,1,2,3,4,5,6,7,8,9]" class="col-md-1">
                 <h5>
-                    <p ng-click="" class="btn  btn-info btn-block">{{ number }}</p>
+                    <p ng-click="build_calculation($event)" class="btn  btn-info btn-block">{{ number }}</p>
                 </h5>
             </td>
         </tr>
         <tr>
-            <td ng-repeat="oper in ['/','*','+','-','=','mr','mc','c']" class="col-md-1">
+            <td ng-repeat="oper in [',','/','*','+','-','=','mr','mc',]" class="col-md-1">
                 <h5>
-                    <p ng-click="" class="btn  btn-warning btn-block">{{ oper }}</p>
+                    <p ng-click="build_calculation($event)" class="btn  btn-warning btn-block">{{ oper }}</p>
+                </h5>
+            </td>
+            <td class="col-md-1">
+                <h5>
+                    <p ng-click="reset_calculation()" class="btn  btn-warning btn-block">C</p>
                 </h5>
             </td>
         </tr>
         <tr>
             <td colspan="12" class="col-md-12">
                 <h5>
-                    <p ng-click="" class="btn  btn-success btn-block">Результат{{ result }}</p>
+                    <p ng-click="calculate()" class="btn  btn-success btn-block">Результат{{ result }}</p>
                 </h5>
             </td>
         </tr>
-  <!--           <tr ng-repeat="numbers in [[1,2,3],[4,5,6],[7,8,9]]">
-                {{ numbers }}
-               <td ng-repeat="number in numbers" class="col-md-2">
-                    <h5>
-                        <p ng-click="" class="btn  btn-info btn-block">{{ number }}</p>
+        </tbody>
+     <!--      <tr ng-repeat="numbers in [[1,2,3],[4,5,6],[7,8,9]]">
+               {{ numbers }}
+           </tr>-->
 
-                    </h5>
-                </td>
-            </tr>-->
-<!--        <tr ng-repeat="file in user_files" ng-model="user_files">
-            <td class="col-md-2">
-                <h5>
-                    {{ file.title }}
-                </h5>
-            </td>
-            <td class="col-md-2">
-                <h5>
-                    <a href="{{ file.url }}" class="btn btn-lg btn-success btn-block">скачать</a>
-                </h5>
-            </td>
-            <td class="col-md-3">
-                <p ng-click="remove_file(file)" class="btn  btn-danger btn-block">удалить</p>
-
-                <p class="btn btn-warning btn-block"
-                   bookmarks name='{{ file.title }}' user="{{ user.id }}" source="{{ file.url }}">loading
-                </p>
-            </td>
-        </tr>
-        </tbody> -->
         <tfoot>
         </tfoot>
+        {% endverbatim %}
     </table>
-<!--    <form name="FileUploadForm">
-        Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>
-        <input type="file" file-model="new_file"/>
 
-        <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
-        <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
-        <div>
-        <p ng-repeat="error in errors" ng-model="errors">
-             <strong style="color: red">{{ error }}</strong> <br>
-        </p>
-        </div>
-    </form> -->
 </div>
 
-{% endverbatim %}
+
 
 <!-- scripts -->
 <!--[if IE 8]>
@@ -133,6 +82,7 @@
 <script src="{% static 'angular-bookmarks/lib/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/angular-1.2.26/angular.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/angular-1.2.26/angular-sanitize.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/lodash/lodash.min.js' %}"></script>
 <script src="{% static 'angular-bookmarks/lib/restangular/src/restangular.js' %}"></script>
 {#<script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>#}

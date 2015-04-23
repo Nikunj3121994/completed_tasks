@@ -1,47 +1,48 @@
 (function () {
     'use strict';
 
-//    function UserFilesRestangular(Restangular) {
-//        return Restangular
-////            .withHttpConfig({transformRequest: angular.identity})
-////            .withConfig(function (RestangularConfigurer) {
-////                console.log(RestangularConfigurer);
-////                RestangularConfigurer
-////                    .setBaseUrl('/my_files_storage/api/');
-////        });
-//    };
-    function UserFilesRestangular(Restangular) {
+    function CalcRestangular(Restangular) {
         console.log(Restangular);
         return Restangular
             .withConfig(function (RestangularConfigurer) {
                 RestangularConfigurer
-                    .setBaseUrl('/my_files_storage/api/')
+                    .setBaseUrl('/my_calculator/api')
 //                    .setDefaultHttpFields({transformRequest: angular.identity});
             });
     };
 
 
-    function RestAngularFileUploader(Restangular) {
-        function uploadFileToUrl(file, uploadUrl) {
-            var fd = new FormData();
-            fd.append('file', file);
-            return UserFilesRestangular(Restangular)
-                .all(uploadUrl)
-                .withHttpConfig({transformRequest: angular.identity})
-                .post(fd, {}, {'Content-Type': undefined})
-        }
-        return {
-            'uploadFile': uploadFileToUrl
-        }
-    }
 
+    angular
+        .module('my_calculator', ['restangular', 'ngSanitize'])
+        .factory('CalcRestangular', CalcRestangular)
+        .controller('calcCtrl', function ($scope, $log, $sanitize, CalcRestangular) {
+        $scope.calculation = '';
+        $scope.result = '';
+        $scope.build_calculation = build_calculation;
+        $scope.calculate = calculate;
+        $scope.reset_calculation = reset_calculation;
 
+        function calculate() {
+            $log.debug($scope.calculation);
+            $log.debug($sanitize($scope.calculation));
+            return CalcRestangular.one('', $scope.calculation).get().then(function (data) {
+                    $log.debug(data);
+                    $scope.result = data;
+                    return data;
+             })
+        };
 
-        angular
-            .module('my_calculator', [])
-            .factory('UserFilesRestangular', UserFilesRestangular)
-            .factory('RestAngularFileUploader', RestAngularFileUploader)
-            .controller('calcCtrl', function ($scope, $log) {
+        function reset_calculation() {
+            $scope.calculation = '';
+            //angular.extend($scope.calculation, '');
+        };
+
+        function build_calculation(event) {
+            $log.debug(event);
+            $scope.calculation += $sanitize(event.target.innerText);
+        };
+
 //                $scope.numbers = (0,1,2,3,4,5,6,7,8,9)
 //                $scope.user = {};
 //                $scope.user_files = [];
