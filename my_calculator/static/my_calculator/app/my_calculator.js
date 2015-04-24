@@ -6,7 +6,7 @@
         return Restangular
             .withConfig(function (RestangularConfigurer) {
                 RestangularConfigurer
-                    .setBaseUrl('/my_calculator/api/results');
+                    .setBaseUrl('/my_calculator/api');
             });
     };
 
@@ -39,7 +39,7 @@
         .factory('LexRestangular', LexRestangular)
         .controller('calcCtrl', function ($scope, $log, $sanitize, NumRestangular, LexRestangular, CalcRestangular) {
             $scope.numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            $scope.operand = ['.', '/', '*', '+', '-'];
+            $scope.lexems = ['.', '/', '*', '+', '-'];
             $scope.calculation = '';
             $scope.savedcalculation = '';
             $scope.result = '';
@@ -62,12 +62,12 @@
             function calculate() {
                 $log.debug($scope.calculation);
                 $log.debug($sanitize($scope.calculation));
-                return CalcRestangular.one($scope.calculation).get().then(function (data) {
+                return CalcRestangular.one('results', $scope.calculation).get().then(function (data) {
                         $log.debug(data);
                         $scope.result = data;
                         reset_calculation();
                         return data;
-                 })
+                 });
             };
 
             function save_calculation(){
@@ -80,13 +80,22 @@
             };
 
             function LoadData(user_id) {
-                console.log(NumRestangular.all('').getList());
-//                UserFilesRestangular.one('users', user_id).getList('user_files').then(function (results) {
-//                    $log.debug(results);
-//                    $scope.user_files.lenght = 0;
-//                    $scope.user_files = results;
-//                    $scope.user.id = user_id;
-//                });
+                console.log(CalcRestangular.all('numbers').getList());
+                CalcRestangular.all('numbers').getList().then(function (data) {
+                    //angular.extend($scope.numbers, []);
+                    //$scope.numbers.lenght = 0;
+                    $scope.numbers = [];
+                    data.forEach(function (item) {
+                        $scope.numbers =  $scope.numbers.concat(item.number);
+                        //console.log(item);
+                    });
+                });
+                CalcRestangular.all('lexemes').getList().then(function (data) {
+                    $scope.lexems = [];
+                    data.forEach(function (item) {
+                         $scope.lexems =  $scope.lexems.concat(item.operation);
+                    });
+                });
             };
             LoadData();
         })

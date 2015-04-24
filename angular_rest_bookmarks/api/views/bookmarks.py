@@ -33,7 +33,6 @@ class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, Ajax
     ]
 
 
-
     def post(self, request, *args, **kwargs):
         logger.debug(request.DATA)
         data = [request.DATA,]

@@ -14,7 +14,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView, AccessMixin):
     serializer_class = UserSerializer
 
 
-class UsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+class UsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: переделать через permissions
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

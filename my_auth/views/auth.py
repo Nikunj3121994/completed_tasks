@@ -54,7 +54,7 @@ class LoginView(LoginBaseView):
     """
     Страница входа пользователя.
     """
-    default_redirect_url = '/my_files_storage/users_files'
+    default_redirect_url = '/'
     form_class = AuthenticationForm
     template_name = 'auth/login.html'
 

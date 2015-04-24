@@ -55,7 +55,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'rest_framework',
     #locals app
-
+    'demo',
     'my_auth',
     'angular_rest_bookmarks',
     'my_files_storage',

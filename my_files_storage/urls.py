@@ -7,7 +7,7 @@ from .views import SimpleStaticView, AuthTemplateView
 
 urlpatterns = patterns('',
     url(r'^api/', include('my_files_storage.api.urls', namespace='api')),
-    url(r'^users_files$', AuthTemplateView.as_view(template_name='users_files.html'))
+    url(r'^users_files$', AuthTemplateView.as_view(template_name='users_files.html',), name='users_files')
 )
 
 if settings.DEBUG:

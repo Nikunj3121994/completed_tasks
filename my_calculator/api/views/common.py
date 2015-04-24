@@ -14,15 +14,20 @@ from .mixin import AccessMixin
 
 logger = logging.getLogger(__name__)
 
-class MyNumberListAPIView(generics.ListAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+#todo: переделать в виде viewsets readonly
+
+class MyNumberListAPIView(generics.ListAPIView, AccessMixin):
     queryset = [{'number':number[1]} for number in enumerate(xrange(0, 10))]
     serializer_class = MyNumberSerializer
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 
-class MyLexemmeListAPIView(generics.ListAPIView,  AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+class MyLexemmeListAPIView(generics.ListAPIView,  AccessMixin):
     queryset = [{'operation':r'.'}, {'operation':r'+'}, {'operation':r'-'}, {'operation':r'*'}, {'operation':r'/'},]
     serializer_class = MyLeksemmaSerializer
-
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class MyResultDetailView(generics.RetrieveAPIView):
@@ -30,11 +35,20 @@ class MyResultDetailView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
-        #self.args
         try:
-            return Response(eval(request.path.split('/results/')[-1]))
-        except (ZeroDivisionError, OverflowError, FloatingPointError),err:
+            return Response(eval(kwargs.get('operation')))
+        except (ZeroDivisionError, OverflowError, FloatingPointError), err:
             return Response(str(err))
         except Exception,err:
-            logger.error(err)
+            logger.error(str(err))
             return Response(str(err))
+
+
+class WrongOperationView(generics.RetrieveAPIView):
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    error = 'corrupted operation'
+
+    def get(self, request, *args, **kwargs):
+
+        return Response(self.error)

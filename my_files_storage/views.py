@@ -7,9 +7,10 @@ try:
 except ImportError:
     AccessMixin = object
 
-class SimpleStaticView(TemplateView, AccessMixin):
+
+class SimpleStaticView(AccessMixin, TemplateView):
     def get_template_names(self):
         return [self.kwargs.get('template_name') + ".html"]
 
-class AuthTemplateView(TemplateView, AccessMixin):
+class AuthTemplateView(AccessMixin, TemplateView):
     pass
