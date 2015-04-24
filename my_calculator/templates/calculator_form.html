@@ -30,20 +30,26 @@
         </tr>
         <tr>
             <td colspan="12" class="col-md-12">
-                {{ result }}
+                <center><h2>{{ result }}</h2></center>
             </td>
         </tr>
         <tr>
-            <td ng-repeat="number in [0,1,2,3,4,5,6,7,8,9]" class="col-md-1">
+            </td>
+            <td ng-repeat="number in numbers" class="col-md-1">
                 <h5>
                     <p ng-click="build_calculation($event)" class="btn  btn-info btn-block">{{ number }}</p>
                 </h5>
             </td>
         </tr>
         <tr>
-            <td ng-repeat="oper in [',','/','*','+','-','=','mr','mc',]" class="col-md-1">
+            <td ng-repeat="oper in operand" class="col-md-1">
                 <h5>
                     <p ng-click="build_calculation($event)" class="btn  btn-warning btn-block">{{ oper }}</p>
+                </h5>
+            </td>
+            <td class="col-md-1">
+                <h5>
+                    <p ng-click="calculate()" class="btn  btn-warning btn-block">=</p>
                 </h5>
             </td>
             <td class="col-md-1">
@@ -51,11 +57,21 @@
                     <p ng-click="reset_calculation()" class="btn  btn-warning btn-block">C</p>
                 </h5>
             </td>
+            <td class="col-md-1">
+                <h5>
+                    <p ng-click="save_calculation()" class="btn  btn-warning btn-block">MR</p>
+                </h5>
+            </td>
+            <td class="col-md-1">
+                <h5>
+                    <p ng-click="load_calculation()" class="btn  btn-warning btn-block">MC</p>
+                </h5>
+            </td>
         </tr>
         <tr>
             <td colspan="12" class="col-md-12">
                 <h5>
-                    <p ng-click="calculate()" class="btn  btn-success btn-block">Результат{{ result }}</p>
+                    <p ng-click="calculate()" class="btn  btn-success btn-block">Результат &nbsp{{ result }}</p>
                 </h5>
             </td>
         </tr>

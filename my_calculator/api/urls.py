@@ -7,7 +7,7 @@ from .views import MyNumberListAPIView,  MyLexemmeListAPIView, MyResultDetailVie
 
 urlpatterns = patterns(
     '',
-    url(r'^((\d+)(\/|\+|\-|\*)(\d+)){1,}', MyResultDetailView.as_view(), name='my_users'),
+    url(r'^results/((\d+)(\/|\+|\-|\*)(\d+)){1,}$', MyResultDetailView.as_view(), name='my_users'),
     url(r'^numbers$', MyNumberListAPIView.as_view(), name='my_numb'),
     url(r'^lexemes$', MyLexemmeListAPIView.as_view(), name='my_lex'),
     # url(r'^\d+', MyNumberListAPIView.as_view(), name='my_numb'),
