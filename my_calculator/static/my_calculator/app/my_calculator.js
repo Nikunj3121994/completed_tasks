@@ -56,7 +56,7 @@
 
             function build_calculation(event) {
                 $log.debug(event);
-                $scope.calculation += $sanitize(event.target.innerText);
+                $scope.calculation += $sanitize(event.target.innerText||event.currentTarget.innerHTML);
             };
 
             function calculate() {

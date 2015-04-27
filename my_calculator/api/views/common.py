@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 import logging
 from rest_framework import generics
 from django.contrib.auth.models import User
