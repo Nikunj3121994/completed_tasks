@@ -14,17 +14,19 @@ from .mixin import AccessMixin
 
 logger = logging.getLogger(__name__)
 
-#todo: переделать в виде viewsets readonly
+# todo: переделать в виде viewsets readonly
+
 
 class MyNumberListAPIView(generics.ListAPIView, AccessMixin):
-    queryset = [{'number':number[1]} for number in enumerate(xrange(0, 10))]
+    queryset = [{'number': number[1]} for number in enumerate(xrange(0, 10))]
     serializer_class = MyNumberSerializer
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
 
 class MyLexemmeListAPIView(generics.ListAPIView,  AccessMixin):
-    queryset = [{'operation':r'.'}, {'operation':r'+'}, {'operation':r'-'}, {'operation':r'*'}, {'operation':r'/'},]
+    queryset = [{'operation': r'.'}, {'operation': r'+'},
+                {'operation': r'-'}, {'operation': r'*'}, {'operation': r'/'}, ]
     serializer_class = MyLeksemmaSerializer
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -39,7 +41,7 @@ class MyResultDetailView(generics.RetrieveAPIView):
             return Response(eval(kwargs.get('operation')))
         except (ZeroDivisionError, OverflowError, FloatingPointError), err:
             return Response(str(err))
-        except Exception,err:
+        except Exception, err:
             logger.error(str(err))
             return Response(str(err))
 

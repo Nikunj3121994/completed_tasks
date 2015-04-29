@@ -16,13 +16,13 @@ def convert_filesize(field):
     _extend = ('Б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб', 'Эб', 'Зб', 'Йб')
     try:
         size = int(field)
-        logger.debug('now size %f'%size)
-        for i in xrange(len(_extend)-1):
+        logger.debug('now size %f' % size)
+        for i in xrange(len(_extend) - 1):
             size, modulo = divmod(size, 1024)
             if size < 1024:
-                size += modulo/1024.0
+                size += modulo / 1024.0
                 size = ('%.2f' % size).rstrip('0').rstrip('.')
-                return '%s %s' % (size, _extend[i+1])
+                return '%s %s' % (size, _extend[i + 1])
     except IndexError:
         return '%s байт' % field
     except (ValueError, TypeError), err:
@@ -30,7 +30,7 @@ def convert_filesize(field):
         logger.error(field)
         logger.error(err)
         return None
-    except UnicodeEncodeError,err:
+    except UnicodeEncodeError, err:
         logger.error('Unicode error with field convert')
         logger.error(field)
         logger.error(err)
@@ -54,7 +54,6 @@ def bind_delete_update_file(models):
         post_delete.connect(remove_files, sender=model)
 
 
-
 def remove_old_files(sender, instance, **kwargs):
     if not instance.pk:
         return
@@ -74,7 +73,9 @@ def remove_old_files(sender, instance, **kwargs):
             try:
                 storage.delete(old_file.name)
             except Exception:
-                logger.exception("Unexpected exception while attempting to delete old file '%s'" % old_file.name)
+                logger.exception(
+                    "Unexpected exception while attempting to delete old file '%s'" % old_file.name)
+
 
 def remove_files(sender, instance, **kwargs):
     for field in instance._meta.fields:
@@ -86,5 +87,5 @@ def remove_files(sender, instance, **kwargs):
             try:
                 storage.delete(file_to_delete.name)
             except Exception:
-                logger.exception("Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)
-
+                logger.exception(
+                    "Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)

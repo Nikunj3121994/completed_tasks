@@ -11,9 +11,8 @@ from ..forms import AuthenticationForm
 
 
 class LoginBaseView(FormView):
-    """
-    Основа для страницы входа пользователя.
-    """
+
+    """Основа для страницы входа пользователя."""
     redirect_field_name = REDIRECT_FIELD_NAME
     form_class = AuthenticationForm
     default_redirect_url = settings.LOGIN_REDIRECT_URL
@@ -29,20 +28,20 @@ class LoginBaseView(FormView):
         return super(LoginBaseView, self).form_valid(form)
 
     def form_invalid(self, form):
-        #print form.errors
+        # print form.errors
         return super(LoginBaseView, self).form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super(LoginBaseView, self).get_context_data(**kwargs)
-        context['redirect_data'] = self.request.REQUEST.get(self.redirect_field_name, '')
+        context['redirect_data'] = self.request.REQUEST.get(
+            self.redirect_field_name, '')
         context['redirect_field_name'] = self.redirect_field_name
         return context
 
 
 class LogoutBaseView(TemplateView):
-    """
-    Основа для страницы выхода пользователя.
-    """
+
+    """Основа для страницы выхода пользователя."""
     default_redirect_url = settings.LOGIN_URL
 
     def post(self, request, *args, **kwargs):
@@ -51,18 +50,16 @@ class LogoutBaseView(TemplateView):
 
 
 class LoginView(LoginBaseView):
-    """
-    Страница входа пользователя.
-    """
+
+    """Страница входа пользователя."""
     default_redirect_url = '/'
     form_class = AuthenticationForm
     template_name = 'auth/login.html'
 
 
 class LogoutView(LogoutBaseView):
-    """
-    Страница выхода пользователя.
-    """
+
+    """Страница выхода пользователя."""
     default_redirect_url = '/auth/logout'   # TODO: reverse
 
     def get_template_names(self):

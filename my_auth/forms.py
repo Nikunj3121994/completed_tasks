@@ -12,23 +12,21 @@ from django.contrib.auth.models import User
 
 class UserCreateForm(forms.ModelForm):
     error_messages = {
-        'duplicate_username': "Такое имя пользователя уже существует.",
-        'password_mismatch': "Поле пароля и подтверждения пароля не совпадают.",
+        'duplicate_username': 'Такое имя пользователя уже существует.',
+        'password_mismatch': 'Поле пароля и подтверждения пароля не совпадают.',
     }
-    password1 = forms.CharField(label=_("Пароль"), widget=forms.PasswordInput, help_text=_("Придумайте пароль"))
-    password2 = forms.CharField(label="Подтверждение пароля", widget=forms.PasswordInput,
-                                help_text=_("Повторите пароль, чтобы не ошибиться"))
-                               # help_text="Enter the same password as above, for verification.")
-
-
-
+    password1 = forms.CharField(
+        label=_('Пароль'), widget=forms.PasswordInput, help_text=_('Придумайте пароль'))
+    password2 = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput,
+                                help_text=_('Повторите пароль, чтобы не ошибиться'))
+    # help_text="Enter the same password as above, for verification.")
 
     class Meta:
         model = User
         fields = ('username', 'last_name', 'first_name')
 
     def clean_username(self):
-        username = self.cleaned_data["username"]
+        username = self.cleaned_data['username']
         try:
             User._default_manager.get(username=username)
         except User.DoesNotExist:
@@ -39,8 +37,8 @@ class UserCreateForm(forms.ModelForm):
         )
 
     def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError(
                 self.error_messages['password_mismatch'],
@@ -51,7 +49,7 @@ class UserCreateForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(UserCreateForm, self).save(commit=False)
         user.is_active = True
-        user.set_password(self.cleaned_data["password1"])
+        user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
             return user
@@ -91,7 +89,7 @@ class UserUpdateForm(forms.ModelForm):
 
 class SetPasswordForm(DjangoSetPasswordForm):
     error_messages = {
-        'password_mismatch': "Пароли не совпадают.",
+        'password_mismatch': 'Пароли не совпадают.',
     }
 
     def __init__(self, *args, **kwargs):
@@ -102,16 +100,17 @@ class SetPasswordForm(DjangoSetPasswordForm):
 
 class AuthenticationForm(DjangoAuthForm):
     error_messages = {
-        'invalid_login': _("Пользователя с таким логином не обнаружено. "
-                           "Внимание: логин и пароль регистрозависимы."),
-        'invalid_password': _("Пожайлуста введите правильный пароль. "
-                            "Внимание: логин и пароль регистрозависимы."),
-        'inactive': _("Этот пользователь неактивен."),
+        'invalid_login': _('Пользователя с таким логином не обнаружено. '
+                           'Внимание: логин и пароль регистрозависимы.'),
+        'invalid_password': _('Пожайлуста введите правильный пароль. '
+                              'Внимание: логин и пароль регистрозависимы.'),
+        'inactive': _('Этот пользователь неактивен.'),
     }
 
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'placeholder': 'Имя пользователя'})
+        self.fields['username'].widget.attrs.update(
+            {'placeholder': 'Имя пользователя'})
         self.fields['password'].widget.attrs.update({'placeholder': 'Пароль'})
 
     def clean(self):
@@ -120,9 +119,9 @@ class AuthenticationForm(DjangoAuthForm):
 
         if username:
             UserModel = get_user_model()
-            #print UserModel.objects.filter(username=username).exists()
+            # print UserModel.objects.filter(username=username).exists()
             if not UserModel.objects.filter(username=username).exists():
-                #print 'x'
+                # print 'x'
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'],
                     code='invalid_login',

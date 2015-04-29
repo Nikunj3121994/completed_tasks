@@ -11,6 +11,6 @@ class MyNumberSerializer(serializers.BaseSerializer):
 class MyNumberSerializer(serializers.Serializer):
     number = serializers.FloatField()
 
+
 class MyLeksemmaSerializer(serializers.Serializer):
     operation = serializers.CharField()
-

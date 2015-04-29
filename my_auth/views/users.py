@@ -23,9 +23,8 @@ class UserListView(AccessMixin,  ListView):
 
 
 class UserDetailView(AccessMixin, DetailView):
-    """
-    View просмотра пользователя.
-    """
+
+    """View просмотра пользователя."""
     template_name = 'users/detail.html'
     pk_url_kwarg = USER_URL_PK
     model = USER_MODEL
@@ -34,9 +33,8 @@ class UserDetailView(AccessMixin, DetailView):
 
 
 class UserCreateView(CreateView):
-    """
-    View добавления нового пользователя.
-    """
+
+    """View добавления нового пользователя."""
     template_name = 'users/add.html'
     model = USER_MODEL
     form_class = UserCreateForm
@@ -44,13 +42,13 @@ class UserCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('auth:login')
-        # return reverse('auth:users:detail', kwargs={USER_URL_PK: self.object.pk})
+        # return reverse('auth:users:detail', kwargs={USER_URL_PK:
+        # self.object.pk})
 
 
 class UserUpdateView(AccessMixin, UpdateView):
-    """
-    View редактирования пользователя.
-    """
+
+    """View редактирования пользователя."""
     template_name = 'users/edit.html'
     pk_url_kwarg = USER_URL_PK
     model = USER_MODEL
@@ -63,9 +61,8 @@ class UserUpdateView(AccessMixin, UpdateView):
 
 
 class UserDeleteView(AccessMixin, DeleteView):
-    """
-    View удаления пользователя.
-    """
+
+    """View удаления пользователя."""
     template_name = 'users/delete.html'
     model = USER_MODEL
     context_object_name = 'user'
@@ -77,9 +74,8 @@ class UserDeleteView(AccessMixin, DeleteView):
 
 
 class UserChangePasswordView(AccessMixin, UpdateView):
-    """
-    View смены пароля пользователя.
-    """
+
+    """View смены пароля пользователя."""
     template_name = 'users/change_password.html'
     form_class = SetPasswordForm
     model = USER_MODEL
@@ -98,9 +94,8 @@ class UserChangePasswordView(AccessMixin, UpdateView):
 
 # TODO: объединить повторяющиеся части
 class UserBlockView(AccessMixin, DetailView):
-    """
-    View блокирования пользователя.
-    """
+
+    """View блокирования пользователя."""
     template_name = 'users/block.html'
     model = USER_MODEL
     context_object_name = 'user'
@@ -120,9 +115,8 @@ class UserBlockView(AccessMixin, DetailView):
 
 
 class UserUnblockView(AccessMixin, DetailView):
-    """
-    View разблокирования пользователя.
-    """
+
+    """View разблокирования пользователя."""
     template_name = 'users/unblock.html'
     model = USER_MODEL
     context_object_name = 'user'
@@ -147,7 +141,7 @@ class WithUserMixin(object):
         try:
             user = USER_MODEL.objects.get(pk=pk)
         except USER_MODEL.DoesNotExist:
-            raise Http404(_("No %(verbose_name)s found matching the query") %
+            raise Http404(_('No %(verbose_name)s found matching the query') %
                           {'verbose_name': USER_MODEL._meta.verbose_name})
         return user
 

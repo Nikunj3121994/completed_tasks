@@ -77,6 +77,6 @@ class IsActiveRequired(object):
 #         return roles
 
 
-class AccessMixin(LoginRequiredMixin, IsActiveRequired):#, RolesRequiredMixin):
+# , RolesRequiredMixin):
+class AccessMixin(LoginRequiredMixin, IsActiveRequired):
     pass
-

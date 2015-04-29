@@ -2,11 +2,9 @@
 from __future__ import unicode_literals
 from rest_framework import generics
 from django.contrib.auth.models import User
-from my_files_storage.models import  File, UserFile
+from my_files_storage.models import File, UserFile
 from ..serializers import FileSerializer, UserSerializer, UserFileSerializer
 from .mixin import AccessMixin
-
-
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView, AccessMixin):
@@ -14,7 +12,8 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView, AccessMixin):
     serializer_class = UserSerializer
 
 
-class UsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: переделать через permissions
+# todo: переделать через permissions
+class UsersListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

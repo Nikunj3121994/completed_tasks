@@ -12,6 +12,7 @@ from .permissions import AuthorCanEditPermission
 
 logger = logging.getLogger(__name__)
 
+
 class BookMarkTreeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Folder_AL.objects.all()
     serializer_class = BookMarkTreeSerializer
@@ -20,34 +21,35 @@ class BookMarkTreeDetail(generics.RetrieveUpdateDestroyAPIView):
     ]
 
     def pre_save(self, obj):
-        """Force author to the current user on save"""
+        """Force author to the current user on save."""
         if not obj.user:
             obj.user = self.request.user
         return super(BookMarkTreeDetail, self).pre_save(obj)
 
-class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin): #todo: добавить необходимость авторизации миксин из протокола
+
+# todo: добавить необходимость авторизации миксин из протокола
+class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, AjaxableResponseMixin):
     serializer_class = BookMarkTreeSerializer
     queryset = Folder_AL.objects.all()
     permission_classes = [
         AuthorCanEditPermission
     ]
 
-
     def post(self, request, *args, **kwargs):
         logger.debug(request.DATA)
-        data = [request.DATA,]
+        data = [request.DATA, ]
         parent_id = request.DATA.get('parent')
-        if not request.DATA['data']['user']: #TODO: убрать этот костыль
+        if not request.DATA['data']['user']:  # TODO: убрать этот костыль
             request.DATA['data']['user'] = self.request.user.id
         try:
             parent = Folder_AL.objects.get(id=parent_id)
         except MultipleObjectsReturned:
-            pass #todo: сделать колбек с ошибкой
+            pass  # todo: сделать колбек с ошибкой
         except ObjectDoesNotExist:
             parent = None
-        id = Folder_AL.load_bulk(data, parent)[0]#todo:может возвращать несколько id при работе скопом.
+        # todo:может возвращать несколько id при работе скопом.
+        id = Folder_AL.load_bulk(data, parent)[0]
         return self.render_to_json_response({'id': id}, status=200)
-
 
     def filter_queryset(self, queryset):
         user = self.request.user
@@ -55,4 +57,4 @@ class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, Ajax
             queryset = queryset.filter(user__id=user.id)
         else:
             queryset = queryset.None()
-        return queryset.filter(parent = None)
+        return queryset.filter(parent=None)

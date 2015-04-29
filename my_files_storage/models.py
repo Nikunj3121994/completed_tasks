@@ -30,10 +30,10 @@ APP_LABEL = 'my_files_storage'
 
 try:
     USER_MODEL = get_user_model()
-except AppRegistryNotReady,err:
+except AppRegistryNotReady, err:
     logger.debug(err)
     USER_MODEL = User
-except Exception,err:
+except Exception, err:
     logger.error(err)
     USER_MODEL = User
 
@@ -41,11 +41,13 @@ except Exception,err:
 logger = logging.getLogger(__name__)
 
 
-
 class File(models.Model):
-    hash = models.CharField(max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
-    file = models.FileField(max_length=256, upload_to="%Y/%m/%d", verbose_name=_('путь'))
-    user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name =_('пользователь'))
+    hash = models.CharField(
+        max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
+    file = models.FileField(
+        max_length=256, upload_to='%Y/%m/%d', verbose_name=_('путь'))
+    user = models.ManyToManyField(
+        to=USER_MODEL, through='UserFile', related_name='files', verbose_name=_('пользователь'))
     # user = models.ManyToManyField(to=USER_MODEL, related_name='files', verbose_name =_('пользователь'))
 
     class Meta:
@@ -59,8 +61,10 @@ class File(models.Model):
 
 class UserFile(models.Model):
     title = models.CharField(max_length=255, verbose_name=_('имя'))
-    file = models.ForeignKey(File, related_name='userfiles', verbose_name=_('файл'))
-    user = models.ForeignKey(User,  related_name='userfiles', verbose_name=_('пользователь'))
+    file = models.ForeignKey(
+        File, related_name='userfiles', verbose_name=_('файл'))
+    user = models.ForeignKey(
+        User,  related_name='userfiles', verbose_name=_('пользователь'))
 
     class Meta:
         app_label = APP_LABEL
@@ -71,7 +75,7 @@ class UserFile(models.Model):
         return '%s' % self.title
 
 
-#Биндим сигналы на удаление и обновление файлов
+# Биндим сигналы на удаление и обновление файлов
 @receiver(pre_save, sender=File)
 def create_hash(instance, *args, **kwargs):
     logger.debug(instance)
@@ -85,10 +89,11 @@ def create_hash(instance, *args, **kwargs):
         m.update(data)
     logger.debug(m.hexdigest())
     instance.hash = m.hexdigest()
-    older_file = File.objects.filter(hash = instance.hash)
+    older_file = File.objects.filter(hash=instance.hash)
     if older_file:
-        raise IntegrityError('object already: _pk_ %s'%older_file.first().pk)
+        raise IntegrityError('object already: _pk_ %s' % older_file.first().pk)
     return instance
+
 
 @receiver(post_delete, sender=File)
 def remove_files(instance, **kwargs):
@@ -102,7 +107,8 @@ def remove_files(instance, **kwargs):
             try:
                 storage.delete(file_to_delete.name)
             except Exception:
-                logger.exception("Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)
+                logger.exception(
+                    "Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)
 
 
 @receiver(post_delete, sender=UserFile)
@@ -115,12 +121,13 @@ def change_count_link(instance, signal, *args, **kwargs):
         logger.debug(user_files_count)
         if user_files_count >= MAX_USER_FILES_COUNT:
             logger.debug('so many users files')
-            raise PermissionDenied('You have so many files %s!!! You can have %s'%(user_files_count, settings.MAX_USER_FILES_COUNT))
+            raise PermissionDenied('You have so many files %s!!! You can have %s' % (
+                user_files_count, settings.MAX_USER_FILES_COUNT))
 
     if signal is post_delete:
         try:
             file = instance.file
-        except ObjectDoesNotExist,err:
+        except ObjectDoesNotExist, err:
             logger.error(err)
             file = None
         if file:

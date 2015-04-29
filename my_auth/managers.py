@@ -5,15 +5,12 @@ from django.contrib.auth.models import BaseUserManager as DjangoBaseUserManager
 
 
 class UserManager(DjangoBaseUserManager):
-    """
-    Менеджер модели пользователя.
-    """
+
+    """Менеджер модели пользователя."""
 
     # TODO: использовать форму ?
     def create_user(self, username, password=None, **extra_fields):
-        """
-        Создание нового пользователя.
-        """
+        """Создание нового пользователя."""
         now = timezone.now()
         if not username:
             raise ValueError('Username must be set')
@@ -23,9 +20,7 @@ class UserManager(DjangoBaseUserManager):
         return user
 
     def create_superuser(self, username, password, **extra_fields):
-        """
-        Создание нового суперпользователя.
-        """
+        """Создание нового суперпользователя."""
         u = self.create_user(username, password, **extra_fields)
         #u.is_superuser = True
         u.save(using=self._db)

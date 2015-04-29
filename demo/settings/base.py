@@ -51,10 +51,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    #loaded modules
+    # loaded modules
     'django_extensions',
     'rest_framework',
-    #locals app
+    # locals app
     'demo',
     'my_auth',
     'angular_rest_bookmarks',
@@ -114,7 +114,8 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static')),
+    os.path.normpath(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static')),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -134,7 +135,7 @@ TEMPLATE_LOADERS = (
     # 'django.template.loaders.eggs.Loader',
 )
 
-#login settings
+# login settings
 LOGIN_URL = '/auth/login'
 
 LOGGING = {
@@ -211,7 +212,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 )
 
-#количество файлов, что может загрузить пользователь
+# количество файлов, что может загрузить пользователь
 MAX_USER_FILES_COUNT = 100
-
-

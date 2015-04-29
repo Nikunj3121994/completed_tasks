@@ -8,13 +8,13 @@ from rest_framework.urlpatterns import format_suffix_patterns
 nodes_urls = patterns(
     '',
     url(r'^$', BookMarkTreeListAPIView.as_view(), name='list'),
-    url(r'^/(?P<pk>\d+)$',BookMarkTreeDetail.as_view(), name='detail'),
+    url(r'^/(?P<pk>\d+)$', BookMarkTreeDetail.as_view(), name='detail'),
 
 )
 
 urlpatterns = patterns(
     '',
-    url(r'^nodes', include(nodes_urls , namespace='nodes')),
+    url(r'^nodes', include(nodes_urls, namespace='nodes')),
     # url(r'^$', BookMarkTreeMPAPIView.as_view(), name='list'),
     # url(r'^$', BookMarkTreeALAPIView.as_view(), name='list'),
     # url(r'^/(?P<pk>\d+)$',BookMarkTreeALDetail.as_view(), name='detail'),

@@ -1,7 +1,7 @@
-#coding: utf8
+# coding: utf8
 import json
 from django.conf import settings
-from django.http import HttpResponse,StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 if 'my_auth' in settings.INSTALLED_APPS:
     try:
         from my_auth.views.mixins import AccessMixin
@@ -10,10 +10,13 @@ if 'my_auth' in settings.INSTALLED_APPS:
 
 
 class AjaxableResponseMixin(object):
-    """
-    Mixin to add AJAX support to a form.
+
+    """Mixin to add AJAX support to a form.
+
     Must be used with an object-based FormView (e.g. CreateView)
+
     """
+
     def render_to_json_response(self, context, **response_kwargs):
         data = json.dumps(context)
         response_kwargs['content_type'] = 'application/json'
@@ -38,4 +41,3 @@ class AjaxableResponseMixin(object):
             return self.render_to_json_response(data)
         else:
             return response
-

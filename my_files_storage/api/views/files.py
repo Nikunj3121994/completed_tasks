@@ -19,12 +19,12 @@ class FileDetail(generics.RetrieveUpdateDestroyAPIView, AccessMixin):
     serializer_class = FileSerializer
 
 
-class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+# todo: добавить необходимость авторизации миксин из протокола
+class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin):
     queryset = File.objects.all()
     serializer_class = FileSerializer
     # parser_classes = (parsers.FileUploadParser, )
     # parser_classes = (parsers.MultiPartParser, parsers.FileUploadParser, parsers.JSONParser)
-
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -34,7 +34,8 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
             data = serializer.data
         except IntegrityError, err:
             pk = str(err).split('_pk_ ')[-1]
-            file = File.objects.filter(pk = pk).first() #или гетом, если по нраву
+            # или гетом, если по нраву
+            file = File.objects.filter(pk=pk).first()
             serializer = self.get_serializer(file)
             data = serializer.data
             data['error'] = str(err)
@@ -48,7 +49,7 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
         # # logger.debug(request.stream)
         # logger.debug(request.query_params)
         # logger.debug(request.data)
-        #print dir(request)
+        # print dir(request)
         # raise Exception
         # print request.FILES
         # print request.QUERY_PARAMS

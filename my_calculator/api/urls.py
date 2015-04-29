@@ -10,7 +10,8 @@ urlpatterns = patterns(
     # url(r'^results/\d+\.?\d*$', MyResultDetailView.as_view(), name='my_users'),
     # url(r'^results/\d+(\+\d+){1,}$', MyResultDetailView.as_view(), name='my_users'),
     # url(r'^results/((\d+)(\/|\+|\-|\*)(\d+)){1,}$', MyResultDetailView.as_view(), name='my_users'),
-    url(r'^results/(?P<operation>(\d+\.?\d*)((\/|\+|\-|\*)(\d+\.?\d*)){1,})$', MyResultDetailView.as_view(), name='my_result'),
+    url(r'^results/(?P<operation>(\d+\.?\d*)((\/|\+|\-|\*)(\d+\.?\d*)){1,})$', MyResultDetailView.as_view(
+    ), name='my_result'),
     url(r'^results/\S*$', WrongOperationView.as_view(), name='my_error'),
     url(r'^numbers$', MyNumberListAPIView.as_view(), name='my_numb'),
     url(r'^lexemes$', MyLexemmeListAPIView.as_view(), name='my_lex'),

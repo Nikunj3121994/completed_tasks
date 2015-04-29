@@ -11,7 +11,6 @@ class BookMarkTreeSerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField('get_childrens')
     # data = serializers.SerializerMethodField('get_data')
 
-
     class Meta:
         model = Folder_AL
         # fields = [
@@ -22,7 +21,6 @@ class BookMarkTreeSerializer(serializers.ModelSerializer):
         childerens = Folder_AL.objects.filter(parent__id=obj.id)
         return (self.get_data(child) for child in childerens)
 
-
     def get_tree(self, obj):
         return Folder_AL.dump_bulk()
 
@@ -30,5 +28,6 @@ class BookMarkTreeSerializer(serializers.ModelSerializer):
         return Folder_AL.dump_bulk(parent=obj)
 
     def get_data(self, obj):
-        data = dict((i.name, obj.__dict__[i.column]) for i in obj._meta.local_fields)
+        data = dict((i.name, obj.__dict__[i.column])
+                    for i in obj._meta.local_fields)
         return data

@@ -12,6 +12,7 @@ from .mixin import AccessMixin
 
 logger = logging.getLogger(__name__)
 
+
 class UserFileDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
 
@@ -19,7 +20,8 @@ class UserFileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserFileSerializer
 
 
-class UsersFilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin): #todo: добавить необходимость авторизации миксин из протокола
+# todo: добавить необходимость авторизации миксин из протокола
+class UsersFilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin):
     queryset = UserFile.objects.all()
     serializer_class = UserFileSerializer
 
