@@ -59,7 +59,7 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
         except IntegrityError, err:
             pk = str(err).split('_pk_ ')[-1]
             # или гетом, если по нраву
-            file = File.objects.filter(pk=pk).first()
+            file = self.get_queryset().filter(pk=pk).first()
             serializer = self.get_serializer(file)
             data = serializer.data
             data['error'] = str(err)

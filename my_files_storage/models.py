@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
+import os
 from django.conf import settings
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
@@ -16,7 +17,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
-# from utils import bind_delete_update_file
+from utils import get_exif_dict
 
 try:
     MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
@@ -60,6 +61,7 @@ class Photo(File):
     load_data = models.DateField(auto_now=True, verbose_name=_('дата загрузки'))
     create_data = models.DateField(verbose_name=_('дата создания'))
     camera_info = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('производитель и модель камеры'))
+    file_size = models.PositiveIntegerField(verbose_name=_('размер файла'), blank=True, null=True)
 
     class Meta:
         app_label = APP_LABEL
@@ -91,6 +93,8 @@ def create_hash(instance, *args, **kwargs):
     """
     хэш для проверки уникальности файла
     """
+    if instance.hash:
+        return
     logger.debug(instance)
     file = instance.file.file
     import hashlib
@@ -108,7 +112,7 @@ def create_hash(instance, *args, **kwargs):
     return instance
 
 
-@receiver(pre_save, sender=Photo)
+@receiver(post_delete, sender=Photo)
 @receiver(post_delete, sender=File)
 def remove_files(instance, **kwargs):
     """
@@ -135,14 +139,14 @@ def change_count_link(instance, signal, *args, **kwargs):
 
     if signal is pre_save:
         if not MAX_USER_FILES_COUNT:
-            return
+            return instance
         user_files_count = UserFile.objects.filter(user=instance.user).count()
         logger.debug(user_files_count)
         if user_files_count >= MAX_USER_FILES_COUNT:
             logger.debug('so many users files')
             raise PermissionDenied('You have so many files %s!!! You can have %s' % (
                 user_files_count, settings.MAX_USER_FILES_COUNT))
-        return
+        return instance
 
     if signal is post_delete:
         try:
@@ -158,4 +162,44 @@ def change_count_link(instance, signal, *args, **kwargs):
                 # File.object
                 logger.debug(instance.file)
                 instance.file.delete()
-        return
+        return instance
+
+
+@receiver(post_save, sender=Photo)
+def get_filesize(instance, *args, **kwargs):
+    try:
+        if not instance.file_size:
+            file = instance.file.file
+            file_size = os.stat(instance.file.path).st_size
+            instance.file_size = file_size
+            instance.save()
+            return instance
+        return instance
+    except OSError, err:
+        logger.debug(err)
+        return instance
+    except AttributeError, err:
+        logger.debug(err)
+        return instance
+
+@receiver(post_save, sender=Photo)
+def get_camera_info(instance, *args, **kwargs):
+    try:
+        if not instance.camera_info:
+            file = instance.file.file
+            exif_dict = get_exif_dict(instance.file.path)
+            if exif_dict:
+                camera_model = exif_dict.get('Model')
+                camera_manufacturer = exif_dict.get('Make')
+                camera_info = ' '.join([camera_manufacturer, camera_model])
+                instance.camera_info = camera_info
+                instance.save()
+            return instance
+        return instance
+    except OSError, err:
+        logger.debug(err)
+        return instance
+    except AttributeError, err:
+        logger.debug(err)
+        raise
+        return instance

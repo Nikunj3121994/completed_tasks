@@ -146,7 +146,7 @@
             };
 
             function LoadUserData(user_id) {
-                UserFilesRestangular.one('users', user_id).getList('user_files').then(function (results) {
+                UserFilesRestangular.one('users', user_id).getList('user_photos').then(function (results) {
                     $log.debug(results);
                     $scope.user_files.lenght = 0;
                     $scope.user_files = results;
