@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Фото пользователя</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'angular-bookmarks/lib/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'angular-bookmarks/lib/bootstrap/dist/css/bootstrap-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.min.css' %}">
+    <link rel="stylesheet" href="{% static 'angular-bookmarks/css/tree.css' %}">
+</head>
+
+
+<body ng-app="my_photos_storage">
+<div class="container" ng-controller="photosCtrl">
+    <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
+    <table ng-cloak class="table-hover table-bordered col-md-12">
+        <thead ng-init="load_user_files({{ request.user.id }})">
+        <tr>
+            <h4>
+                Файлы пользователя&nbsp;{{ request.user.username }}
+            </h4>
+        </tr>
+        <tr>
+            <td class="col-md-2">
+                <h4>
+                    Имя
+                </h4>
+            </td>
+            <td class="col-md-4">
+                <h4>
+                    Ссылка
+                </h4>
+            </td>
+            <td class="col-md-4">
+                <h4>
+                    Действия
+                </h4>
+            </td>
+        </tr>
+        </thead>
+        {% verbatim %}
+        <tbody>
+        <tr ng-repeat="file in user_files" ng-model="user_files">
+            <td class="col-md-2">
+                <h5>
+                    {{ file.title }}
+                </h5>
+            </td>
+            <td class="col-md-2">
+                <h5>
+                    <a href="{{ file.url }}" class="btn btn-lg btn-success btn-block">скачать</a>
+                </h5>
+            </td>
+            <td class="col-md-3">
+                <p ng-click="remove_file(file)" class="btn  btn-danger btn-block">удалить</p>
+
+                <p class="btn btn-warning btn-block"
+                   bookmarks name='{{ file.title }}' user="{{ user.id }}" source="{{ file.url }}">loading
+                </p>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+    <form name="FileUploadForm">
+        Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>-->
+        <input type="file" file-model="new_file"/>
+
+        <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
+        <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
+        <div>
+        <p ng-repeat="error in errors" ng-model="errors">
+             <strong style="color: red">{{ error }}</strong> <br>
+        </p>
+        </div>
+    </form>
+</div>
+
+{% endverbatim %}
+
+<!-- scripts -->
+<!--[if IE 8]>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+<![endif]-->
+
+<script src="{% static 'angular-bookmarks/lib/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/angular-1.2.26/angular.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/lodash/lodash.min.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/restangular/src/restangular.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>
+<script src="{% static 'angular-bookmarks/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
+<script src="{% static 'angular-bookmarks/app/trees.js' %}"></script>
+<script src="{% static 'my_files_storage/lib/simple-file-upload.js' %}"></script>
+{#<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>#}
+<script src="{% static 'my_files_storage/app/my_photos_storage.js' %}"></script>
+{#<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>#}
+<script>
+    // Add the CSRF Token
+    angular
+            .module('my_photos_storage') // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+            .config(['$httpProvider', function ($httpProvider) {
+                $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+            }]);
+</script>
+</body>
+</html>
+
