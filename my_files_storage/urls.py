@@ -9,7 +9,9 @@ urlpatterns = patterns('',
                        url(r'^api/',
                            include('my_files_storage.api.urls', namespace='api')),
                        url(r'^users_files$', AuthTemplateView.as_view(
-                           template_name='users_files.html',), name='users_files')
+                           template_name='users_files.html',), name='users_files'),
+                       url(r'^users_photos$', AuthTemplateView.as_view(
+                           template_name='users_photos.html',), name='users_photos')
                        )
 
 if settings.DEBUG:

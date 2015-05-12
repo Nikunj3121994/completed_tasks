@@ -10,10 +10,8 @@ users_urls = patterns(
     '',
     url(r'^$', UsersListAPIView.as_view(), name='list'),
     url(r'^/(?P<pk>\d+)$', UserDetail.as_view(), name='detail'),
-    url(r'^/(?P<pk>\d+)/user_files$',
-        UserFilestList.as_view(), name='userfile-list'),
-    url(r'^/(\d+)/user_files/(?P<id>\d+)$',
-        UserFileDetail.as_view(), name='detail'),
+    url(r'^/(?P<pk>\d+)/user_files$', UserFilestList.as_view(), name='userfile-list'),
+    url(r'^/(\d+)/user_files/(?P<id>\d+)$', UserFileDetail.as_view(), name='detail'),
 
 )
 
@@ -29,14 +27,21 @@ files_urls = patterns(
     '',
     url(r'^$', FilesListAPIView.as_view(), name='list'),
     url(r'^/(?P<pk>[0-9a-zA-Z_-]+)$', FileDetail.as_view(), name='detail'),
-    url(r'^/(?P<pk>[0-9a-zA-Z_-]+)/users$',
-        FileUserstList.as_view(), name='fileuser-list'),
+    url(r'^/(?P<pk>[0-9a-zA-Z_-]+)/users$', FileUserstList.as_view(), name='fileuser-list'),
+)
+
+files_urls = patterns(
+    '',
+    url(r'^$', FilesListAPIView.as_view(), name='list'),
+    url(r'^/(?P<pk>[0-9a-zA-Z_-]+)$', FileDetail.as_view(), name='detail'),
+    url(r'^/(?P<pk>[0-9a-zA-Z_-]+)/users$', FileUserstList.as_view(), name='fileuser-list'),
 )
 
 urlpatterns = patterns(
     '',
     url(r'^users', include(users_urls, namespace='users')),
-    url(r'^files', include(files_urls, namespace='files')),
+    # url(r'^files', include(files_urls, namespace='files')),
+    url(r'^(?P<type>(files|photos))$', include(files_urls, namespace='files')),
     url(r'^users_files', include(users_files_urls, namespace='users_files')),
 
 )

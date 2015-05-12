@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
+from django.http import Http404
 from django.db import IntegrityError
 from django.contrib.auth.models import User
 from rest_framework.request import Request
 from rest_framework import generics, parsers
 from rest_framework.response import Response
 from rest_framework import status
-from my_files_storage.models import File
-from ..serializers import FileSerializer, UserSerializer
+from my_files_storage.models import File, Photo
+from ..serializers import FileSerializer, PhotoSerializer, UserSerializer
 from .mixin import AccessMixin
 
 logger = logging.getLogger(__name__)
@@ -19,12 +20,35 @@ class FileDetail(generics.RetrieveUpdateDestroyAPIView, AccessMixin):
     serializer_class = FileSerializer
 
 
-# todo: добавить необходимость авторизации миксин из протокола
 class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin):
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+    queryset_dict = {
+        'files':File.objects.all(),
+        'photos':Photo.objects.all(),
+    }
+    serializer_class_dict = {
+        'files':FileSerializer,
+        'photos':PhotoSerializer,
+    }
+
+
     # parser_classes = (parsers.FileUploadParser, )
     # parser_classes = (parsers.MultiPartParser, parsers.FileUploadParser, parsers.JSONParser)
+    def get_queryset(self):
+        type = self.kwargs.get('type')
+        try:
+            return  self.queryset_dict[type]
+        except KeyError,err:
+            raise Http404
+
+        # return super(FilesListAPIView, self).get_queryset()
+
+    def get_serializer_class(self):
+        type = self.kwargs.get('type')
+        try:
+            return  self.serializer_class_dict[type]
+        except KeyError,err:
+            raise Http404
+        # return super(FilesListAPIView, self).get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

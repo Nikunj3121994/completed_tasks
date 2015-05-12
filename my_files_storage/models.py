@@ -21,7 +21,7 @@ from django.db.models.signals import pre_save, post_save, pre_delete, post_delet
 try:
     MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
 except AttributeError:
-    MAX_USER_FILES_COUNT = 100
+    MAX_USER_FILES_COUNT = 0
 
 logger = logging.getLogger(__name__)
 
@@ -42,13 +42,9 @@ logger = logging.getLogger(__name__)
 
 
 class File(models.Model):
-    hash = models.CharField(
-        max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
-    file = models.FileField(
-        max_length=256, upload_to='%Y/%m/%d', verbose_name=_('путь'))
-    user = models.ManyToManyField(
-        to=USER_MODEL, through='UserFile', related_name='files', verbose_name=_('пользователь'))
-    # user = models.ManyToManyField(to=USER_MODEL, related_name='files', verbose_name =_('пользователь'))
+    hash = models.CharField(max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
+    file = models.FileField(max_length=256, upload_to='%Y/%m/%d', verbose_name=_('путь'))
+    user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name=_('пользователь'))
 
     class Meta:
         app_label = APP_LABEL
@@ -59,12 +55,25 @@ class File(models.Model):
         return '%s' % self.file.name.split('/')[-1]
 
 
+class Photo(File):
+    superclass = models.OneToOneField('File', primary_key=True, db_column='id', parent_link=True)
+    load_data = models.DateField(auto_now=True, verbose_name=_('дата загрузки'))
+    create_data = models.DateField(verbose_name=_('дата создания'))
+    camera_info = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('производитель и модель камеры'))
+
+    class Meta:
+        app_label = APP_LABEL
+        verbose_name = _('фотография')
+        verbose_name_plural = _('фотографии')
+
+    def __unicode__(self):
+        return '%s' % self.file.name.split('/')[-1]
+
+
 class UserFile(models.Model):
     title = models.CharField(max_length=255, verbose_name=_('имя'))
-    file = models.ForeignKey(
-        File, related_name='userfiles', verbose_name=_('файл'))
-    user = models.ForeignKey(
-        User,  related_name='userfiles', verbose_name=_('пользователь'))
+    file = models.ForeignKey('File', related_name='userfiles', verbose_name=_('файл'))
+    user = models.ForeignKey(USER_MODEL,  related_name='userfiles', verbose_name=_('пользователь'))
 
     class Meta:
         app_label = APP_LABEL
@@ -76,8 +85,12 @@ class UserFile(models.Model):
 
 
 # Биндим сигналы на удаление и обновление файлов
+@receiver(pre_save, sender=Photo)
 @receiver(pre_save, sender=File)
 def create_hash(instance, *args, **kwargs):
+    """
+    хэш для проверки уникальности файла
+    """
     logger.debug(instance)
     file = instance.file.file
     import hashlib
@@ -95,8 +108,12 @@ def create_hash(instance, *args, **kwargs):
     return instance
 
 
+@receiver(pre_save, sender=Photo)
 @receiver(post_delete, sender=File)
 def remove_files(instance, **kwargs):
+    """
+    Удаление файла с накопителя при удалиние инстанса
+    """
     logger.debug(instance)
     for field in instance._meta.fields:
         if not isinstance(field, models.FileField):
@@ -117,12 +134,15 @@ def change_count_link(instance, signal, *args, **kwargs):
     logger.debug(instance)
 
     if signal is pre_save:
+        if not MAX_USER_FILES_COUNT:
+            return
         user_files_count = UserFile.objects.filter(user=instance.user).count()
         logger.debug(user_files_count)
         if user_files_count >= MAX_USER_FILES_COUNT:
             logger.debug('so many users files')
             raise PermissionDenied('You have so many files %s!!! You can have %s' % (
                 user_files_count, settings.MAX_USER_FILES_COUNT))
+        return
 
     if signal is post_delete:
         try:
@@ -138,4 +158,4 @@ def change_count_link(instance, signal, *args, **kwargs):
                 # File.object
                 logger.debug(instance.file)
                 instance.file.delete()
-    return
+        return

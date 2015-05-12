@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import logging
 from rest_framework import serializers, pagination
 
-from my_files_storage.models import File, UserFile
+from my_files_storage.models import File, Photo, UserFile
 
 logger = logging.getLogger(__name__)
 
@@ -19,3 +19,19 @@ class FileSerializer(serializers.ModelSerializer):
             return obj.file.url
         except AttributeError:
             return
+
+
+class PhotoSerializer(FileSerializer):
+
+    class Meta:
+        model = Photo
+    # url = serializers.SerializerMethodField('get_my_file_url')
+    #
+    # class Meta:
+    #     model = Photo
+    #
+    # def get_my_file_url(self, obj):
+    #     try:
+    #         return obj.file.url
+    #     except AttributeError:
+    #         return
