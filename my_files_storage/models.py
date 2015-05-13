@@ -8,7 +8,8 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django import forms
-from django.core.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied
+# from django.core.exceptions import PermissionDenied
 try:
     from django.core.exceptions import AppRegistryNotReady
 except ImportError:
@@ -58,8 +59,8 @@ class File(models.Model):
 
 class Photo(File):
     superclass = models.OneToOneField('File', primary_key=True, db_column='id', parent_link=True)
-    load_data = models.DateField(auto_now=True, verbose_name=_('дата загрузки'))
-    create_data = models.DateField(verbose_name=_('дата создания'))
+    load_data = models.DateTimeField(auto_now=True, verbose_name=_('дата загрузки'))
+    create_data = models.DateTimeField(verbose_name=_('дата создания'), blank=True)
     camera_info = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('производитель и модель камеры'))
     file_size = models.PositiveIntegerField(verbose_name=_('размер файла'), blank=True, null=True)
 
@@ -86,32 +87,8 @@ class UserFile(models.Model):
         return '%s' % self.title
 
 
+
 # Биндим сигналы на удаление и обновление файлов
-@receiver(pre_save, sender=Photo)
-@receiver(pre_save, sender=File)
-def create_hash(instance, *args, **kwargs):
-    """
-    хэш для проверки уникальности файла
-    """
-    if instance.hash:
-        return
-    logger.debug(instance)
-    file = instance.file.file
-    import hashlib
-    m = hashlib.md5()
-    while True:
-        data = file.read(8000)
-        if not data:
-            break
-        m.update(data)
-    logger.debug(m.hexdigest())
-    instance.hash = m.hexdigest()
-    older_file = File.objects.filter(hash=instance.hash)
-    if older_file:
-        raise IntegrityError('object already: _pk_ %s' % older_file.first().pk)
-    return instance
-
-
 @receiver(post_delete, sender=Photo)
 @receiver(post_delete, sender=File)
 def remove_files(instance, **kwargs):
@@ -132,9 +109,39 @@ def remove_files(instance, **kwargs):
                     "Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)
 
 
+@receiver(pre_save, sender=Photo)
+@receiver(pre_save, sender=File)
+def create_hash(instance, *args, **kwargs):
+    """
+    хэш для проверки уникальности файла, проверка в моделях, а не в формах/валидаторах во избежания коллизий
+    """
+    if instance.hash:
+        return
+    logger.debug(instance)
+    file = instance.file.file
+    import hashlib
+    m = hashlib.md5()
+    while True:
+        data = file.read(8000)
+        if not data:
+            break
+        m.update(data)
+    logger.debug(m.hexdigest())
+    instance.hash = m.hexdigest()
+    older_file = File.objects.filter(hash=instance.hash)
+    if older_file:
+        raise PermissionDenied('object already: _pk_ %s' % older_file.first().pk)
+        #raise IntegrityError('object already: _pk_ %s' % older_file.first().pk)
+    return instance
+
+
+
 @receiver(post_delete, sender=UserFile)
 @receiver(pre_save, sender=UserFile)
 def change_count_link(instance, signal, *args, **kwargs):
+    """
+    проверка количества доступных файлов для пользователя, проверка в моделях, а не в формах/валидаторах во избежания коллизий
+    """
     logger.debug(instance)
 
     if signal is pre_save:
@@ -165,6 +172,10 @@ def change_count_link(instance, signal, *args, **kwargs):
         return instance
 
 
+"""
+при больших нагрузках перетащить по celery, с отложенной обработкой, на фронтенде сделать циклический запрос ajax
+в модели добавить is_active булевский.
+"""
 @receiver(post_save, sender=Photo)
 def get_filesize(instance, *args, **kwargs):
     try:
@@ -181,6 +192,7 @@ def get_filesize(instance, *args, **kwargs):
     except AttributeError, err:
         logger.debug(err)
         return instance
+
 
 @receiver(post_save, sender=Photo)
 def get_camera_info(instance, *args, **kwargs):

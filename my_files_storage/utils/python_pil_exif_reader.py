@@ -13,7 +13,7 @@ def get_exif_dict(filename):
         im = Image.open(filename)
         im.verify()
         exif = im._getexif()
-    except IOError,err:
+    except (IOError, AttributeError), err:
         logger.error(err)
         return result
     if exif and exif.items():

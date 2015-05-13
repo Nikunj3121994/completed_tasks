@@ -4,6 +4,7 @@ import logging
 from django.http import Http404
 from django.db import IntegrityError
 from django.contrib.auth.models import User
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework import generics, parsers
 from rest_framework.response import Response
@@ -30,17 +31,12 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
         'photos':PhotoSerializer,
     }
 
-
-    # parser_classes = (parsers.FileUploadParser, )
-    # parser_classes = (parsers.MultiPartParser, parsers.FileUploadParser, parsers.JSONParser)
     def get_queryset(self):
         type = self.kwargs.get('type')
         try:
             return  self.queryset_dict[type]
         except KeyError,err:
             raise Http404
-
-        # return super(FilesListAPIView, self).get_queryset()
 
     def get_serializer_class(self):
         type = self.kwargs.get('type')
@@ -52,34 +48,16 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        try:
-            self.perform_create(serializer)
-            data = serializer.data
-        except IntegrityError, err:
-            pk = str(err).split('_pk_ ')[-1]
-            # или гетом, если по нраву
-            file = self.get_queryset().filter(pk=pk).first()
-            serializer = self.get_serializer(file)
-            data = serializer.data
-            data['error'] = str(err)
+        if not serializer.is_valid():
+            raise PermissionDenied(serializer.errors)
+
+        print serializer
+        self.perform_create(serializer)
+        data = serializer.data
         headers = self.get_success_headers(serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
     def post(self, request, *args, **kwargs):
-
-        # logger.debug(request)
-        # logger.debug(request.content_type)
-        # # logger.debug(request.stream)
-        # logger.debug(request.query_params)
-        # logger.debug(request.data)
-        # print dir(request)
-        # raise Exception
-        # print request.FILES
-        # print request.QUERY_PARAMS
-        # print request._CONTENTTYPE_PARAM
-        # print request._METHOD_PARAM
-        # print self.request.data
         return super(FilesListAPIView, self).post(request, *args, **kwargs)
 
 

@@ -40,7 +40,7 @@ urlpatterns = patterns(
     '',
     url(r'^users', include(users_urls, namespace='users')),
     # url(r'^files', include(files_urls, namespace='files')),
-    url(r'^(?P<type>(files|photos))$', include(files_urls, namespace='files')),
+    url(r'^(?P<type>(files|photos))', include(files_urls, namespace='files')),
     url(r'^users_files', include(users_files_urls, namespace='users_files')),
 
 )
