@@ -23,3 +23,18 @@ def get_exif_dict(filename):
             result[decoded] = value
     return result
 
+def get_crop(filename, new_height=0, new_width=0):
+    try:
+        im = Image.open(filename)
+        im.verify()
+        width, height = im.size
+        left = (width - new_height)/2
+        top = (height - new_height)/2
+        right = (width + new_width)/2
+        bottom = (height + new_height)/2
+        im.crop((left,top, right, bottom))
+        return im
+    except (IOError, AttributeError), err:
+        logger.error(err)
+        raise
+        return

@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
-from utils import get_exif_dict
+from utils import get_exif_dict, get_crop
 
 try:
     MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 class File(models.Model):
     hash = models.CharField(max_length=255, unique=True, blank=True, verbose_name=_('хэш'))
-    file = models.FileField(max_length=256, upload_to='%Y/%m/%d', verbose_name=_('путь'))
+    file = models.FileField(upload_to='%Y/%m/%d', verbose_name=_('путь'))
     user = models.ManyToManyField(to=USER_MODEL, through='UserFile', related_name='files', verbose_name=_('пользователь'))
 
     class Meta:
@@ -63,6 +63,7 @@ class Photo(File):
     create_data = models.DateTimeField(verbose_name=_('дата создания'), blank=True)
     camera_info = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('производитель и модель камеры'))
     file_size = models.PositiveIntegerField(verbose_name=_('размер файла'), blank=True, null=True)
+    crop_image = models.ImageField(upload_to='%Y/%m/%d', verbose_name=_('миниатюра'), blank=True, null=True)
 
     class Meta:
         app_label = APP_LABEL
@@ -215,3 +216,23 @@ def get_camera_info(instance, *args, **kwargs):
         logger.debug(err)
         raise
         return instance
+
+# @receiver(post_save, sender=Photo)
+# def get_crop_image(instance, *args, **kwargs):
+#     try:
+#         if not instance.crop_image:
+#             file = instance.file.file
+#             logger.debug(file)
+#             cropped_image = get_crop(file, 100, 100)
+#             if cropped_image:
+#                 instance.crop_image = cropped_image
+#                 instance.save()
+#             return instance
+#         return instance
+#     except OSError, err:
+#         logger.debug(err)
+#         return instance
+#     except AttributeError, err:
+#         logger.debug(err)
+#         raise
+#         return instance

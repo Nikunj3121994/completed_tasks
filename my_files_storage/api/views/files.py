@@ -50,8 +50,6 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             raise PermissionDenied(serializer.errors)
-
-        print serializer
         self.perform_create(serializer)
         data = serializer.data
         headers = self.get_success_headers(serializer.data)

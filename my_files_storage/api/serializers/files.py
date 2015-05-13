@@ -53,9 +53,11 @@ class PhotoSerializer(FileSerializer):
 
     def validate_file(self, value):
         mime = magic.Magic(mime=True)
-        mime_type = mime.from_buffer(deepcopy(value).read())
+        mime_type = mime.from_buffer(value.read())
         if 'image' not in mime_type:
             raise serializers.ValidationError('its not image its %s'%mime_type)
+        else:
+            value.seek(0, 0)
         exif = get_exif_dict(value)
         if 'DateTime' not in exif:
             raise serializers.ValidationError('cannot take photo create time')
