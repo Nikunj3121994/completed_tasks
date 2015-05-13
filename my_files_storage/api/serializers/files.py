@@ -59,13 +59,17 @@ class PhotoSerializer(FileSerializer):
         else:
             value.seek(0, 0)
         exif = get_exif_dict(value)
-        if 'DateTime' not in exif:
-            raise serializers.ValidationError('cannot take photo create time')
-        else:
+        if 'DateTime' in exif:
             create_data = exif['DateTime']
-            foto_created_time = datetime.datetime.strptime(create_data, '%Y:%m:%d %H:%M:%S')
-            self.validate_create_data(foto_created_time)
-            return value
+        elif 'DateTimeOriginal' in exif:
+            create_data = exif['DateTimeOriginal']
+        elif 'DateTimeDigitized' in exif:
+            create_data = exif['DateTimeDigitized']
+        else:
+            raise serializers.ValidationError('cannot take photo create time')
+        foto_created_time = datetime.datetime.strptime(create_data, '%Y:%m:%d %H:%M:%S')
+        self.validate_create_data(foto_created_time)
+        return value
 
     def validate_create_data(self, value):
         naive_time = value.replace(tzinfo=None)

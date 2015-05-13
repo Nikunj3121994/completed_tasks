@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
-from utils import get_exif_dict, get_crop
+from utils import get_exif_dict, get_thumb
 
 try:
     MAX_USER_FILES_COUNT = settings.MAX_USER_FILES_COUNT
@@ -199,8 +199,8 @@ def get_filesize(instance, *args, **kwargs):
 def get_camera_info(instance, *args, **kwargs):
     try:
         if not instance.camera_info:
-            file = instance.file.file
-            exif_dict = get_exif_dict(instance.file.path)
+            file_path = instance.file.path
+            exif_dict = get_exif_dict(file_path)
             if exif_dict:
                 camera_model = exif_dict.get('Model')
                 camera_manufacturer = exif_dict.get('Make')
@@ -217,22 +217,15 @@ def get_camera_info(instance, *args, **kwargs):
         raise
         return instance
 
-# @receiver(post_save, sender=Photo)
-# def get_crop_image(instance, *args, **kwargs):
-#     try:
-#         if not instance.crop_image:
-#             file = instance.file.file
-#             logger.debug(file)
-#             cropped_image = get_crop(file, 100, 100)
-#             if cropped_image:
-#                 instance.crop_image = cropped_image
-#                 instance.save()
-#             return instance
-#         return instance
-#     except OSError, err:
-#         logger.debug(err)
-#         return instance
-#     except AttributeError, err:
-#         logger.debug(err)
-#         raise
-#         return instance
+@receiver(post_save, sender=Photo)
+def get_crop_image(instance, *args, **kwargs):
+    try:
+        if not instance.crop_image:
+            instance = get_thumb(instance, 'file', 'crop_image', 100, 100)
+            return instance
+    except OSError, err:
+        logger.debug(err)
+        return instance
+    except AttributeError, err:
+        logger.debug(err)
+        return instance
