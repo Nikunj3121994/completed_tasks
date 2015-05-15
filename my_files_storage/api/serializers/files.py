@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 try:
     MAX_DAYS_TO_OLD = settings.MAX_DAYS_TO_OLD
 except AttributeError:
-    MAX_DAYS_TO_OLD = 365
+    MAX_DAYS_TO_OLD = 0
 
 
 
@@ -74,7 +74,7 @@ class PhotoSerializer(FileSerializer):
     def validate_create_data(self, value):
         naive_time = value.replace(tzinfo=None)
         time_delta = datetime.datetime.now() - naive_time
-        if time_delta.days > MAX_DAYS_TO_OLD:
+        if MAX_DAYS_TO_OLD and time_delta.days > MAX_DAYS_TO_OLD:
             raise serializers.ValidationError('photo so old')
         self.photo_create_data = naive_time #foto_created_time_to_django
         return naive_time

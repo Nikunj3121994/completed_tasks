@@ -7,7 +7,7 @@ DEBUG = True
 
 # количество файлов, что может загрузить пользователь
 MAX_USER_FILES_COUNT = 34
-MAX_DAYS_TO_OLD = 3651
+MAX_DAYS_TO_OLD = 365
 
 DATABASES = {
     # 'default': {

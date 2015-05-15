@@ -122,6 +122,7 @@
                             ;
                         },
                         function (errors) {
+                            console.log(errors)
                             try {
                                 for (var error in errors.data) {
                                     if (!(error in  $scope.errors)) {
