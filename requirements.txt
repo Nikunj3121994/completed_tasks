@@ -3,3 +3,4 @@ django-treebeard
 django_extensions
 djangorestframework
 python-magic
+Pillow
