@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import importlib
-
+import datetime
 import os
 import logging
 from django.db import models
@@ -32,6 +32,19 @@ def convert_filesize(field):
         return None
     except UnicodeEncodeError, err:
         logger.error('Unicode error with field convert')
+        logger.error(field)
+        logger.error(err)
+        return field
+
+def convert_data(field, format='%Y-%m-%d %H:%M:%S'):
+    try:
+        naive_data = field.replace(tzinfo=None)
+        return datetime.datetime.strftime(naive_data, format)
+    except AttributeError, err:
+        logger.error(field)
+        logger.error(err)
+        return field
+    except Exception, err:
         logger.error(field)
         logger.error(err)
         return field

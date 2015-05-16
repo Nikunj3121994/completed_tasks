@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from rest_framework import serializers, pagination
 from my_files_storage.models import File, Photo, UserFile
-from my_files_storage.utils import get_exif_dict
+from my_files_storage.utils import get_exif_dict, convert_filesize, convert_data
 
 logger = logging.getLogger(__name__)
 
@@ -40,10 +40,14 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class PhotoSerializer(FileSerializer):
+    file_size = serializers.SerializerMethodField('humanize_file_size')
+    create_data = serializers.SerializerMethodField('humanize_create_data')
+    load_data = serializers.SerializerMethodField('humanize_load_data')
 
     class Meta:
         model = Photo
 
+    #валидация
     def validate(self, data):
         if not 'create_data' in data and not self.photo_create_data:
             raise serializers.ValidationError('cant find photo create time')
@@ -79,3 +83,30 @@ class PhotoSerializer(FileSerializer):
         self.photo_create_data = naive_time #foto_created_time_to_django
         return naive_time
 
+    #работа с отображением полей
+    def humanize_file_size(self, obj):
+        try:
+            return convert_filesize(obj.file_size)
+        except AttributeError, err:
+            logger.error(err)
+        except Exception, err:
+            logger.error(err)
+            return obj.file_size
+
+    def humanize_create_data(self, obj):
+        try:
+            return convert_data(obj.create_data, '%Y-%m-%d %H:%M:%S')
+        except AttributeError, err:
+            logger.error(err)
+        except Exception, err:
+            logger.error(err)
+            return obj.create_data
+
+    def humanize_load_data(self, obj):
+        try:
+            return convert_data(obj.load_data, '%Y-%m-%d %H:%M:%S')
+        except AttributeError, err:
+            logger.error(err)
+        except Exception, err:
+            logger.error(err)
+            return obj.load_data
