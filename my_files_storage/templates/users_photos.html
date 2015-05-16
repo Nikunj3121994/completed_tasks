@@ -41,22 +41,22 @@
                     Производитель и модель камеры
                 </h4>
             </td>
-            <td class="col-md-1">
+            <td class="col-md-2">
                 <h4>
                     Дата создания фото
                 </h4>
             </td>
-            <td class="col-md-1">
+            <td class="col-md-2">
                 <h4>
                     Дата загрузки фото
                 </h4>
             </td>
-            <td class="col-md-1">
+            <td class="col-md-2">
                 <h4>
                     Размер файла
                 </h4>
             </td>
-            <td class="col-md-2">
+            <td class="col-md-1">
                 <h4>
                     Действия
                 </h4>
@@ -81,22 +81,22 @@
                     {{ file.camera_info }}
                 </h4>
             </td>
-            <td class="col-md-1">
+            <td class="col-md-2">
                 <h4>
                     {{ file.create_data }}
                 </h4>
             </td>
-            <td class="col-md-1">
+            <td class="col-md-2">
                 <h4>
                     {{ file.load_data }}
                 </h4>
             </td>
-            <td class="col-md-1">
+            <td class="col-md-2">
                 <h4>
-                    {{ file.file_size }} &nbsp; байт
+                    {{ file.file_size }}
                 </h4>
             </td>
-            <td class="col-md-2">
+            <td class="col-md-1">
                 <p ng-click="remove_file(file)" class="btn  btn-danger btn-block">удалить</p>
             </td>
         </tr>
@@ -105,16 +105,37 @@
         </tfoot>
     </table>
     <form name="FileUploadForm">
-        Файл для загрузки:  <!--<input type="file" name="new_file" ng-model="new_file.file" required>-->
-        <input type="file" file-model="new_file"/>
+        <ul style="list-style-type: none">
+            <li>
+                <p>
+                    Имя файла:<br>
+                    <input type="text" ng-model="filename">
+                </p>
+                    Файл для загрузки:
+                    <input type="file" file-model="new_file">
+            </li>
+            <li>
+                <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
+                <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span>
+            </li>
+            <li>
+                <p ng-repeat="error in errors" ng-model="errors">
+                    <strong style="color: red">{{ error }}</strong> <br>
+                </p>
+            </li>
+        </ul>
+        <!--Название файла:-->
+        <!--<input type="text" ng-model="filename">-->
+        <!--Файл для загрузки:  &lt;!&ndash;<input type="file" name="new_file" ng-model="new_file.file" required>&ndash;&gt;-->
+        <!--<input type="file" file-model="new_file"/>-->
 
-        <p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>
-        <span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span><br>
-        <div>
-        <p ng-repeat="error in errors" ng-model="errors">
-             <strong style="color: red">{{ error }}</strong> <br>
-        </p>
-        </div>
+        <!--<p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>-->
+        <!--<span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span>-->
+        <!--<div>-->
+        <!--<p ng-repeat="error in errors" ng-model="errors">-->
+             <!--<strong style="color: red">{{ error }}</strong> <br>-->
+        <!--</p>-->
+        <!--</div>-->
     </form>
 </div>
 

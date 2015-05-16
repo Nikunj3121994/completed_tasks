@@ -46,6 +46,7 @@
             $scope.user_files = [];
             $scope.new_file = {};
             $scope.errors = [];
+            $scope.filename = '';
             $scope.load_user_files = LoadUserData;
             $scope.load_new_file = LoadNewFile;
             $scope.remove_file = RemoveFile;
@@ -93,7 +94,7 @@
                             //создание записи связующей пользователя и файл
                             if (response.hasOwnProperty('id')) {
                                 var file_id = response.id;
-                                var user_file = {'user': $scope.user.id, 'title': file.name, 'file': file_id};
+                                var user_file = {'user': $scope.user.id, 'title': $scope.filename||file.name, 'file': file_id};
                                 UserFilesRestangular.all('users_files').post(user_file)
                                     .then(
                                     function (response) {
@@ -125,7 +126,40 @@
                             console.log(errors)
                             try {
                                 for (var error in errors.data) {
+
                                     if (!(error in  $scope.errors)) {
+                                        console.log(error)
+                                            //todo: почистить нижние макароны.
+                                            if (error == 'detail') {
+                                                var file_error = String(errors.data[error]);
+                                                if ($scope.errors.indexOf(file_error) == -1) {
+                                                    //проверка на наличие файла у других пользователей
+                                                    if ((file_error.indexOf('already') != -1)) {    //костыль с хардкодингом убрать потом
+                                                        var pk = file_error.split(' ').splice(-1)
+                                                        UserFilesRestangular.one('photos', pk).getList('users').then(
+                                                            function (users) {
+                                                                console.log(users)
+                                                                users.forEach(
+                                                                    function (user) {
+                                                                        var user_error = "Another user load you file, it's  " + user.username
+                                                                        console.log($scope.errors.indexOf(user_error))
+                                                                        if ($scope.errors.indexOf(user_error) == -1) {
+                                                                            $scope.errors.push(user_error)
+                                                                        }
+                                                                    }
+                                                                )
+                                                            },
+                                                            function (errors) {
+                                                                console.log(errors)
+                                                                $scope.errors.push(errors);
+                                                            }
+                                                        )
+                                                    }
+                                                    else {
+                                                        $scope.errors.push(error);
+                                                    }
+                                                }
+                                            }
                                         $scope.errors.push(errors.data[error])
                                     }
                                 }
