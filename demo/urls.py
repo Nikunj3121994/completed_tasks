@@ -6,8 +6,11 @@ from django.contrib.auth.views import login
 from django.shortcuts import redirect
 from views import AuthTemplateView
 # Uncomment the next two lines to enable the admin:
-
+from djrill import DjrillAdminSite
 from django.contrib import admin
+
+
+#admin.site = DjrillAdminSite()#for djrill
 admin.autodiscover()
 
 
@@ -49,6 +52,12 @@ if 'my_calculator' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
                             url(r'^my_calculator/', include('my_calculator.urls',
                                                             namespace='my_calculator')),
+                            )
+
+if 'notifications' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+                            url(r'^notifications/', include('notifications.urls',
+                                                            namespace='notifications')),
                             )
 
 if settings.DEBUG:

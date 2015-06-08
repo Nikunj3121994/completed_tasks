@@ -47,7 +47,7 @@ class PhotoSerializer(FileSerializer):
     class Meta:
         model = Photo
 
-    #валидация
+    #валидация TODO: валидацию перенести в модель, чтобы через админку не падало.
     def validate(self, data):
         if not 'create_data' in data and not self.photo_create_data:
             raise serializers.ValidationError('cant find photo create time')

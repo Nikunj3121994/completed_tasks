@@ -4,3 +4,8 @@ django_extensions
 djangorestframework
 python-magic
 Pillow
+
+djangorestframework-hstore
+django-weeny
+djrill
+django-post-master

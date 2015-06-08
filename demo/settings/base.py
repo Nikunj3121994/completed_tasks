@@ -41,6 +41,7 @@ APPEND_SLASH = False
 # Application definition
 
 INSTALLED_APPS = (
+    # 'django.contrib.admin.apps.SimpleAdminConfig', #for djrill admin
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -54,12 +55,16 @@ INSTALLED_APPS = (
     # loaded modules
     'django_extensions',
     'rest_framework',
+    'djrill',
+    'post_office',
     # locals app
     'demo',
     'my_auth',
     'angular_rest_bookmarks',
     'my_files_storage',
     'my_calculator',
+    'notifications'
+
 )
 
 #AUTH_USER_MODEL = 'my_files_storage.files'
@@ -148,6 +153,10 @@ LOGGING = {
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
+        "post_office": {
+            "format": "[%(levelname)s]%(asctime)s PID %(process)d: %(message)s",
+            "datefmt": "%d-%m-%Y %H:%M:%S",
+        },
     },
     'filters': {
         'require_debug_false': {
@@ -169,6 +178,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
+        "post_office": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "post_office"
+        },
     },
     'loggers': {
         'django.request': {
@@ -188,6 +202,15 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['console'],
         },
+        'notifications': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        "post_office": {
+            "handlers": ["post_office"],# "sentry"],
+            "level": "INFO"
+        },
+
     }
 }
 AUTHENTICATION_BACKENDS = (
@@ -219,4 +242,23 @@ MAX_USER_FILES_COUNT = 100
 MAX_DAYS_TO_OLD = 365
 
 # размеры кропа
+
 CROP_WIDTH = 200
+
+#почта djrill
+MANDRILL_API_KEY = "1111x4LTP7gl1Aqb4q3n0OKcYw"
+EMAIL_POST_OFFICE_BACKEND = 'post_office.EmailBackend'
+EMAIL_DRILL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+
+#почта post_master
+POST_OFFICE = {
+    'LOG_LEVEL': 2, #(0 - nothings, 1 - fails)
+    'DEFAULT_PRIORITY': 'now',
+    'SENDING_ORDER': ['created'],
+    'EMAIL_BACKEND': EMAIL_DRILL_BACKEND, #"djrill.mail.backends.djrill.DjrillBackend" #TODO:Сделать свой кастомный бекнед, чтобы сохранять id Mandrill, в мету
+    'CONTEXT_FIELD_CLASS': 'picklefield.fields.PickledObjectField'
+}
+
+EMAIL_BACKEND = EMAIL_POST_OFFICE_BACKEND
+
+

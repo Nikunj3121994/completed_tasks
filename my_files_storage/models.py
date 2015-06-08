@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 APP_LABEL = 'my_files_storage'
 
-
+USER_MODEL = User
 try:
     USER_MODEL = get_user_model()
 except AppRegistryNotReady, err:
