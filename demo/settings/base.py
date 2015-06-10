@@ -246,19 +246,20 @@ MAX_DAYS_TO_OLD = 365
 CROP_WIDTH = 200
 
 #почта djrill
-MANDRILL_API_KEY = "1111x4LTP7gl1Aqb4q3n0OKcYw"
+MANDRILL_API_KEY = 'x4LTP7gl1Aqb4q3n0OKcYw'
 EMAIL_POST_OFFICE_BACKEND = 'post_office.EmailBackend'
-EMAIL_DRILL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+EMAIL_DRILL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
+EMAIL_BACKEND_WITH_SAVE_META =  'notifications.backends.DjrillBackend_with_save_meta'
 
 #почта post_master
 POST_OFFICE = {
     'LOG_LEVEL': 2, #(0 - nothings, 1 - fails)
     'DEFAULT_PRIORITY': 'now',
     'SENDING_ORDER': ['created'],
-    'EMAIL_BACKEND': EMAIL_DRILL_BACKEND, #"djrill.mail.backends.djrill.DjrillBackend" #TODO:Сделать свой кастомный бекнед, чтобы сохранять id Mandrill, в мету
+    'EMAIL_BACKEND': EMAIL_BACKEND_WITH_SAVE_META, #EMAIL_DRILL_BACKEND, #"djrill.mail.backends.djrill.DjrillBackend" #TODO:Сделать свой кастомный бекнед, чтобы сохранять id Mandrill, в мету
     'CONTEXT_FIELD_CLASS': 'picklefield.fields.PickledObjectField'
 }
 
 EMAIL_BACKEND = EMAIL_POST_OFFICE_BACKEND
-
+#EMAIL_BACKEND = EMAIL_DRILL_BACKEND
 

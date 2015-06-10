@@ -9,8 +9,8 @@ from notifications.models import Notification
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-
+    # raise EOFError(dir(Notification.objects.first()))
     class Meta:
         model = Notification
-        fields = ('notification_type', 'title', 'email', 'text', 'title', 'context', 'shop', 'from_user', 'to_user', 'content_type_id', 'object_id')
+       # fields = ('notification_type', 'title', 'email', 'text', 'title', 'context', 'shop', 'from_user', 'to_user', 'content_type_id', 'object_id')
         exlude = ('id')

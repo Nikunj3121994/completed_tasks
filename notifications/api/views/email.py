@@ -68,6 +68,9 @@ class SendEmailDetailView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
+          #  self.create_test()
+          #  self.create_meta()
+            # return Response(self.send_email())
             return Response(self.send_email_with_postmaster())
         except (ZeroDivisionError, OverflowError, FloatingPointError), err:
             return Response(str(err))
@@ -75,12 +78,29 @@ class SendEmailDetailView(generics.RetrieveAPIView):
             logger.error(str(err))
             return Response(str(err))
 
+    def create_meta(self):
+        from post_office.models import Email
+        mail = Email.objects.first()
+        print mail.from_email
+        from notifications.models import EmailMeta
+        meta = EmailMeta(email=mail)
+        meta.save()
+
+    def create_test(self):
+        from notifications.models import Place, Restaurant, Waiter
+        p1 = Place(name='Demon Dogs', address='944 W. Fullerton')
+        p1.save()
+        r = Restaurant(place=p1, serves_hot_dogs=True, serves_pizza=False)
+        r.save()
+        raise Exception(r)
+
+
     def send_email(self):
         #TODO: Заменить заглушку
         msg = EmailMultiAlternatives("Subject", "text body","chaotism@rambler.ru", ["chaotism@mail.ru"])
         msg.attach_alternative("<html>html body</html>", "text/html")
         msg.send()
-        response = msg.mandrill_response[0]
+        response = msg.mandrill_response
         return response
 
         mandrill_id = response['_id']
