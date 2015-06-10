@@ -1,9 +1,11 @@
-#coding: utf-8
-#from apps.trustedservice.models import Notification as OldNotification
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+import logging
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 from extended_choices import Choices
 from django.contrib.contenttypes.generic import GenericForeignKey
+from django.conf import settings
 #from picklefield.fields import PickledObjectField
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -11,6 +13,78 @@ from django.utils.encoding import smart_str
 from jsonfield.fields import JSONField
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
+
+from post_office.models import Email
+
+
+logger = logging.getLogger(__name__)
+
+APP_LABEL = 'notifications'
+
+
+def mailing_file_validator(value):
+    """
+    Валидатор поля по Mime типу
+    """
+    import magic
+    accepted_mime_type = ['application/vnd.ms-office', 'text/plain']
+    mime = magic.Magic(mime=True)
+    mime_type = mime.from_buffer(value.read())
+    logger.debug(mime_type)
+    if mime_type  not in accepted_mime_type:
+        raise ValidationError(_('Неподходящий формат файла %s, используйте %s'%(mime_type, ',  '.join(accepted_mime_type)))) #Translate
+
+class Mailinglist(models.Model):
+    """
+    Модель хранящая файлы с почтовыми рассылками
+    """
+    shop = models.ForeignKey('Shop', null=True, blank=True,  verbose_name='магазин отправитель') #todo:избыточно
+    user = models.ForeignKey('auth.User', null=True, blank=True, verbose_name='отправитель')
+    file = models.FileField(verbose_name='файл с рассылками', upload_to='%Y/%m/%d',  validators=[mailing_file_validator,])
+    created_at = models.DateTimeField(auto_now=True, verbose_name='время загрузки',  blank=True,)
+
+
+# Биндим сигналы на удаление и обновление файлов
+@receiver(post_delete, sender=Mailinglist)
+def remove_files(instance, **kwargs):
+    """
+    Удаление файла с накопителя при удалиние инстанса
+    """
+    logger.debug(instance)
+    for field in instance._meta.fields:
+        if not isinstance(field, models.FileField):
+            continue
+        file_to_delete = getattr(instance, field.name)
+        storage = file_to_delete.storage
+        if file_to_delete and storage and storage.exists(file_to_delete.name):
+            try:
+                storage.delete(file_to_delete.name)
+            except Exception:
+                logger.exception(
+                    "Unexpected exception while attempting to delete file '%s'" % file_to_delete.name)
+
+
+class EmailMeta(models.Model):
+    """
+    Дополнительная информая по отправленному письму
+    """
+    mailing_list = models.ForeignKey('Mailinglist', null=True, blank=True, verbose_name='почтовая рассылка')
+    shop = models.ForeignKey('Shop', null=True, blank=True, verbose_name='магазин')  #todo:избыточно
+    user = models.ForeignKey('auth.User', null=True, blank=True, verbose_name='отправитель')
+    is_read = models.BooleanField(default=False, verbose_name='прочитано' )
+    email = models.OneToOneField('post_office.Email', primary_key=True)
+    mandrill_id = models.CharField(max_length=75, null=True, blank=True)
+    mandrill_status = models.CharField(max_length=75, null=True, blank=True)
+    mandrill_reject_reason = models.CharField(max_length=75, null=True, blank=True)
+    #{u'status': u'sent', u'_id': u'bfe73c61cfbb4228a6974c6e46b73b7e', u'email': u'chaotism@mail.ru', u'reject_reason': None}
+
+
+class Shop(models.Model):
+    name = models.CharField(verbose_name='Имя', max_length=256, blank=True, null=True)
 
 
 class Notification(models.Model):
@@ -26,6 +100,8 @@ class Notification(models.Model):
         ('FOR_MERCHANT_SHOP_VOTE', 'merchant-shop-vote', u"Пользователь проголосовал за ваш магазин"),
         ('THANKS_FOR_SHOP_VOTE', 'thanks-for-shop-vote', u"Спасибо за то что проголосовали за магазин"),
     )
+
+   # superclass = models.OneToOneField(Email, primary_key=True, db_column='id', parent_link=True)
 
     shop = models.ForeignKey("Shop", null=True, blank=True, related_name="rel_notifications")
 
@@ -273,14 +349,30 @@ class Notification(models.Model):
         )
 
 
-class EmailMeta(models.Model):
-    shop = models.ForeignKey('Shop', null=True, blank=True)
-    is_read = models.BooleanField(default=False)
-    email = models.OneToOneField('post_office.Email', related_name="meta", primary_key=True, db_column='id', parent_link=True)
 
-class Shop(models.Model):
-    name = models.CharField(verbose_name='Имя', max_length=256, blank=True, null=True)
 
+#
+# class Place(models.Model):
+#     name = models.CharField(max_length=50)
+#     address = models.CharField(max_length=80)
+#
+#     def __str__(self):              # __unicode__ on Python 2
+#         return "%s the place" % self.name
+#
+# class Restaurant(models.Model):
+#     place = models.OneToOneField(Place, primary_key=True)
+#     serves_hot_dogs = models.BooleanField(default=False)
+#     serves_pizza = models.BooleanField(default=False)
+#
+#     def __str__(self):              # __unicode__ on Python 2
+#         return "%s the restaurant" % self.place.name
+#
+# class Waiter(models.Model):
+#     restaurant = models.ForeignKey(Restaurant)
+#     name = models.CharField(max_length=50)
+#
+#     def __str__(self):              # __unicode__ on Python 2
+#         return "%s the waiter at %s" % (self.name, self.restaurant)
 
 
 # class Advantage(models.Model):
@@ -303,7 +395,7 @@ class Shop(models.Model):
 
 
 
-# from post_office import mail
+from post_office.models import Email
 #
 # mail.send(
 #     'chaotism@mail.ru', # List of email addresses also accepted
@@ -319,3 +411,5 @@ class Shop(models.Model):
 #     template='welcome_email', # Could be an EmailTemplate instance or name
 #     context={'foo': 'bar'},
 # )
+
+

@@ -1,0 +1,100 @@
+{% load i18n static %}
+{% get_current_language as current_language %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block meta_title %}Статус отпраки{% endblock %}</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'notifications/lib/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'notifications/lib/bootstrap/dist/css/bootstrap-theme.css' %}">
+</head>
+
+
+<body>
+ {% block content %}
+<div class="container">
+    <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
+    <table ng-cloak class="table-hover table-bordered col-md-12" style="text-align: center">
+        <thead ng-init="load_user_files({{ request.user.id }})">
+        <tr>
+            <h2>
+                Список отправленны сообщений из файла &nbsp; {{ mailing_list.file }} пользователя {{ request.user.username }}
+            </h2>
+        </tr>
+        <tr>
+            <td class="col-md-2">
+                <h4>
+                    id
+                </h4>
+            </td>
+            <td class="col-md-4">
+                <h4>
+                    Дата отправления
+                </h4>
+            </td>
+            <td class="col-md-4">
+                <h4>
+                    Имя файла
+                </h4>
+            </td>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% with emails_meta as emails %}
+            {% for email in ememails %}
+            <tr>
+                <td>
+                    <h5>
+                        {{ email.id }}
+                    </h5>
+                </td>
+                <td>
+                    <h5>
+                        {{ email.datetime_created }}
+                    </h5>
+                </td>
+                <td>
+                      <h5>
+                        {{ email.file.name }}
+                        <a href="{{ file.url }}" class="btn btn-lg btn-success btn-block">скачать</a>
+                    </h5>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endwith %}
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+
+    {% endblock %}
+
+
+
+</div>
+
+
+{% block js %}
+<!-- scripts -->
+<!--[if IE 8]>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+<![endif]-->
+
+<script src="{% static 'notifications/lib/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'notifications/lib/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'notifications/lib/lodash/lodash.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}
+
+</body>
+</html>
+

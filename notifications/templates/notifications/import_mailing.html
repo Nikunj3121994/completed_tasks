@@ -1,0 +1,107 @@
+{% load i18n static %}
+{% get_current_language as current_language %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block meta_title %}Отправить письма{% endblock %}</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'notifications/lib/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'notifications/lib/bootstrap/dist/css/bootstrap-theme.css' %}">
+</head>
+
+
+<body>
+ {% block content %}
+<div class="container">
+    <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
+    <table ng-cloak class="table-hover table-bordered col-md-12" style="text-align: center">
+        <thead ng-init="load_user_files({{ request.user.id }})">
+        <tr>
+            <h2>
+                Список созданных запросовя&nbsp;{{ request.user.username }}
+            </h2>
+        </tr>
+        <tr>
+            <td class="col-md-2">
+                <h4>
+                    id
+                </h4>
+            </td>
+            <td class="col-md-4">
+                <h4>
+                    Дата отправления
+                </h4>
+            </td>
+            <td class="col-md-4">
+                <h4>
+                    Имя файла
+                </h4>
+            </td>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% with mailing_list as mailings %}
+            {% for mailing in mailings %}
+            <tr>
+                <td>
+                    <h5>
+                        {{ mailing.id }}
+                    </h5>
+                </td>
+                <td>
+                    <h5>
+                        {{ mailing.datetime_created }}
+                    </h5>
+                </td>
+                <td>
+                    <h5>
+                        <a href="{%  url 'notifications:mailing_status' pk=mailing.pk %}" class="btn btn-lg btn-success btn-block">Статус {{ mailing.file.name }}</a>
+                    </h5>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endwith %}
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+
+    {% endblock %}
+
+    <h2>Загрузите список email</h2>
+    <form enctype="multipart/form-data" action="{#%  url 'input:task-create' type_source.code %#}" method="post">
+        {% with form as f %}
+            {{ f.as_p }}
+        {% endwith %}
+        {% csrf_token %}
+    <button type="submit" class="btn  btn-success btn-block">Загрузить файл</button>
+    </form>
+
+
+</div>
+
+
+{% block js %}
+<!-- scripts -->
+<!--[if IE 8]>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+<![endif]-->
+
+<script src="{% static 'notifications/lib/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'notifications/lib/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'notifications/lib/lodash/lodash.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}
+
+</body>
+</html>
+

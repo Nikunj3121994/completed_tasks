@@ -9,3 +9,4 @@ djangorestframework-hstore
 django-weeny
 djrill
 django-post-master
+django-celery

@@ -18,7 +18,7 @@ from notifications.models import Notification
 
 from ..serializers import EmailSerializer, NotificationSerializer
 from .mixin import AccessMixin
-
+from import_export.admin import ImportMixin
 
 logger = logging.getLogger(__name__)
 
