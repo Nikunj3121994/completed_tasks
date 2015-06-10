@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'djrill',
     'post_office',
-    'import_export'
+    #'import_export'
     # locals app
     'demo',
     'my_auth',

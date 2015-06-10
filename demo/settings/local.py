@@ -10,17 +10,17 @@ MAX_USER_FILES_COUNT = 34
 MAX_DAYS_TO_OLD = 365
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'common',
-        'USER': 'postgres',  # 'postgres',
-        'PASSWORD': 'postgres',  # 'postgres',
-        'HOST': 'localhost',
-        'PORT': '',
-    },
     # 'default': {
-    #      'ENGINE': 'django.db.backends.sqlite3',
-    #      'NAME': os.path.join(PROJECT_ROOT, 'db.sqlite3'),
-    # }
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'test',
+    #     'USER': 'postgres',  # 'postgres',
+    #     'PASSWORD': 'postgres',  # 'postgres',
+    #     'HOST': 'localhost',
+    #     'PORT': '',
+    # },
+    'default': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': os.path.join(PROJECT_ROOT, 'db.sqlite3'),
+    }
 
 }
