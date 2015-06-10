@@ -17,6 +17,7 @@ def import_mailing_from_file(instance):
 def import_mailing_from_file_without_celery(instance):
     file = instance.file.file.read()
     data = tablib.import_set(file)
+    data.headers = ['First Name', 'Last Name', 'Full Name']
     raise EnvironmentError(data.json)
     pass
     #raise Exception(instance)
