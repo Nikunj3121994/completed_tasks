@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from ..models import Mailinglist, EmailMeta
 from ..form import MailingImportForm
-
+from ..tasks import import_mailing_from_file,  import_mailing_from_file_without_celery
 try:
     from .mixins import AccessMixin
 except ImportError:
@@ -41,6 +41,8 @@ class ImportMailingView(FormView):
         instance = form.save(commit=False)
         instance.user = self.request.user
         instance.save()
+        #import_mailing_from_file.delay(instance)
+        import_mailing_from_file_without_celery(instance)
         return super(ImportMailingView, self).form_valid(form)
 
     def get_success_url(self):
