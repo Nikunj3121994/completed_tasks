@@ -57,13 +57,14 @@ INSTALLED_APPS = (
     'rest_framework',
     'djrill',
     'post_office',
+    'import_export'
     # locals app
     'demo',
     'my_auth',
     'angular_rest_bookmarks',
     'my_files_storage',
     'my_calculator',
-    'notifications'
+    'notifications',
 
 )
 

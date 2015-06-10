@@ -32,6 +32,9 @@ class NotificationsListAPIView(generics.ListAPIView, generics.CreateAPIView):
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
+    def filter_queryset(self, queryset):
+        return queryset.filter(from_user=self.request.user)
+
 
 class NotificationDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Notification.objects.all()
@@ -39,3 +42,6 @@ class NotificationDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
+
+    def filter_queryset(self, queryset):
+        return queryset.filter(from_user=self.request.user)
