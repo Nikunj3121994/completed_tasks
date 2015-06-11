@@ -15,11 +15,23 @@ def import_mailing_from_file(instance):
    # shop.update_rating()
 
 def import_mailing_from_file_without_celery(instance):
+    raise Exception((instance._meta.fields[0].column))
+    raise Exception(dir(instance._meta.fields[0].column))
     file = instance.file.file.read()
     data = tablib.import_set(file)
     data.headers = ['First Name', 'Last Name', 'Full Name']
     raise EnvironmentError(data.json)
     pass
+
+
+def import_shop_order_from_file(file):
+    pass
     #raise Exception(instance)
     #shop = Shop.objects.get(instance.shop)
    # shop.update_rating()
+
+from import_export.admin import ImportMixin
+from import_export.resources import (
+    modelresource_factory,
+    )
+from import_export.formats import base_formats

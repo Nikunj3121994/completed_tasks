@@ -47,7 +47,7 @@
         <tbody>
 
         {% with emails_meta as emails %}
-            {% for email in ememails %}
+            {% for email in emails %}
             <tr>
                 <td>
                     <h5>
@@ -56,7 +56,7 @@
                 </td>
                 <td>
                     <h5>
-                        {{ email.datetime_created }}
+                        {{ email.created }}
                     </h5>
                 </td>
                 <td>

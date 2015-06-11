@@ -40,9 +40,11 @@ class ImportMailingView(FormView):
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.user = self.request.user
-        instance.save()
+        # instance.save()
         #import_mailing_from_file.delay(instance)
+        import shop_orders
         import_mailing_from_file_without_celery(instance)
+        instance.save()
         return super(ImportMailingView, self).form_valid(form)
 
     def get_success_url(self):
@@ -67,7 +69,7 @@ class ImportMailingView(FormView):
     def get_context_data(self, **kwargs):
         context = super(ImportMailingView, self).get_context_data(**kwargs)
 
-        context['mailing_list'] = Mailinglist.objects.filter(user=self.request.user)
+        context['mailing_list'] = Mailinglist.objects.filter(user=self.request.user.id)
         return context
 
 

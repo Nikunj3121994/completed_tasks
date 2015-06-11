@@ -27,9 +27,15 @@ APP_LABEL = 'notifications'
 
 
 def mailing_file_validator(value):
+    pass
+
+
+def file_mime_type_validator(value):
     """
     Валидатор поля по Mime типу
     """
+    #TODO:переделать так чтобы передавать mime_type динамически
+
     import magic
     accepted_mime_type = ['application/vnd.ms-office', 'text/plain']
     mime = magic.Magic(mime=True)
@@ -38,14 +44,27 @@ def mailing_file_validator(value):
     if mime_type  not in accepted_mime_type:
         raise ValidationError(_('Неподходящий формат файла %s, используйте %s'%(mime_type, ',  '.join(accepted_mime_type)))) #Translate
 
+
+def file_extensions_validator(value):
+    """
+    Валидатор поля по extensions #TODO:переделать так чтобы передавать extansions динамически
+    """
+    #TODO:переделать так чтобы передавать extansions динамически
+    accepted_extension = ['csv', 'xls']
+    file_extensions = value.name.split('.')[-1]
+    logger.debug(file_extensions)
+    if file_extensions  not in accepted_extension:
+        raise ValidationError(_('Неподходящее расширение файла %s, используйте %s'%(file_extensions, ',  '.join(accepted_extension))))
+
 class Mailinglist(models.Model):
     """
     Модель хранящая файлы с почтовыми рассылками
     """
     shop = models.ForeignKey('Shop', null=True, blank=True,  verbose_name='магазин отправитель') #todo:избыточно
     user = models.ForeignKey('auth.User', null=True, blank=True, verbose_name='отправитель')
-    file = models.FileField(verbose_name='файл с рассылками', upload_to='%Y/%m/%d',  validators=[mailing_file_validator,])
-    created_at = models.DateTimeField(auto_now=True, verbose_name='время загрузки',  blank=True,)
+    file = models.FileField(verbose_name='файл с рассылками', upload_to='%Y/%m/%d',
+                            validators=[file_mime_type_validator, file_extensions_validator])
+    created = models.DateTimeField(auto_now=True, verbose_name='время загрузки',  blank=True,)
 
 
 # Биндим сигналы на удаление и обновление файлов
@@ -76,7 +95,7 @@ class EmailMeta(models.Model):
     shop = models.ForeignKey('Shop', null=True, blank=True, verbose_name='магазин')  #todo:избыточно
     user = models.ForeignKey('auth.User', null=True, blank=True, verbose_name='отправитель')
     is_read = models.BooleanField(default=False, verbose_name='прочитано' )
-    email = models.OneToOneField('post_office.Email', primary_key=True)
+    email = models.OneToOneField('post_office.Email', primary_key=True, parent_link=True)
     mandrill_id = models.CharField(max_length=75, null=True, blank=True)
     mandrill_status = models.CharField(max_length=75, null=True, blank=True)
     mandrill_reject_reason = models.CharField(max_length=75, null=True, blank=True)
@@ -86,7 +105,26 @@ class EmailMeta(models.Model):
 class Shop(models.Model):
     name = models.CharField(verbose_name='Имя', max_length=256, blank=True, null=True)
 
+class ShopOrder(models.Model):
+    """
+    Заказы в системе ИМ
+    """
+    shop = models.ForeignKey('Shop', related_name='orders')
 
+    login = models.CharField(u"Логин клиента в системе ИМ", max_length=256)
+    order = models.CharField(u"Номер заказа в системе ИМ", max_length=256)
+    email = models.EmailField(u"Контактный Email клиента", blank=True, null=True)
+
+    is_send = models.BooleanField(u"Приглашение на голосование уже отправлялось", default=False)
+
+    class Meta:
+        unique_together = ['shop', 'login', 'order']
+
+        verbose_name = u'Заказ'
+        verbose_name_plural = u'Заказы'
+
+    def send_mail(self, to_address=None, **kwargs):
+        pass
 class Notification(models.Model):
     """
     Уведомления всякие разные, разнообразные
