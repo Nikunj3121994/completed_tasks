@@ -9,14 +9,17 @@ DEBUG = True
 MAX_USER_FILES_COUNT = 34
 MAX_DAYS_TO_OLD = 365
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'common',
-        'USER': 'postgres',  # 'postgres',
-        'PASSWORD': 'postgres',  # 'postgres',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
+        'AUTOCOMMIT': True,
     },
     # 'default': {
     #      'ENGINE': 'django.db.backends.sqlite3',
