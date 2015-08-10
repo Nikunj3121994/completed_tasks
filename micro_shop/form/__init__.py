@@ -1,1 +1,0 @@
-from mailing import MailingImportForm
