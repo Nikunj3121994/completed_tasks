@@ -125,6 +125,7 @@ class ShopOrder(models.Model):
 
     def send_mail(self, to_address=None, **kwargs):
         pass
+
 class Notification(models.Model):
     """
     Уведомления всякие разные, разнообразные
@@ -385,69 +386,4 @@ class Notification(models.Model):
             notification_type=notification_type,
             **kw
         )
-
-
-
-
-#
-# class Place(models.Model):
-#     name = models.CharField(max_length=50)
-#     address = models.CharField(max_length=80)
-#
-#     def __str__(self):              # __unicode__ on Python 2
-#         return "%s the place" % self.name
-#
-# class Restaurant(models.Model):
-#     place = models.OneToOneField(Place, primary_key=True)
-#     serves_hot_dogs = models.BooleanField(default=False)
-#     serves_pizza = models.BooleanField(default=False)
-#
-#     def __str__(self):              # __unicode__ on Python 2
-#         return "%s the restaurant" % self.place.name
-#
-# class Waiter(models.Model):
-#     restaurant = models.ForeignKey(Restaurant)
-#     name = models.CharField(max_length=50)
-#
-#     def __str__(self):              # __unicode__ on Python 2
-#         return "%s the waiter at %s" % (self.name, self.restaurant)
-
-
-# class Advantage(models.Model):
-#     title = models.CharField(u"Заголовок", max_length=75)
-#     description = models.TextField(u"Описание", max_length=300)
-#     position = models.PositiveSmallIntegerField(u"Позиция", editable=False, default=0)
-#
-#     class Meta:
-#         ordering = ['position']
-#         verbose_name = u'Преимущество'
-#         verbose_name_plural = u'Преимущества'
-#
-#     def __unicode__(self):
-#         return u"{self.title}".format(self=self)
-#
-#     def clean(self):
-#         if Advantage.objects.count() > 3:
-#             raise ValidationError(u"Шаблоном сайта предусмотрен вывод только 3 преимуществ, "
-#                                   u"удалите одно из существующих преимуществ или отредактируйте его текст")
-
-
-
-from post_office.models import Email
-#
-# mail.send(
-#     'chaotism@mail.ru', # List of email addresses also accepted
-#     'chaotism@mail.ru',
-#     subject='My email',
-#     message='Hi there!',
-#     html_message='Hi <strong>there</strong>!',
-# )
-#
-# mail.send(
-#     'recipient@example.com', # List of email addresses also accepted
-#     'from@example.com',
-#     template='welcome_email', # Could be an EmailTemplate instance or name
-#     context={'foo': 'bar'},
-# )
-
 
