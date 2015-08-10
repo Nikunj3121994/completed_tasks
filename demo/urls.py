@@ -54,10 +54,10 @@ if 'my_calculator' in settings.INSTALLED_APPS:
                                                             namespace='my_calculator')),
                             )
 
-if 'notifications' in settings.INSTALLED_APPS:
+if 'micro_shop' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-                            url(r'^notifications/', include('notifications.urls',
-                                                            namespace='notifications')),
+                            url(r'^micro_shop/', include('micro_shop.urls',
+                                                            namespace='micro_shop')),
                             )
 
 if settings.DEBUG:

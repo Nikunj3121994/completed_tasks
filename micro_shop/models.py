@@ -23,7 +23,7 @@ from post_office.models import Email
 
 logger = logging.getLogger(__name__)
 
-APP_LABEL = 'notifications'
+APP_LABEL = 'micro_shop'
 
 
 def mailing_file_validator(value):

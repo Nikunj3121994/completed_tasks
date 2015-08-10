@@ -64,7 +64,7 @@ INSTALLED_APPS = (
     'angular_rest_bookmarks',
     'my_files_storage',
     'my_calculator',
-    'notifications',
+    'micro_shop',
 
 )
 
@@ -250,7 +250,7 @@ CROP_WIDTH = 200
 MANDRILL_API_KEY = 'x4LTP7gl1Aqb4q3n0OKcYw'
 EMAIL_POST_OFFICE_BACKEND = 'post_office.EmailBackend'
 EMAIL_DRILL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
-EMAIL_BACKEND_WITH_SAVE_META =  'notifications.backends.DjrillBackend_with_save_meta'
+EMAIL_BACKEND_WITH_SAVE_META =  'micro_shop.backends.DjrillBackend_with_save_meta'
 
 #почта post_master
 POST_OFFICE = {
