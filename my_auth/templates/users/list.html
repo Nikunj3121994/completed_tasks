@@ -30,7 +30,8 @@
 			<tbody>
 			{% for user in users %}
 				<tr>
-					<td><a href="{% url 'auth:users:detail' user_pk=user.pk %}">{{ user.username }}</a></td>
+					<!--{# <td><a href="{% url 'auth:users:detail' user_pk=user.pk %}">{{ user.username }}</a></td> #}-->
+					<td>{{ user.username }}</td>
 					<td>{{ user.first_name }}&nbsp;{{ user.last_name }}</td>
 					<td>{{ user.email }}</td>
 					<td>
