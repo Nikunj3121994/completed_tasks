@@ -71,6 +71,8 @@ class PhotoSerializer(FileSerializer):
             create_data = exif['DateTimeDigitized']
         else:
             raise serializers.ValidationError('cannot take photo create time')
+        if isinstance(create_data, tuple):
+            create_data = create_data[0]
         foto_created_time = datetime.datetime.strptime(create_data, '%Y:%m:%d %H:%M:%S')
         self.validate_create_data(foto_created_time)
         return value

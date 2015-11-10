@@ -17,6 +17,7 @@
 
 <body ng-app="my_files_storage">
 <div class="container" ng-controller="filesCtrl">
+    <a href="/" class="btn btn-success pull-left">На главную</a>
     <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
     <table ng-cloak class="table-hover table-bordered col-md-12">
         <thead ng-init="load_user_files({{ request.user.id }})">

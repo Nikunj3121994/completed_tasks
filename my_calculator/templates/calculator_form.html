@@ -17,6 +17,7 @@
 
 <body ng-app="my_calculator">
 <div class="container" ng-controller="calcCtrl">
+    <a href="/" class="btn btn-success pull-left">На главную</a>
     <a href="{% url 'auth:logout' %}" class="btn btn-danger pull-right">Выйти</a>
     <table ng-cloak class="table-hover table-bordered col-md-12">
         <thead ng-init="user={{ request.user.id }}">
@@ -71,7 +72,7 @@
         <tr>
             <td colspan="12" class="col-md-12">
                 <h5>
-                    <p ng-click="calculate()" class="btn  btn-success btn-block">Результат &nbsp{{ result }}</p>
+                    <p ng-click="calculate()" class="btn btn-success btn-block">Результат &nbsp{{ result }}</p>
                 </h5>
             </td>
         </tr>

@@ -36,11 +36,11 @@ class BookMarkTreeListAPIView(generics.ListAPIView, generics.CreateAPIView, Ajax
     ]
 
     def post(self, request, *args, **kwargs):
-        logger.debug(request.DATA)
-        data = [request.DATA, ]
-        parent_id = request.DATA.get('parent')
-        if not request.DATA['data']['user']:  # TODO: убрать этот костыль
-            request.DATA['data']['user'] = self.request.user.id
+        logger.debug(request.data)
+        data = [request.data, ]
+        parent_id = request.data.get('parent')
+        if not request.data['data']['user']:  # TODO: убрать этот костыль
+            request.data['data']['user'] = self.request.user.id
         try:
             parent = Folder_AL.objects.get(id=parent_id)
         except MultipleObjectsReturned:

@@ -1,6 +1,9 @@
-Django==1.7
-django-treebeard
-django_extensions
-djangorestframework
-python-magic
-Pillow
+Django==1.8.6
+Pillow==3.0.0
+argparse==1.2.1
+django-extensions==1.5.9
+django-treebeard==3.0
+djangorestframework==3.3.1
+python-magic==0.4.10
+six==1.10.0
+
