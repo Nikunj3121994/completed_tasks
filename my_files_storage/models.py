@@ -214,7 +214,6 @@ def get_camera_info(instance, *args, **kwargs):
         return instance
     except AttributeError, err:
         logger.debug(err)
-        raise
         return instance
 
 @receiver(post_save, sender=Photo)

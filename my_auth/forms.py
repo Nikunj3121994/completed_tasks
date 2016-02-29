@@ -19,7 +19,7 @@ class UserCreateForm(forms.ModelForm):
         label=_('Пароль'), widget=forms.PasswordInput, help_text=_('Придумайте пароль'))
     password2 = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput,
                                 help_text=_('Повторите пароль, чтобы не ошибиться'))
-    # help_text="Enter the same password as above, for verification.")
+
 
     class Meta:
         model = User
@@ -63,28 +63,6 @@ class UserUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserUpdateForm, self).__init__(*args, **kwargs)
-        # self.fields['groups'].initial = self.instance.groups.all()
-
-    # def save(self, commit=True):
-    #     instance = super(UserUpdateForm, self).save(commit=True)
-    #     # old_save_m2m = self.save_m2m
-    #     #
-    #     # def save_m2m():
-    #     #     old_save_m2m()
-    #     #     groups = self.cleaned_data.get('groups', [])
-    #     #     inst_groups = instance.groups.all()
-    #     #     add_groups = set(groups).difference(inst_groups)
-    #     #     remove_groups = set(inst_groups).difference(groups)
-    #     #     for group in add_groups:
-    #     #         instance.groups.add(group)
-    #     #     for group in remove_groups:
-    #     #         instance.groups.remove(group)
-    #     # self.save_m2m = save_m2m
-    #     #
-    #     # if commit:
-    #     #     instance.save()
-    #     #     self.save_m2m()
-    #     return instance
 
 
 class SetPasswordForm(DjangoSetPasswordForm):
@@ -119,13 +97,10 @@ class AuthenticationForm(DjangoAuthForm):
 
         if username:
             UserModel = get_user_model()
-            # print UserModel.objects.filter(username=username).exists()
             if not UserModel.objects.filter(username=username).exists():
-                # print 'x'
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'],
                     code='invalid_login',
-                    #params={'username': self.username_field.verbose_name},
                 )
         if username and password:
             self.user_cache = authenticate(username=username,
@@ -134,7 +109,6 @@ class AuthenticationForm(DjangoAuthForm):
                 raise forms.ValidationError(
                     self.error_messages['invalid_password'],
                     code='invalid_password',
-                    #params={'username': self.username_field.verbose_name, 'password':self.fields['password'].label},
                 )
             elif not self.user_cache.is_active:
                 raise forms.ValidationError(

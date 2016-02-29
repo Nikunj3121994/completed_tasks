@@ -10,7 +10,6 @@ from views import AuthTemplateView
 from django.contrib import admin
 admin.autodiscover()
 
-
 # urlpatterns = patterns('',
 #     url(r'^$', lambda request: redirect('/auth/login')),
 # )
@@ -35,8 +34,6 @@ if 'my_auth' in settings.INSTALLED_APPS:
                             url(r'^auth/',
                                 include('my_auth.urls', namespace='auth')),
                             )
-    # from auth.urls import login_urls
-    # urlpatterns += login_urls
 
 
 if 'my_files_storage' in settings.INSTALLED_APPS:

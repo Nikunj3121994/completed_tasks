@@ -1,1 +1,1 @@
-from bookmarks import BookMarkTreeListAPIView, BookMarkTreeDetail
+from .bookmarks import BookMarkTreeListAPIView, BookMarkTreeDetail

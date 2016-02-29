@@ -12,6 +12,7 @@ urlpatterns = patterns('',
                            template_name='bookmark_example.html'), name='example')
                        )
 
+
 if settings.DEBUG:
     urlpatterns += patterns('',
                             url(r'^(?P<template_name>\w+)$',

@@ -1,25 +1,14 @@
 (function () {
     'use strict';
 
-//    function UserFilesRestangular(Restangular) {
-//        return Restangular
-////            .withHttpConfig({transformRequest: angular.identity})
-////            .withConfig(function (RestangularConfigurer) {
-////                console.log(RestangularConfigurer);
-////                RestangularConfigurer
-////                    .setBaseUrl('/my_files_storage/api/');
-////        });
-//    };
     function UserFilesRestangular(Restangular) {
         console.log(Restangular);
         return Restangular
             .withConfig(function (RestangularConfigurer) {
                 RestangularConfigurer
                     .setBaseUrl('/my_files_storage/api/')
-//                    .setDefaultHttpFields({transformRequest: angular.identity});
             });
     };
-
 
     function RestAngularFileUploader(Restangular) {
         function uploadFileToUrl(file, uploadUrl) {
@@ -35,8 +24,6 @@
         }
     };
 
-
-
     angular
         .module('my_photos_storage', ['restangular', 'simpleUpload'])
         .factory('UserFilesRestangular', UserFilesRestangular)
@@ -50,7 +37,6 @@
             $scope.load_user_files = LoadUserData;
             $scope.load_new_file = LoadNewFile;
             $scope.remove_file = RemoveFile;
-
 
             function LoadNewFile(file, user) {
                 $scope.errors = [];
@@ -190,7 +176,4 @@
             };
         })
 
-    }
-
-    ).
-    call(this);
+    }).call(this);

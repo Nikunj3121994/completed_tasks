@@ -44,7 +44,6 @@ class FilesListAPIView(generics.ListAPIView, generics.CreateAPIView, AccessMixin
             return  self.serializer_class_dict[type]
         except KeyError,err:
             raise Http404
-        # return super(FilesListAPIView, self).get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

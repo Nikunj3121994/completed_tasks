@@ -1,0 +1,7 @@
+git
+python
+libpq-dev
+python-dev
+python-virtualenv
+postgresql
+redis-server

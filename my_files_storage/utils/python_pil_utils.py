@@ -31,37 +31,14 @@ def get_exif_dict(filename):
     return result
 
 
-# def get_crop(filename, new_height=0, new_width=0):
-#     try:
-#         im = Image.open(filename)
-#         #im.verify()
-#         width, height = im.size
-#         left = (width - new_height) / 2
-#         top = (height - new_height) / 2
-#         right = (width + new_width) / 2
-#         bottom = (height + new_height) / 2
-#         im.crop((left, top, right, bottom))
-#         # crop_im = deepcopy(im)
-#         # crop_im.close()
-#         # return crop_im
-#         logger.debug(dir(im))
-#         logger.debug(im.thumbnail)
-#         return im
-#     except (IOError, AttributeError), err:
-#         logger.error(err)
-#         return
-
-
 def rescale(data, width, height, force=True):
     """Rescale the given image, optionally cropping it to make sure the result image has the specified width and height."""
-    
 
     max_width = width
     max_height = height
-    #
     input_file = StringIO(data)
     img = Image.open(input_file)
-    # img = Image.open(data)
+
     if not force:
         logger.debug('not force')
         img.thumbnail((max_width, max_height), Image.ANTIALIAS)
@@ -87,7 +64,6 @@ def rescale(data, width, height, force=True):
         logger.debug('croped')
         logger.debug(int(dst_width))
         logger.debug(int(dst_height))
-        print img.resize()
         img = img.resize(100, Image.ANTIALIAS)
         logger.debug('resized')
     logger.debug('tmp')
@@ -101,6 +77,7 @@ def rescale(data, width, height, force=True):
     logger.debug('output_data')
     input_file.close()
     tmp.close()
+
     return output_data
 
 
@@ -114,7 +91,6 @@ def get_thumb(instance, source_field, target_field, width, height):
     img_temp.flush()
     source_image_name = source.file.name.split('/')[-1]
     target_image_name = 'crop_%s'%source_image_name
-
     target.save(target_image_name, File(img_temp), save=True)
     instance.save()
     return instance

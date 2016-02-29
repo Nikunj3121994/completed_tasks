@@ -5,10 +5,6 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # tree = serializers.SerializerMethodField('get_tree')
-    # self__tree = serializers.SerializerMethodField('get_self_tree')
-    # children = serializers.SerializerMethodField('get_childrens')
-    # data = serializers.SerializerMethodField('get_data')
 
     class Meta:
         model = User

@@ -125,18 +125,6 @@
                 </p>
             </li>
         </ul>
-        <!--Название файла:-->
-        <!--<input type="text" ng-model="filename">-->
-        <!--Файл для загрузки:  &lt;!&ndash;<input type="file" name="new_file" ng-model="new_file.file" required>&ndash;&gt;-->
-        <!--<input type="file" file-model="new_file"/>-->
-
-        <!--<p ng-click="load_new_file(new_file, user)" class="btn  btn-success btn-block">Загрузить файл</p>-->
-        <!--<span class="error" ng-show="FileUploadForm.filename.$error">{{ FileUploadForm.$error }}</span>-->
-        <!--<div>-->
-        <!--<p ng-repeat="error in errors" ng-model="errors">-->
-             <!--<strong style="color: red">{{ error }}</strong> <br>-->
-        <!--</p>-->
-        <!--</div>-->
     </form>
 </div>
 
@@ -153,13 +141,8 @@
 <script src="{% static 'my_files_storage/lib/angular-1.2.26/angular.js' %}"></script>
 <script src="{% static 'my_files_storage/lib/lodash/lodash.min.js' %}"></script>
 <script src="{% static 'my_files_storage/lib/restangular/src/restangular.js' %}"></script>
-{#<script src="{% static 'my_files_storage/lib/angular-ui-tree/dist/angular-ui-tree.js' %}"></script>#}
-{#<script src="{% static 'my_files_storage/lib/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>#}
-{#<script src="{% static 'my_files_storage/app/trees.js' %}"></script>#}
 <script src="{% static 'my_files_storage/lib/simple-file-upload.js' %}"></script>
-{#<script src="{% static 'my_files_storage/lib/angular-file-upload.js' %}"></script>#}
 <script src="{% static 'my_files_storage/app/my_photos_storage.js' %}"></script>
-{#<script src="{% static 'angular-bookmarks/lib/gremlins/gremlins.min.js' %}"></script>#}
 <script>
     // Add the CSRF Token
     angular

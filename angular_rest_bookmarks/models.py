@@ -43,14 +43,3 @@ class Folder_AL(treebeard.al_tree.AL_Node):
 
     def __unicode__(self):
         return 'Раздел: %s' % self.name
-
-
-# class Folder_MP(treebeard.mp_tree.MP_Node):
-# name = models.CharField(max_length=100, verbose_name=_('Название'))
-#     user = models.ForeignKey(USER_MODEL, verbose_name='пользователь', blank=True,null=True, related_name='folders_mp')
-#
-#
-#     node_order_by = ['name']
-#
-#     def __unicode__(self):
-#         return 'Раздел: %s' % self.name

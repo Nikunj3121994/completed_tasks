@@ -18,7 +18,6 @@ except AttributeError:
     MAX_DAYS_TO_OLD = 0
 
 
-
 class FileSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField('get_my_file_url')
     title = serializers.SerializerMethodField('get_file_title')

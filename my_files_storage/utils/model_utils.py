@@ -36,6 +36,7 @@ def convert_filesize(field):
         logger.error(err)
         return field
 
+
 def convert_data(field, format='%Y-%m-%d %H:%M:%S'):
     try:
         naive_data = field.replace(tzinfo=None)
