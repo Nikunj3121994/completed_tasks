@@ -4,7 +4,7 @@ from .models import *
 
 
 # на стадии отладки вполне подойдет
-for name in (mod for mod in dict(locals()).values()):
+for name in locals().values():
     try:
         admin.site.register(name)
     except:
